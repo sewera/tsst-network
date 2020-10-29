@@ -3,17 +3,18 @@
 ## First Stage
 ### Objective
 **IP/MPLS network emulator**
+
 IP is not necessary. We can assume that the packet coming out of a client is
 an MPLS packet equipped with one label.
 
 We focus on data and administration aspects.
 
 ### What management actually is: FCAPS
-- F - fault - recognize, isolate, correct and log faults that occur in the network
-- C - configuration - make and store configs, plan future scaling
-- A - accounting - billing management
-- P - performance - ensuring that network performs at acceptable levels
-- S - security - access to network assets control
+- F — fault — recognize, isolate, correct and log faults that occur in the network
+- C — configuration — make and store configs, plan future scaling
+- A — accounting — billing management
+- P — performance — ensuring that network performs at acceptable levels
+- S — security — access to network assets control
 
 ### Execution
 4 programs:
