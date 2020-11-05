@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace nn
+namespace cn
 {
-    class Program
+    class ClientNode
     {
         static void Main(string[] args)
         {
