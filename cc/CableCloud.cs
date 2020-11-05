@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace ms
+namespace cc
 {
-    class Program
+    class CableCloud
     {
         static void Main(string[] args)
         {

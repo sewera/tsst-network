@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace cc
+namespace ms
 {
-    class Program
+    class ManagementSystem
     {
         static void Main(string[] args)
         {
