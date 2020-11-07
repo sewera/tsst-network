@@ -7,3 +7,6 @@ sudo apt-get update; \
   sudo apt-get install -y apt-transport-https && \
   sudo apt-get update && \
   sudo apt-get install -y dotnet-sdk-3.1
+
+sudo apt install python3 python3-pip
+pip install pre-commit

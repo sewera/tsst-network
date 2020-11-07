@@ -1,5 +1,13 @@
 # TSST Network Project
 
+## Development
+Run applicable scripts to properly set up `dotnet` and `pre-commit`.
+For Linux run scripts from `scripts/linux` and `scripts/unix-like`.
+For Windows – `scripts/windows`.
+
+Commit messages must include issue number, e.g. '`#7 Fix logs not being
+present in logfiles`'
+
 ## First Stage
 ### Objective
 **IP/MPLS network emulator**
