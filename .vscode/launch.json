@@ -1,0 +1,66 @@
+{
+   // Use IntelliSense to find out which attributes exist for C# debugging
+   // Use hover for the description of the existing attributes
+   // For further information visit https://github.com/OmniSharp/omnisharp-vscode/blob/master/debugger-launchjson.md
+   "version": "0.2.0",
+   "configurations": [
+        {
+            "name": "cc - .NET Core Launch (console)",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "cc-build",
+            // If you have changed target frameworks, make sure to update the program path.
+            "program": "${workspaceFolder}/cc/bin/Debug/netcoreapp3.1/cc.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/cc",
+            // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
+            "console": "internalConsole",
+            "stopAtEntry": false
+        },
+        {
+            "name": "cn - .NET Core Launch (console)",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "cn-build",
+            // If you have changed target frameworks, make sure to update the program path.
+            "program": "${workspaceFolder}/cn/bin/Debug/netcoreapp3.1/cn.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/cn",
+            // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
+            "console": "internalConsole",
+            "stopAtEntry": false
+        },
+        {
+            "name": "ms - .NET Core Launch (console)",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "ms-build",
+            // If you have changed target frameworks, make sure to update the program path.
+            "program": "${workspaceFolder}/ms/bin/Debug/netcoreapp3.1/ms.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/ms",
+            // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
+            "console": "internalConsole",
+            "stopAtEntry": false
+        },
+        {
+            "name": "nn - .NET Core Launch (console)",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "nn-build",
+            // If you have changed target frameworks, make sure to update the program path.
+            "program": "${workspaceFolder}/nn/bin/Debug/netcoreapp3.1/nn.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/nn",
+            // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
+            "console": "internalConsole",
+            "stopAtEntry": false
+        },
+        {
+            "name": ".NET Core Attach",
+            "type": "coreclr",
+            "request": "attach",
+            "processId": "${command:pickProcess}"
+        }
+    ]
+}
