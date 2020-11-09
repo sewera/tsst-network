@@ -1,4 +1,3 @@
-@echo off
 pip install pre-commit
 
 git config core.commentchar ';'
