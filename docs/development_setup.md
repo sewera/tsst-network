@@ -21,10 +21,10 @@
   - On MacOS you can use Homebrew or official installers
 5. Set up development environment
   1. Add dotnet command completion in your shell (optional)
-    - For Bash or Zsh (UNIX-like systems, so Linux, MacOS, etc.) use scripts from `scripts/unix-like`
+    - For Bash or Zsh (UNIX-like systems, so Linux, MacOS, etc.) use scripts from `scripts/unix`
     - For Powershell (Windows) use scripts from `scripts/windows`
   2. Configure git (highly recommended)
-    - Use scripts from `scripts/unix-like` or `scripts/windows` where applicable
+    - Use scripts from `scripts/unix` or `scripts/windows` where applicable
 6. Install and set up your preferred code editor
   - We use VSCode, but it is not mandatory
   - For further info on VSCode configuration and recommended extensions, see [VSCode configuration](./vscode_configuration.md)
