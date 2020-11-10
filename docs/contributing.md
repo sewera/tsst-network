@@ -13,5 +13,5 @@
 9. All commit messages must have issue number before anything else, e.g.
    "`#7 Fix logs not being present in logfiles`". This is checked in a pre-commit hook.
 10. All commit messages need to be in imperative mode, so "`#2 Add ...`", NOT "`#2 Added ...`"
-10. DO NOT commit directly to `master` branch. This way there is no pull request
+11. DO NOT commit directly to `master` branch. This way there is no pull request
     and no code review, so mistakes are far more likely to happen.
