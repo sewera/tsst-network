@@ -45,12 +45,13 @@ enough to present the full feature set.
 
 #### Example idea of Client node
 - Client node
-- User interface - kind of messaging operator
+- Interface connector 
 - Input/output port
+- MPLS package
 - Others/helpers
 
 ### Client node funcionality 
 Client node should be able to accept user's input via UI and direct package
-to the Network node through Cable cloud. 
+to the next Network nodes and ultimately to another Client node through the Cable cloud.
 The above should work both ways, so the Client node has to accept packages 
 that are coming from remote node.
