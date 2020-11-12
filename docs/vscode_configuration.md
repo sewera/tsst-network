@@ -1,23 +1,27 @@
-# Using NuGet
+# Visual Studio Code configuration
+## Extensions
+- C# language support is optional in VS Code, so we need to install it from marketplace.
 
-NuGet is already installed alongside with .NET Core.
+  [C# for Visual Studio Code (powered by OmniSharp)](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csharp)
 
-[What is NuGet?](https://www.youtube.com/watch?v=WW3bO1lNDmo)
+- For drawing graphs, UMLs class diagrams and so on, use [Draw.io integration](https://marketplace.visualstudio.com/items?itemName=hediet.vscode-drawio)
 
-## Install and use a NuGet package with the .NET CLI
 
-To install and use a NuGet package in your project use [the following command](https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-add-package).
+## Running programs
 
-```
-dotnet add package <PACKAGE_NAME>
-```
+There are several ways to run a program while developing it in Visual Studio Code.
 
-Here is the NuGet gallery: https://www.nuget.org/
+- Simply select the program from the list to run in **Run** view (`Ctrl+Shift+D`), which gives you also the option to debug.
 
-[YouTube tutorial](https://www.youtube.com/watch?v=oM-G7un2GkI)
-[MS docs](https://docs.microsoft.com/en-us/nuget/quickstart/install-and-use-a-package-using-the-dotnet-cli)
+- Navigate to the program's project directory in VS Code terminal and run command
 
-## Create and Publish a NuGet Package with the .NET CLI
+  `dotnet run`
 
-[YouTube tutorial](https://www.youtube.com/watch?v=f8JyT6J4b1Q)
-[MS docs](https://docs.microsoft.com/en-us/nuget/quickstart/create-and-publish-a-package-using-the-dotnet-cli)
+  e.g. if you want to run cc.exe navigate to `~/tsst-network/cc` directory and run `dotnet run`.
+
+- Or you can run (following the example above)
+
+  `dotnet run -p cc/cc.csproj`
+
+  in the `~/tsst-network` directory
+
