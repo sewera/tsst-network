@@ -50,7 +50,7 @@ enough to present the full feature set.
 - MPLS package
 - Others/helpers
 
-### Client node funcionality 
+### Client node functionality 
 Client node should be able to accept user's input via UI and direct package
 to the next Network nodes and ultimately to another Client node through the Cable cloud.
 The above should work both ways, so the Client node has to accept packages 
