@@ -32,3 +32,16 @@ At least 3 classes for following responsibilities:
 The program has to be written so that any configuration should be possible.
 For presentation, the configuration should be not so complex, but complex
 enough to present the full feature set.
+
+### Example idea of Client node
+- Client node
+- Interface connector 
+- Input/output port
+- MPLS package
+- Others/helpers
+
+## Client node functionality 
+Client node should be able to accept user's input via UI and direct package
+to the next Network nodes and ultimately to another Client node through the Cable cloud.
+The above should work both ways, so the Client node has to accept packages 
+that are coming from remote node.
