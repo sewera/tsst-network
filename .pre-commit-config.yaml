@@ -24,4 +24,4 @@ repos:
   rev: v0.2.0
   hooks:
   - id: commit-message-check
-    args: ['-r', '^#[0-9]+ [A-Z].*$']
+    args: ['-r', '^#[0-9]+ [A-Z].*|Merge.*']
