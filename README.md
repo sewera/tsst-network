@@ -1,13 +1,12 @@
 # TSST Network Project
 
-## Development
-Run applicable scripts to properly set up `dotnet` and `pre-commit`.
-For Linux run scripts from `scripts/linux` and `scripts/unix-like`.
-For Windows – `scripts/windows`.
+## Development setup
+See [Development setup](docs/development_setup.md) and [Contributing](docs/contributing.md).
 
-Commit messages must include issue number, e.g. '`#7 Fix logs not being
-present in logfiles`'
+## First stage
+See [First stage](docs/stages/1st.md).
 
+<<<<<<< HEAD
 ## First Stage
 ### Objective
 **IP/MPLS network emulator**
@@ -55,3 +54,7 @@ Client node should be able to accept user's input via UI and direct package
 to the next Network nodes and ultimately to another Client node through the Cable cloud.
 The above should work both ways, so the Client node has to accept packages 
 that are coming from remote node.
+=======
+------------------------------------------------------------
+© 2020-2021 Blazej Sewera, Mateusz Winnicki, Andrzej Gawor
+>>>>>>> master
