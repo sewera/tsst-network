@@ -1,6 +1,6 @@
 repos:
 - repo: https://github.com/jazzsewera/pre-commit-dotnet-hooks.git
-  rev: v0.3.0
+  rev: v0.4.0
   hooks:
   - id: dotnet-reformat
     name: dotnet-reformat-cc
