@@ -16,10 +16,15 @@ namespace ms
         /// <summary>
         public ReceiverServer Receiver { get; set; }
         /// <summary>
+        /// Object for sending packets to this client
+        /// <summary>
+        public SenderServer Sender { get; set; }
+        /// <summary>
         /// Client identifier
         /// <summary>
         public int Id { get; set; }
         /// <summary>
+        /// Class contructor
         /// <param name="socket"> Socket pinned to specific client connection </param>
         /// <param name="id"> Client id </param>
         /// <summary>
@@ -30,6 +35,16 @@ namespace ms
             Receiver.StartReceiving();
             _socket = socket;
             Id = id;
+        }
+
+        /// <summary>
+        /// Send data to specific client
+        /// <param name="data"> Data to be sent </param>
+        /// <summary>
+         public void SendData(string data)
+        {
+            Sender = new SenderServer(_socket);
+            Sender.Send(data);
         }
     }
 }

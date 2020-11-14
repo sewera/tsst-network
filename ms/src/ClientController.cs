@@ -29,6 +29,15 @@ namespace ms
         {
             Clients.RemoveAt(Clients.FindIndex(x => x.Id == id));
         }
+        /// <summary>
+        /// Send data to specific client
+        /// <param name="data"> Data to be sent </param>
+        /// <param name="id"> Id of the client </param>
+        /// </summary>
+        public static void SendData(string data, int id)
+        {
+            Clients[Clients.FindIndex(x => x.Id == id)].SendData(data);
+        }
     }
 
 }
