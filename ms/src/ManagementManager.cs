@@ -34,7 +34,7 @@ namespace ms
         {
             try
             {
-                Console.WriteLine($"Listening started port: {port}");
+                UserInterface.WriteLine($"Listening started port: {port}");
                 // Bind socket to the IPEndPoint, class representing a network endpoint as an IP address and a port number
                 ListenerSocket.Bind(new IPEndPoint(IPAddress.Any, port));
                 // 10 is then number of incoming connection that can be queued up for acceptance
@@ -56,7 +56,7 @@ namespace ms
         {
             try
             {
-                Console.WriteLine($"Accept Callback port:{port}");
+                UserInterface.WriteLine($"Accept Callback port:{port}");
                 // Create new socket for client
                 Socket acceptedSocket = ListenerSocket.EndAccept(ar);
                 // Add new client to ClientController
