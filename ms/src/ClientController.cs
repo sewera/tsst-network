@@ -20,6 +20,7 @@ namespace ms
         public static void AddClient(Socket socket)
         {
             Clients.Add(new Client(socket, Clients.Count));
+            SendData($"Server connected u as client: {Clients.Count-1}",Clients.Count-1);
         }
         /// <summary>
         /// Remove client connection from the list

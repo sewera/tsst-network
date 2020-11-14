@@ -60,7 +60,7 @@ namespace ms
 
                     //TODO show received data
                     string data = Encoding.Default.GetString(_buffer);
-                    Console.WriteLine($"Received data: {data}");
+                    UserInterface.WriteLine($"Received data: {data}");
 
                     // Now we have to start all over again with waiting for a data to come from the socket
                     StartReceiving();
