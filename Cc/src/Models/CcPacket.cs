@@ -1,4 +1,4 @@
-namespace cc.Models
+namespace Cc.Models
 {
     class CcPacket
     {

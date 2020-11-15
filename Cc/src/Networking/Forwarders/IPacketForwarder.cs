@@ -1,8 +1,8 @@
-using cc.Models;
+using Cc.Models;
 
-namespace cc.Networking.Forwarders
+namespace Cc.Networking.Forwarders
 {
-    interface IPacketForwarder
+    internal interface IPacketForwarder
     {
         /// <summary>Extract port serial number from incoming CcPacket
         /// and find a route for it</summary>

@@ -1,4 +1,4 @@
-namespace cc.Config.Parsers
+namespace Cc.Config.Parsers
 {
     interface IConfigurationParser
     {

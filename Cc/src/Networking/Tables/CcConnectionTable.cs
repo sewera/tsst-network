@@ -1,9 +1,9 @@
 using System.Collections.Generic;
-using cc.Models;
+using Cc.Models;
 
-namespace cc.Networking.Tables
+namespace Cc.Networking.Tables
 {
-    class CcConnectionTable : IConnectionTable
+    internal class CcConnectionTable : IConnectionTable
     {
         private IList<(CcConnection, CcConnection, bool)> connectionTable;
 

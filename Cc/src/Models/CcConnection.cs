@@ -1,6 +1,6 @@
 using System.Net;
 
-namespace cc.Models
+namespace Cc.Models
 {
     class CcConnection
     {

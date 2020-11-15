@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace cc.Models
+namespace Cc.Models
 {
     class MplsPacket
     {

@@ -1,9 +1,9 @@
-using cc.Models;
-using cc.Networking.Tables;
+using Cc.Models;
+using Cc.Networking.Tables;
 
-namespace cc.Networking.Forwarders
+namespace Cc.Networking.Forwarders
 {
-    class CcPacketForwarder : IPacketForwarder
+    internal class CcPacketForwarder : IPacketForwarder
     {
         private IConnectionTable connectionTable;
 
