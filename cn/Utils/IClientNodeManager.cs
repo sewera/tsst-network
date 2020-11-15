@@ -1,4 +1,5 @@
 using System.Net.Sockets;
+using cn.Models;
 
 namespace cn.Utils
 {
@@ -12,6 +13,6 @@ namespace cn.Utils
 
         /// <summary>Accept destination addres and user's message
         /// entered by user</summary>
-        public void SendPacket();
+        public void SendPacket(MplsPacket packet);
     }
 }
