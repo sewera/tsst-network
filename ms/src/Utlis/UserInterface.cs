@@ -139,12 +139,12 @@ namespace ms
                 result = false;
             }
 
-            // The next four params can only be numbers
+            // The next four params can only be numbers or dots
             for (int i=2;i<6;i++)
             {
-                if(!int.TryParse(words[i], out _))
+                if (!(int.TryParse(words[i], out _) || words[i] =="."))
                 {
-                    WriteLine("Syntax error!\nLinks and labels are expressed in numbers",Type.Syntax);
+                    WriteLine("Syntax error!\nLinks and labels are expressed in numbers or dots",Type.Syntax);
                     result = false;
                 }
             }
