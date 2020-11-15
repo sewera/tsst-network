@@ -1,4 +1,3 @@
-using System;
 using System.Net;
 using cn.Models;
 using cn.Utils;
@@ -19,8 +18,11 @@ namespace cn
 
         static void Main(string[] args)
         {
-            MplsPacket packet = new MplsPacket();
+            IConfiguration config = new Configuration();
             IUserInterface ui = new UserInterface();
+            IClientNodeManager cnManager = new ClientNodeManager(2137);
+            MplsPacket packet = new MplsPacket();
+
 
             ui.EnterDestAddressAndMessage();
         }
