@@ -2,6 +2,7 @@ using System;
 using System.Net;
 using System.Net.Sockets;
 using cn.Networking.Controllers;
+using cn.Models;
 
 namespace cn.Utils
 {
@@ -43,8 +44,14 @@ namespace cn.Utils
             }
         }
 
-        public void SendPacket()
+        public void SendPacket(MplsPacket packet)
         {
+            packet.SourceAddress = IPAddress.Parse("178.21.37.69");
+            packet.DestinationAddress = IPAddress.Parse("172.21.37.69");
+            packet.Port = 4200;
+            packet.Message = "jebac pis";
+
+            
 
         }
 
