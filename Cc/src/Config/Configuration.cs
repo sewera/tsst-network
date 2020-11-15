@@ -1,6 +1,6 @@
-namespace cc.Config
+namespace Cc.Config
 {
-    class Configuration
+    internal class Configuration
     {
         public string listeningPort { get; set; }
 
@@ -11,8 +11,6 @@ namespace cc.Config
 
         public class Builder
         {
-            public Builder() { }
-
             public Builder SetListeningPort(string listeningPort)
             {
                 this.listeningPort = listeningPort;

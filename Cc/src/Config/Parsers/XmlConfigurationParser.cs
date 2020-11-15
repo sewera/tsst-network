@@ -1,10 +1,10 @@
 using NLog;
 
-namespace cc.Config.Parsers
+namespace Cc.Config.Parsers
 {
-    class XmlConfigurationParser : IConfigurationParser
+    internal class XmlConfigurationParser : IConfigurationParser
     {
-        private static Logger LOG = LogManager.GetCurrentClassLogger();
+        private static readonly Logger LOG = LogManager.GetCurrentClassLogger();
 
         private string filename;
 

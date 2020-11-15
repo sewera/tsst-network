@@ -1,16 +1,15 @@
 using NLog;
 using NLog.Config;
 using NLog.Targets;
-using cc.Config;
-using cc.Config.Parsers;
+using Cc.Config.Parsers;
 
-namespace cc
+namespace Cc
 {
     class Program
     {
-        private static Logger LOG = LogManager.GetCurrentClassLogger();
+        private static readonly Logger LOG = LogManager.GetCurrentClassLogger();
 
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
             var config = new LoggingConfiguration();
             var consoleTarget = new ColoredConsoleTarget
@@ -28,7 +27,7 @@ namespace cc
             LOG.Fatal("Fatal message");
 
             IConfigurationParser configurationParser = new MockConfigurationParser("");
-            CableCloud cableCloud = new CableCloud(configurationParser);
+            var cableCloud = new CableCloud(configurationParser);
         }
     }
 }

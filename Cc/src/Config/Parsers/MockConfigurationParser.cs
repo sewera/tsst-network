@@ -1,8 +1,8 @@
 using NLog;
 
-namespace cc.Config.Parsers
+namespace Cc.Config.Parsers
 {
-    class MockConfigurationParser : IConfigurationParser
+    internal class MockConfigurationParser : IConfigurationParser
     {
         private static Logger LOG = LogManager.GetCurrentClassLogger();
 

@@ -1,8 +1,8 @@
-using cc.Models;
+using Cc.Models;
 
-namespace cc.Networking.Tables
+namespace Cc.Networking.Tables
 {
-    interface IConnectionTable
+    internal interface IConnectionTable
     {
         /// <summary>Method for finding the connection for given <paramref name="portSerialNo"/></summary>
         /// <param name="portSerialNo">Port serial number where the packet came from</param>

@@ -1,9 +1,9 @@
-using cc.Config;
-using cc.Config.Parsers;
+using Cc.Config;
+using Cc.Config.Parsers;
 
-namespace cc
+namespace Cc
 {
-    class CableCloud
+    internal class CableCloud
     {
         private IConfigurationParser configurationParser;
         private Configuration configuration;
