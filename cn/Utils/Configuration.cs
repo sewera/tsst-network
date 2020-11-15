@@ -4,7 +4,7 @@ using System.Xml;
 
 namespace cn.Utils
 {
-    class Configuration : IConfiguration
+    public class Configuration : IConfiguration
     {
         /// <summary>Name of our host client node</summary>
         public string CnName { get; set; }
