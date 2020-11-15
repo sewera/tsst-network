@@ -4,7 +4,7 @@ namespace Cc.Config.Parsers
 {
     internal class MockConfigurationParser : IConfigurationParser
     {
-        private static Logger LOG = LogManager.GetCurrentClassLogger();
+        private static readonly Logger LOG = LogManager.GetCurrentClassLogger();
 
         private string filename;
 
@@ -16,8 +16,8 @@ namespace Cc.Config.Parsers
         public Configuration ParseConfiguration()
         {
             const string listeningPort = "3001";
-            LOG.Debug(string.Format("Simulating Configuration parsing with default port: {0}", listeningPort));
-            return new Configuration.Builder().SetListeningPort("3001").Build();
+            LOG.Debug($"Simulating Configuration parsing with default port: {listeningPort}");
+            return new Configuration.Builder().SetListeningPort(3001).Build();
         }
     }
 }
