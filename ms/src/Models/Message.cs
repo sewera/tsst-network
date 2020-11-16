@@ -8,9 +8,9 @@ namespace ms
     class Message
     {
         /// <summary>
-        /// Id of the client who will receive the message
+        /// Network Node alias of the client who will receive the message
         /// </summary>
-        public int _id;
+        public string clientAlias;
         /// <summary>
         /// Message content
         /// </summary>
@@ -21,9 +21,9 @@ namespace ms
         /// </summary>
         public Message(string input)
         {
-            // Message needs to be inputted in specified format e.g '0 hello' where '0' is router id, 'hello' is the message conten
+            // Message needs to be inputted in specified format e.g 'R1 content' where 'R1' is router aliast, 'content' is the message content
             string[] words = input.Split(' ');
-            _id = Int32.Parse(words[0]);
+            clientAlias = words[0];
 
             for (int i = 1; i < words.Length; i++)
             {

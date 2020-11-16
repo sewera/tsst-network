@@ -56,7 +56,7 @@ namespace ms
         {
             try
             {
-                UserInterface.WriteLine($"Accept Callback port:{port}",UserInterface.Type.Server);
+                UserInterface.WriteLine($"Accept Callback port: {port}",UserInterface.Type.Server);
                 // Create new socket for client
                 Socket acceptedSocket = ListenerSocket.EndAccept(ar);
                 // Add new client to ClientController

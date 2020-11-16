@@ -43,6 +43,7 @@ namespace ms
                      if (CheckSyntax(input))
                      {
                         // SendMessage(new Message(ProcessCommand(input)));
+                        SendMessage(new Message(ProcessCommand(input)));
                      }
                 }
             }
@@ -53,7 +54,7 @@ namespace ms
         /// </summary>
         private static void SendMessage(Message message)
         {
-            ClientController.SendData(message._content, message._id);
+            ClientController.SendData(message._content, message.clientAlias);
         }
         /// <summary>
         /// Show output on console
@@ -186,6 +187,25 @@ namespace ms
 
             return result;
         }
+        /// <summary>
+        /// Process command to match management protocol
+        /// </summary>
+        private static string ProcessCommand(string input)
+        {
+            List<string> words = new List<string>(input.Split(' '));
+            words.RemoveAll(item => item == "");
+            input="";
+            for(int i=0;i<words.Count-1;i++)
+            {
+                input+=$"{words[i]} ";
+            }
+            // Last element does not containt a '' after him
+            input+=words[words.Count-1];
+            // Here input can only be this format e.g. 'R1 add 2 3 4 5 -3' or 'R1 add 2 3 4 5'.
+            // No spaces at the end or beginning and only one space between params.
+            return input;
+        }
+
         /// <summary>
         /// Show help for user
         /// </summary>

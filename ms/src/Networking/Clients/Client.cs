@@ -24,6 +24,11 @@ namespace ms
         /// <summary>
         public int Id { get; set; }
         /// <summary>
+        /// Client's network node alias
+        /// <summary>
+        public string Alias { get; set; }
+
+        /// <summary>
         /// Class contructor
         /// <param name="socket"> Socket pinned to specific client connection </param>
         /// <param name="id"> Client id </param>
