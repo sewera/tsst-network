@@ -5,7 +5,7 @@ namespace ms
     /// <summary>
     /// Class representing a message that can be sent from UserInterface to ManagementManager
     /// </summary>
-    class Message
+    public class Message
     {
         /// <summary>
         /// Network Node alias of the client who will receive the message
@@ -30,6 +30,23 @@ namespace ms
                 _content += $"{words[i]} ";
             }
             //TODO fix this code
+        }
+        /// <summary>
+        /// Class contructor from two strings
+        /// <param name="alias"> Network Node alias </param>
+        /// <param name="content"> Message content </param>
+        /// </summary>
+        public Message(string alias, string content)
+        {
+            clientAlias = alias;
+            _content = content;
+        }
+        /// <summary>
+        /// Outputs message on screen [Temporary method]
+        /// </summary>
+        public void show()
+        {
+            Console.WriteLine($"{clientAlias} {_content}");
         }
     }
 }
