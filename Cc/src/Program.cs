@@ -1,11 +1,17 @@
+using Cc.Config;
+using Cc.Config.Parsers;
+using Cc.Networking.Controllers;
+using Cc.Networking.Forwarders;
+using Cc.Networking.Listeners;
+using Cc.Networking.Receivers;
+using Cc.Networking.Tables;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
-using Cc.Config.Parsers;
 
 namespace Cc
 {
-    class Program
+    internal class Program
     {
         private static readonly Logger LOG = LogManager.GetCurrentClassLogger();
 
@@ -15,19 +21,29 @@ namespace Cc
             var consoleTarget = new ColoredConsoleTarget
             {
                 Name = "console",
-                Layout = "[${time} | ${level:format=FirstCharacter} | ${logger}] ${message}",
+                Layout = "[${time} | ${level:format=FirstCharacter} | ${logger}] ${message}"
             };
-            config.AddRule(LogLevel.Debug, LogLevel.Fatal, consoleTarget, "*");
+            config.AddRule(LogLevel.Trace, LogLevel.Fatal, consoleTarget);
             LogManager.Configuration = config;
 
-            LOG.Debug("Debug message");
-            LOG.Info("Info message");
-            LOG.Warn("Warn message");
-            LOG.Error("Error message");
-            LOG.Fatal("Fatal message");
+            IConfigurationParser configurationParser = new MockConfigurationParser();
+            var configuration = configurationParser.ParseConfiguration();
+            
+            IDataReceiverFactory dataReceiverFactory = new RawDataReceiverFactory();
+            IConnectionTable connectionTable = new CcConnectionTable();
+            IClientController clientController = new ClientController(dataReceiverFactory);
+            IListener listener = new Listener(clientController, configuration);
+            IPacketForwarder packetForwarder = new CcPacketForwarder(connectionTable);
 
-            IConfigurationParser configurationParser = new MockConfigurationParser("");
-            var cableCloud = new CableCloud(configurationParser);
+            var cableCloud = new CableCloud.Builder()
+                .SetConfiguration(configuration)
+                .SetListener(listener)
+                .SetClientController(clientController)
+                .SetPacketForwarder(packetForwarder)
+                .SetDataReceiverFactory(dataReceiverFactory)
+                .Build();
+            
+            cableCloud.Start();
         }
     }
 }

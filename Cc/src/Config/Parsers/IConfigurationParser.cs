@@ -1,6 +1,6 @@
 namespace Cc.Config.Parsers
 {
-    interface IConfigurationParser
+    internal interface IConfigurationParser
     {
         Configuration ParseConfiguration();
     }

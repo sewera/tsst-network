@@ -2,27 +2,27 @@ namespace Cc.Config
 {
     public class Configuration
     {
-        public short listeningPort { get; set; }
+        public short ListeningPort { get; set; }
 
         private Configuration(short listeningPort)
         {
-            this.listeningPort = listeningPort;
+            ListeningPort = listeningPort;
         }
 
         public class Builder
         {
             public Builder SetListeningPort(short listeningPort)
             {
-                this.listeningPort = listeningPort;
+                _listeningPort = listeningPort;
                 return this;
             }
 
             public Configuration Build()
             {
-                return new Configuration(listeningPort);
+                return new Configuration(_listeningPort);
             }
 
-            private short listeningPort;
+            private short _listeningPort;
         }
     }
 }

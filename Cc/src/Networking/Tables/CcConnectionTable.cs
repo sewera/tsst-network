@@ -5,7 +5,7 @@ namespace Cc.Networking.Tables
 {
     internal class CcConnectionTable : IConnectionTable
     {
-        private IList<(CcConnection, CcConnection, bool)> connectionTable;
+        private IList<(CcConnection, CcConnection, bool)> _connectionTable;
 
         public (CcConnection, CcConnection, bool) GetRouteFor(long portSerialNo)
         {

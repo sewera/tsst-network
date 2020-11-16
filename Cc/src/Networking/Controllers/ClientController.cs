@@ -1,21 +1,29 @@
 using System.Collections.Generic;
 using System.Net.Sockets;
 using Cc.Networking.Clients;
+using Cc.Networking.Receivers;
 
 namespace Cc.Networking.Controllers
 {
-     static class ClientController
-     {
-          public static List<Client> Clients = new List<Client>();
+    internal class ClientController : IClientController
+    {
+        private readonly IDataReceiverFactory _dataReceiverFactory;
+        private readonly List<Client> _clients;
+        
+        public ClientController(IDataReceiverFactory dataReceiverFactory)
+        {
+            _dataReceiverFactory = dataReceiverFactory;
+            _clients = new List<Client>();
+        }
+        
+        public void AddClient(Socket socket)
+        {
+            _clients.Add(new Client(socket, _clients.Count, _dataReceiverFactory.GetDataReceiver(socket)));
+        }
 
-          public static void AddClient(Socket socket)
-          {
-              Clients.Add(new Client(socket,Clients.Count));
-          }
-
-          public static void RemoveClient(int id)
-          {
-              Clients.RemoveAt(Clients.FindIndex(x => x.Id == id));
-          }
-      }
+        public void RemoveClient(int id)
+        {
+            _clients.RemoveAt(_clients.FindIndex(x => x.Id == id));
+        }
+    }
 }

@@ -2,9 +2,9 @@ using System.Collections.Generic;
 
 namespace Cc.Models
 {
-    class MplsPacket
+    internal class MplsPacket
     {
-        private IList<long> labels;
-        private string data;
+        public IList<long> Labels { get; set; }
+        public string Data { get; set; }
     }
 }

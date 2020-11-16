@@ -5,11 +5,11 @@ namespace Cc.Networking.Forwarders
 {
     internal class CcPacketForwarder : IPacketForwarder
     {
-        private IConnectionTable connectionTable;
+        private IConnectionTable _connectionTable;
 
         public CcPacketForwarder(IConnectionTable connectionTable)
         {
-            this.connectionTable = connectionTable;
+            _connectionTable = connectionTable;
         }
 
         public (CcConnection, CcPacket, bool) ProcessPacket(CcPacket inCcPacket)
