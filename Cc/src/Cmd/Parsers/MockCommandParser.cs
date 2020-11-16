@@ -8,8 +8,8 @@ namespace Cc.Cmd.Parsers
 
         public Command ParseCommand(string input)
         {
-            LOG.Debug($"Command: {input}");
-            LOG.Debug("Returning SEND command");
+            LOG.Trace($"Command: {input}");
+            LOG.Trace("Returning SEND command");
             return new Command(CommandType.SEND);
         }
     }

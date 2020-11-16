@@ -14,7 +14,8 @@ namespace Cc.Networking.Forwarders
 
         public (CcConnection, CcPacket, bool) ProcessPacket(CcPacket inCcPacket)
         {
-            return (null, null, false); // TODO
+            _connectionTable.GetClientWorker(0).Send(inCcPacket.PortSerialNo.ToString());
+            return (null, null, false);
         }
     }
 }

@@ -38,18 +38,9 @@ namespace Cc.Networking.Listeners
             try {
                 listener.Bind(localEndPoint);
                 listener.Listen(100);
-
-                while (true) {
-                    // Set the event to nonsignaled state.
-                    _allDone.Reset();
-
-                    // Start an asynchronous socket to listen for connections.
-                    LOG.Info("Waiting for a connection...");
-                    listener.BeginAccept(AcceptCallback, listener);
-
-                    // Wait until a connection is made before continuing.
-                    _allDone.WaitOne();
-                }
+                // Start an asynchronous socket to listen for connections.
+                LOG.Info("Waiting for a connection...");
+                listener.BeginAccept(AcceptCallback, listener);
 
             } catch (Exception e) {
                 LOG.Error(e.ToString());
