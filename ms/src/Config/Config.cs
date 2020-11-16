@@ -6,13 +6,15 @@ namespace ms
 {
     public class Config : IConfig
     {
+        /// <summary>
+        /// Listener socket port
+        /// </summary>
         public int Port { get; set; }
+        /// <summary>
+        /// List of messages to be sent to network nodes in order to config their MPLS-tables
+        /// </summary>
         public List<Message> configMessages = new List<Message>();
 
-        public Config()
-        {
-            ;;
-        }
         public Config ReadConfigFile(string fileName)
         {
             Config result = new Config();
