@@ -1,6 +1,6 @@
 # Management Protocol Specification
 
-Defines the messages sent from Management System to Network Nodes in order modify MPLS-Table.
+Defines the messages sent from Management System to Network Nodes in order to modify MPLS-Table.
 
 ## Synopsis
 
@@ -14,9 +14,9 @@ Alias for Ip address of a target Network Node.
 
 **Keyword**
 
-For now, two keyword are defined in the protocol:
+For now, two keywords are defined in the protocol:
 
-- `add` for adding a table row.
+- `add` for adding a table row
 - `delete` for deleting a table row.
 
 **Params**
@@ -27,9 +27,9 @@ For `add` and `delete` they define the specific row, on which we want to run the
 
 **Options**
 
-Options are not required in a command, but they can add a specific functionality to a keyword.
+Options are not mandatory in a command, but they can add a specific functionality to a keyword.
 
-For example adding a `-100` at the end of command with `add` keyword will add a next layer label to the 'out link' golumn.
+For example adding a `-100` at the end of command with `add` keyword will add a next layer label to the 'out link' column.
 
 ## The add command
 
@@ -37,9 +37,9 @@ For example adding a `-100` at the end of command with `add` keyword will add a 
 
 `<target> add <inLink> <inLabel> <outLink> <outLabel> -<nextLayerLabel>`
 
-As already mentioned you can omit `-<nextLayerLabel>` part.
+As already mentioned you can omit the `-<nextLayerLabel>` part.
 
-`.` used as `<outLink>` or `<outLabel>` means that the field value should be `-`. See **Examples** section.
+`.` entered in place of `<outLink>` or `<outLabel>` means that the field value in MPLS-table should be `-`. See **Examples** section.
 
 **Example**
 
@@ -49,9 +49,7 @@ In order to add a row like this:
 | :-----: | :------: | :------: | :-------: |
 |    1    |   100    |  2:201   |    101    |
 
-to the MPLS-Table of Network Node with "R1" alias.
-
-Use the following command:
+to the MPLS-Table of Network Node with "R1" alias, use the following command:
 
 `R1 add 1 100 2 101 -201`
 
@@ -69,9 +67,7 @@ In order to delete a row like this:
 | :-----: | :------: | :------: | :-------: |
 |    1    |   100    |  2:201   |    101    |
 
-from the  MPLS-Table of Network Node with "R1" alias.
-
-Use the following command:
+from the  MPLS-Table of Network Node with "R1" alias, use the following command:
 
 `R1 delete 1 100 2 101 -201`
 
