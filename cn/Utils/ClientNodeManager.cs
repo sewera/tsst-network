@@ -1,6 +1,8 @@
 using System;
+using System.Text;
 using System.Net;
 using System.Net.Sockets;
+using NLog;
 using cn.Networking.Controllers;
 using cn.Models;
 
@@ -8,33 +10,51 @@ namespace cn.Utils
 {
     class ClientNodeManager : IClientNodeManager
     {
+        private static readonly Logger LOG = LogManager.GetCurrentClassLogger();
+
+        public IUserInterface userInterface;
+        public Configuration configuration;
+
         /// <summary>
         /// Socket listening for incoming connections
         /// </summary>
         public Socket ListenerSocket { get; set; }
 
         /// <summary>
-        /// Port client node socket is listening on
+        /// Socket sending messages to the server
         /// </summary>
-        public short Port { get; set; }
+        public Socket Sender { get; set; }
 
-        public ClientNodeManager(short port)
+        public ClientNodeManager(Configuration config)
         {
+            userInterface = new UserInterface();
+            configuration = config;
+
             ListenerSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            Port = port;
+            Sender = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         }
 
         public void ConnectToCableCloud()
         {
-
+            try
+            {
+                //TODO: CC PORT MUST BE READ FROM CONFIG FILES
+                LOG.Info($"Connecting to cable cloud at port: {configuration.CloudPort}");
+                Sender.Connect(new IPEndPoint(IPAddress.Parse("127.0.0.1"), 7357));
+                Sender.Send(Encoding.ASCII.GetBytes("Heeeeeeeeres Johny"));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Failed to connect to cable cloud due to: " + e);
+            }
         }
 
         public void Listen(Socket listenerSocket)
         {
             try
             {
-                Console.WriteLine($"Listening started on port: {Port}");
-                ListenerSocket.Bind(new IPEndPoint(IPAddress.Any, Port));
+                Console.WriteLine($"Listening started on port: {configuration.CnPort}");
+                ListenerSocket.Bind(new IPEndPoint(IPAddress.Any, configuration.CnPort));
                 ListenerSocket.Listen(10);
                 ListenerSocket.BeginAccept(AcceptCallback, ListenerSocket);
             }
@@ -44,16 +64,19 @@ namespace cn.Utils
             }
         }
 
-        public void SendPacket(MplsPacket packet)
+        public void SendPacket()
         {
-            packet.SourceAddress = IPAddress.Parse("178.21.37.69");
-            packet.DestinationAddress = IPAddress.Parse("172.21.37.69");
-            packet.Port = 4200;
-            packet.Message = "jebac pis";
-
-            
-
+            (long destinationPort, string message) = userInterface.EnterReceiverAndMessage();
+            Send(destinationPort, message);
         }
+
+        public int Send(long destinationPort, string message)
+        {
+            MplsPacket packet = new MplsPacket(destinationPort, message);
+            Sender.Connect(new IPEndPoint(IPAddress.Parse("127.0.0.1"), 7357));
+            return Sender.Send(MplsPacket.ToBytes(packet));
+        }
+
 
         /// <summary>
         /// This method is called when incoming connection needs to be serviced
@@ -62,7 +85,7 @@ namespace cn.Utils
         {
             try
             {
-                Console.WriteLine($"Accept Callback port:{Port}");
+                Console.WriteLine($"Accept Callback port:{configuration.CnPort}");
                 Socket acceptedSocket = ListenerSocket.EndAccept(ar);
                 ClientController.AddClient(acceptedSocket);
                 ListenerSocket.BeginAccept(AcceptCallback, ListenerSocket);

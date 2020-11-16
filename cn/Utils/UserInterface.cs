@@ -1,56 +1,32 @@
 using System;
-using System.Net;
 
 namespace cn.Utils
 {
     class UserInterface : IUserInterface
     {
         /// <summary>
-        /// IP address of message receiver
+        /// Remote host port serial no - in our case its alias
         /// </summary>
-        public IPAddress destinationAddress { get; set; }
+        public long PortSerialNo { get; set; }
 
         /// <summary>
         /// User's input message
         /// </summary>
-        public string message { get; set; }
+        public string Message { get; set; }
 
         public UserInterface()
         {
 
         }
 
-        public void EnterDestAddressAndMessage()
+        public (long, string) EnterReceiverAndMessage()
         {
-            Console.WriteLine("Enter address of remote host and message you want to send.\nInput format: <<address>> [space] <<message>>");
+            Console.WriteLine("Enter alias of remote host and message you want to send.\nInput format: <<port_serial_no>> [space] <<message>>");
 
             string input = Console.ReadLine();
             string[] parts = input.Split(' ', 2);
 
-            try
-            {
-                destinationAddress = IPAddress.Parse(parts[0]);
-            }
-            catch (ArgumentNullException e)
-            {
-                Console.WriteLine("ArgumentNullException caught!");
-                Console.WriteLine("Source : " + e.Source);
-                Console.WriteLine("Message : " + e.Message);
-            }
-            catch (FormatException e)
-            {
-                Console.WriteLine("FormatException caught!");
-                Console.WriteLine("Source : " + e.Source);
-                Console.WriteLine("Message : " + e.Message);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Exception caught!");
-                Console.WriteLine("Source : " + e.Source);
-                Console.WriteLine("Message : " + e.Message);
-            }
-
-            message = parts[1];
+            return (long.Parse(parts[0]), parts[1]);
         }
     }
 }

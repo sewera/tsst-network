@@ -1,56 +1,77 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Text;
+using MessagePack;
 
 namespace cn.Models
 {
-    class MplsPacket
+    [MessagePackObject]
+    public class MplsPacket
     {
         /// <summary>
         /// List of MPLS labels
         /// <summary>
+        [Key(0)]
         private IList<long> Labels { get; set; }
 
         /// <summary>
         /// IP address (for sake of this project it's just localhost)
         /// </summary>
-        public IPAddress Address { get; set; }
+        [Key(1)]
+        public string Address { get; set; }
 
         /// <summary>
         /// Out port of host client node
         /// </summary>
-        public short SourcePort { get; set; }
+        [Key(2)]
+        public long SourcePort { get; set; }
+
+        /// <summary>
+        /// Port of cable cloud 
+        /// </summary>
+        [Key(3)]
+        public long CableCloudPort { get; set; }
 
         /// <summary>
         /// Port of remote detination client node
         /// </summary>
-        public short CableCloudPort { get; set; }
+        [Key(4)]
+        public long DestinationPort { get; set; }
 
         /// <summary>
         /// User's input message
         /// </summary>
+        [Key(5)]
         public string Message { get; set; }
+
+        public MplsPacket(long destinationPort, string message)
+        {
+            Address = "127.0.0.1";
+            SourcePort = 2137; //should be read from config file
+            CableCloudPort = 7357; // should be read from config file
+            DestinationPort = destinationPort;
+            Message = message;
+        }
 
         public MplsPacket()
         {
-
+            Address = "127.0.0.1";
+            SourcePort = 2137; //should be read from config file
+            CableCloudPort = 7357; // should be read from config file
+            DestinationPort = 2137;
         }
 
-        /// <summary>Converts <c>MPLSPacket</c> to bytes</summary>
+        /// <summary>Converts <c>MPLSPacket</c> object to bytes</summary>
         /// <returns>MPLSPacket as bytes array</returns>
-        public byte[] ToBytes()
+        public static byte[] ToBytes(MplsPacket packet)
         {
-            List<byte> result = new List<byte>();
+            return MessagePackSerializer.Serialize(packet);
+        }
 
-            result.AddRange(Labels.SelectMany(BitConverter.GetBytes).ToArray());
-            result.AddRange(Address.GetAddressBytes());
-            result.AddRange(BitConverter.GetBytes(SourcePort));
-            result.AddRange(BitConverter.GetBytes(CableCloudPort));
-            result.AddRange(Encoding.ASCII.GetBytes(Message ?? ""));
-
-            return result.ToArray();
+        /// <summary>Converts bytes to <c>MPLSPacket</c> object</summary>
+        /// <returns>MPLSPacket object</returns>
+        public static MplsPacket ToObject(byte[] bytes)
+        {
+            return MessagePackSerializer.Deserialize<MplsPacket>(bytes);
         }
     }
 }
