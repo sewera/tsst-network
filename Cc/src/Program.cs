@@ -2,6 +2,7 @@ using Cc.Config;
 using Cc.Config.Parsers;
 using Cc.Networking.Controllers;
 using Cc.Networking.Forwarders;
+using cc.Networking.Listeners;
 using Cc.Networking.Listeners;
 using Cc.Networking.Receivers;
 using Cc.Networking.Tables;
@@ -31,14 +32,15 @@ namespace Cc
             
             IDataReceiverFactory dataReceiverFactory = new RawDataReceiverFactory();
             IConnectionTable connectionTable = new CcConnectionTable();
-            IClientController clientController = new ClientController(dataReceiverFactory);
-            IListener listener = new Listener(clientController, configuration);
+            //IClientController clientController = new ClientController(dataReceiverFactory);
+            // IListener listener = new Listener(clientController, configuration);
+            IListener listener = new TestListener();
             IPacketForwarder packetForwarder = new CcPacketForwarder(connectionTable);
 
             var cableCloud = new CableCloud.Builder()
                 .SetConfiguration(configuration)
                 .SetListener(listener)
-                .SetClientController(clientController)
+               // .SetClientController(clientController)
                 .SetPacketForwarder(packetForwarder)
                 .SetDataReceiverFactory(dataReceiverFactory)
                 .Build();

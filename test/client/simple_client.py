@@ -8,5 +8,3 @@ port = 3001
 
 s.connect((host, port))
 s.send(b'Hello World!')
-
-s.close()
