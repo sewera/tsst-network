@@ -1,8 +1,8 @@
 namespace Cc.Models
 {
-    class CcPacket
+    internal class CcPacket
     {
-        private long portSerialNo;
-        private MplsPacket mplsPacket;
+        public long PortSerialNo { get; set; }
+        public MplsPacket MplsPacket { get; set; }
     }
 }

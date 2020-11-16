@@ -5,14 +5,14 @@ namespace Cc.Networking.Clients
 {
     public class Client
     {
-        public Socket _socket { get; set; }
-        public IDataReceiver Receive { get; set; }
+        private Socket _socket;
+        private readonly IDataReceiver _dataReceiver;
         public int Id { get; set; }
 
-        public Client(Socket socket, int id)
+        public Client(Socket socket, int id, IDataReceiver dataReceiver)
         {
-            Receive = new RawDataReceiver(socket, id);
-            Receive.StartReceiving();
+            _dataReceiver = dataReceiver;
+            _dataReceiver.StartReceiving();
             _socket = socket;
             Id = id;
         }
