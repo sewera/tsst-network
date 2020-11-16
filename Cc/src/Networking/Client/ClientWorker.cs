@@ -2,11 +2,12 @@ using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading.Tasks;
 using NLog;
 
 namespace Cc.Networking.Client
 {
-    public class ClientWorker
+    public class ClientWorker : IClientWorker
     {
         private static readonly Logger LOG = LogManager.GetCurrentClassLogger();
         private ClientState _state;
@@ -15,56 +16,61 @@ namespace Cc.Networking.Client
         {
             _state = state;
             _state.WorkSocket.BeginReceive(state.Buffer, 0, ClientState.BufferSize, 0, ReadCallback, state);
-            LOG.Debug("Created ClientWorker for socket: " +
-                      $"{IPAddress.Parse(((IPEndPoint)_state.WorkSocket.RemoteEndPoint).Address.ToString())}" +
+            LOG.Debug("Created ClientWorker for client socket: " +
+                      $"{((IPEndPoint)_state.WorkSocket.RemoteEndPoint).Address}" +
                       $":{((IPEndPoint)_state.WorkSocket.RemoteEndPoint).Port}");
         }
 
         public void ReadCallback(IAsyncResult ar)
         {
-            LOG.Trace("ReadCallback");
-            String content = String.Empty;
-
             // Retrieve the state object and the handler socket
             // from the asynchronous state object.
             _state = (ClientState) ar.AsyncState;
-            Socket handler = _state.WorkSocket;
+            if (_state != null)
+            {
+                Socket handler = _state.WorkSocket;
 
-            // Read data from the client socket.
-            int bytesRead = handler.EndReceive(ar);
+                // Read data from the client socket.
+                int bytesRead = handler.EndReceive(ar);
 
-            if (bytesRead > 0) {
-                // There  might be more data, so store the data received so far.
-                _state.Sb.Append(Encoding.ASCII.GetString(
-                    _state.Buffer, 0, bytesRead));
+                if (bytesRead > 0)
+                {
+                    // There might be more data, so store the data received so far.
+                    _state.Sb.Append(Encoding.ASCII.GetString(_state.Buffer, 0, bytesRead));
 
-                // Check for end-of-file tag. If it is not there, read
-                // more data.
-                content = _state.Sb.ToString();
-                if (content.IndexOf("\n") > -1) {
-                    // All the data has been read from the
-                    // client. Display it on the console.
-                    LOG.Debug($"Read {content.Length} bytes from socket.\nData: {content}");
-                    // Echo the data back to the client.
-                    Send(handler, content);
-                } else {
-                    // Not all data received. Get more.
-                    handler.BeginReceive(_state.Buffer, 0, ClientState.BufferSize, 0, ReadCallback, _state);
+                    // Check for end-of-file tag. If it is not there, read
+                    // more data.
+                    string content = _state.Sb.ToString();
+                    if (content.IndexOf("\n\n", StringComparison.Ordinal) > -1)
+                    {
+                        LOG.Trace("ReadCallback: All data transferred, got '\\n\\n'");
+                        LOG.Debug($"Read {content.Length} bytes from socket.\nData: {content}");
+                        // Echo the data back to the client.
+                        Send(content);
+                    }
+                    else
+                    {
+                        LOG.Trace("ReadCallback: Got data, did not get ");
+                        handler.BeginReceive(_state.Buffer, 0, ClientState.BufferSize, 0, ReadCallback, _state);
+                    }
                 }
+            }
+            else
+            {
+                LOG.Fatal("_state.WorkSocket is null in ReadCallback");
             }
         }
 
-        private void Send(Socket handler, String data)
+        public void Send(string data)
         {
             // Convert the string data to byte data using ASCII encoding.
             byte[] byteData = Encoding.ASCII.GetBytes(data);
 
             // Begin sending the data to the remote device.
-            handler.BeginSend(byteData, 0, byteData.Length, 0,
-                new AsyncCallback(SendCallback), handler);
+            _state.WorkSocket.BeginSend(byteData, 0, byteData.Length, 0, SendCallback, _state.WorkSocket);
         }
 
-        private void SendCallback(IAsyncResult ar)
+        public void SendCallback(IAsyncResult ar)
         {
             try
             {
@@ -72,13 +78,16 @@ namespace Cc.Networking.Client
                 Socket handler = (Socket) ar.AsyncState;
 
                 // Complete sending the data to the remote device.
-                int bytesSent = handler.EndSend(ar);
-                LOG.Debug($"Sent {bytesSent} bytes to client");
-
-                handler.BeginReceive(_state.Buffer, 0, ClientState.BufferSize, 0, ReadCallback, _state);
-
-                // handler.Shutdown(SocketShutdown.Both);
-                // handler.Close();
+                if (handler != null)
+                {
+                    int bytesSent = handler.EndSend(ar);
+                    LOG.Debug($"Sent {bytesSent} bytes to client");
+                    handler.BeginReceive(_state.Buffer, 0, ClientState.BufferSize, 0, ReadCallback, _state);
+                }
+                else
+                {
+                    LOG.Fatal("handler is null in SendCallback");
+                }
             }
             catch (Exception e)
             {

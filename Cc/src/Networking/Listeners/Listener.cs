@@ -1,8 +1,10 @@
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
-using Cc.Config;
-using Cc.Networking.Controllers;
+using System.Threading;
+using Cc.Networking.Client;
+using Cc.Networking.Tables;
 using NLog;
 
 namespace Cc.Networking.Listeners
@@ -10,53 +12,69 @@ namespace Cc.Networking.Listeners
     public class Listener : IListener
     {
         private static readonly Logger LOG = LogManager.GetCurrentClassLogger();
+        private readonly ManualResetEvent _allDone = new ManualResetEvent(false);
 
-        private readonly IClientController _clientController;
-        private readonly Configuration _configuration;
-        public Socket ListenerSocket;
+        private readonly IClientWorkerFactory _clientWorkerFactory;
+        private readonly IConnectionTable _connectionTable;
 
-        public Listener(IClientController clientController, Configuration configuration)
+        public Listener(IClientWorkerFactory clientWorkerFactory, IConnectionTable connectionTable)
         {
-            _clientController = clientController;
-            _configuration = configuration;
-            ListenerSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            _clientWorkerFactory = clientWorkerFactory;
+            _connectionTable = connectionTable;
         }
-        
+
         public void Listen()
         {
-            LOG.Trace("Listen");
-            try
-            {
-                ListenerSocket.Bind(new IPEndPoint(IPAddress.Any, _configuration.ListeningPort));
-                LOG.Debug($"Successfully bound port {_configuration.ListeningPort}");
-                ListenerSocket.Listen(10);
-                LOG.Debug("Begin accepting client connections");
-                ListenerSocket.BeginAccept(AcceptCallback, ListenerSocket);
-            }
-            catch (Exception e)
-            {
-                LOG.Error($"Error in Listen. Possibly could not bind port {_configuration.ListeningPort}");
-                LOG.Error(e);
-                throw new SocketException((int) ListenerErrorCode.ListenError);
+            // Establish the local endpoint for the socket.
+            // The DNS name of the computer
+            // running the listener is "host.contoso.com".
+            IPAddress ipAddress = IPAddress.Parse("127.0.0.1");
+            IPEndPoint localEndPoint = new IPEndPoint(ipAddress, 3001);
+
+            // Create a TCP/IP socket.
+            Socket listener = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+
+            // Bind the socket to the local endpoint and listen for incoming connections.
+            try {
+                listener.Bind(localEndPoint);
+                listener.Listen(100);
+
+                while (true) {
+                    // Set the event to nonsignaled state.
+                    _allDone.Reset();
+
+                    // Start an asynchronous socket to listen for connections.
+                    LOG.Info("Waiting for a connection...");
+                    listener.BeginAccept(AcceptCallback, listener);
+
+                    // Wait until a connection is made before continuing.
+                    _allDone.WaitOne();
+                }
+
+            } catch (Exception e) {
+                LOG.Error(e.ToString());
             }
         }
 
-        public void AcceptCallback(IAsyncResult asyncResult)
+        public void AcceptCallback(IAsyncResult ar)
         {
-            LOG.Trace("AcceptCallback");
-            try
-            {
-                LOG.Info($"AcceptCallback port: {_configuration.ListeningPort}. Protocol type: {ProtocolType.Tcp}");
-                var acceptedSocket = ListenerSocket.EndAccept(asyncResult);
-                _clientController.AddClient(acceptedSocket);
+            // Signal the main thread to continue.
+            _allDone.Set();
 
-                ListenerSocket.BeginAccept(AcceptCallback, ListenerSocket);
-            }
-            catch (Exception e)
+            // Get the socket that handles the client request.
+            Socket listener = (Socket) ar.AsyncState;
+            if (listener != null)
             {
-                LOG.Error($"Error in AcceptCallback on port: {_configuration.ListeningPort}, asyncResult: {asyncResult}");
-                LOG.Error(e);
-                throw new SocketException((int) ListenerErrorCode.AcceptCallbackError);
+                Socket handler = listener.EndAccept(ar);
+
+                // Create the state object.
+                ClientState state = new ClientState(handler);
+                LOG.Trace("Adding ClientWorker");
+                _connectionTable.AddClientWorker(_clientWorkerFactory.GetClientWorker(state));
+            }
+            else
+            {
+                LOG.Fatal("listener is null in AcceptCallback");
             }
         }
     }

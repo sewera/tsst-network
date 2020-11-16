@@ -3,11 +3,11 @@ using Cc.Networking.Tables;
 
 namespace Cc.Networking.Forwarders
 {
-    internal class CcPacketForwarder : IPacketForwarder
+    internal class MockPacketForwarder : IPacketForwarder
     {
         private IConnectionTable _connectionTable;
 
-        public CcPacketForwarder(IConnectionTable connectionTable)
+        public MockPacketForwarder(IConnectionTable connectionTable)
         {
             _connectionTable = connectionTable;
         }
