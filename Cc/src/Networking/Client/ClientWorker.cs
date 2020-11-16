@@ -41,18 +41,10 @@ namespace Cc.Networking.Client
                     // Check for end-of-file tag. If it is not there, read
                     // more data.
                     string content = _state.Sb.ToString();
-                    if (content.IndexOf("\n\n", StringComparison.Ordinal) > -1)
-                    {
-                        LOG.Trace("ReadCallback: All data transferred, got '\\n\\n'");
-                        LOG.Debug($"Read {content.Length} bytes from socket.\nData: {content}");
-                        // Echo the data back to the client.
-                        Send(content);
-                    }
-                    else
-                    {
-                        LOG.Trace("ReadCallback: Got data, did not get ");
-                        handler.BeginReceive(_state.Buffer, 0, ClientState.BufferSize, 0, ReadCallback, _state);
-                    }
+                    LOG.Trace("ReadCallback: All data transferred, got '\\n\\n'");
+                    LOG.Debug($"Read {content.Length} bytes from socket.\nData: {content}");
+                    // Echo the data back to the client.
+                    Send(content);
                 }
             }
             else

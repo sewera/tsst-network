@@ -2,6 +2,7 @@ using System;
 using Cc.Cmd;
 using Cc.Cmd.Parsers;
 using Cc.Config;
+using Cc.Models;
 using Cc.Networking.Forwarders;
 using Cc.Networking.Listeners;
 using NLog;
@@ -45,6 +46,10 @@ namespace Cc
                 switch (command.CommandType)
                 {
                     case CommandType.SEND:
+                        LOG.Trace("Got SEND command");
+                        CcPacket ccPacket = new CcPacket();
+                        ccPacket.PortSerialNo = 2137;
+                        _packetForwarder.ProcessPacket(ccPacket);
                         // TODO: Send to client
                         break;
                     default:
