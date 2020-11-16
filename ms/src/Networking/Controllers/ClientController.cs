@@ -48,7 +48,7 @@ namespace ms
             
         }
         /// <summary>
-        /// Send data to specific client, obsolete method
+        /// Send data to specific client, [obsolete method]
         /// <param name="data"> Data to be sent </param>
         /// <param name="id"> Id of the client </param>
         /// </summary>
