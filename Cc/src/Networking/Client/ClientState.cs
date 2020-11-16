@@ -17,7 +17,7 @@ namespace Cc.Networking.Client
         public byte[] Buffer = new byte[BufferSize];
 
         // Received data string.
-        public StringBuilder Sb = new StringBuilder();
+        public StringBuilder Sb = new StringBuilder(); // TODO: Change to msgpack
 
         // Client socket.
         public Socket WorkSocket;

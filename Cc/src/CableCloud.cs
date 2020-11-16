@@ -1,9 +1,9 @@
+using System;
+using Cc.Cmd;
+using Cc.Cmd.Parsers;
 using Cc.Config;
-using Cc.Config.Parsers;
-using Cc.Networking.Controllers;
 using Cc.Networking.Forwarders;
 using Cc.Networking.Listeners;
-using Cc.Networking.Receivers;
 using NLog;
 
 namespace Cc
@@ -15,29 +15,41 @@ namespace Cc
         private Configuration _configuration;
         private IListener _listener;
         private IPacketForwarder _packetForwarder;
-        private IClientController _clientController;
-        private IDataReceiverFactory _dataReceiverFactory;
+        private readonly ICommandParser _commandParser;
 
         private CableCloud(Configuration configuration,
                            IListener listener,
                            IPacketForwarder packetForwarder,
-                           IClientController clientController,
-                           IDataReceiverFactory dataReceiverFactory)
+                           ICommandParser commandParser)
         {
             _configuration = configuration;
             _listener = listener;
             _packetForwarder = packetForwarder;
-            _clientController = clientController;
-            _dataReceiverFactory = dataReceiverFactory;
+            _commandParser = commandParser;
         }
 
         public void Start()
         {
-            LOG.Info("Started listening");
+            LOG.Info("CableCloud started");
             _listener.Listen();
+            StartCommandParsing();
+        }
+
+        public void StartCommandParsing()
+        {
+            LOG.Debug("Started command parsing, one command per line");
             while (true)
             {
-                //wait
+                string input = Console.ReadLine();
+                Command command = _commandParser.ParseCommand(input);
+                switch (command.CommandType)
+                {
+                    case CommandType.SEND:
+                        // TODO: Send to client
+                        break;
+                    default:
+                        break;
+                }
             }
         }
 
@@ -46,8 +58,7 @@ namespace Cc
             private Configuration _configuration;
             private IListener _listener;
             private IPacketForwarder _packetForwarder;
-            private IClientController _clientController;
-            private IDataReceiverFactory _dataReceiverFactory;
+            private ICommandParser _commandParser;
 
             public Builder SetConfiguration(Configuration configuration)
             {
@@ -67,15 +78,9 @@ namespace Cc
                 return this;
             }
 
-            public Builder SetClientController(IClientController clientController)
+            public Builder SetCommandParser(ICommandParser commandParser)
             {
-                _clientController = clientController;
-                return this;
-            }
-
-            public Builder SetDataReceiverFactory(IDataReceiverFactory dataReceiverFactory)
-            {
-                _dataReceiverFactory = dataReceiverFactory;
+                _commandParser = commandParser;
                 return this;
             }
 
@@ -84,8 +89,7 @@ namespace Cc
                 return new CableCloud(_configuration,
                     _listener,
                     _packetForwarder,
-                    _clientController,
-                    _dataReceiverFactory);
+                    _commandParser);
             }
         }
     }
