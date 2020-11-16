@@ -24,6 +24,7 @@ namespace Cc.Networking.Receivers
             {
                 _buffer = new byte[4];
                 _receiveSocket.BeginReceive(_buffer, 0, _buffer.Length, SocketFlags.None, ReceiveCallback, null);
+                LOG.Info($"Received data in StartReceiving: {Encoding.ASCII.GetString(_buffer)}");
             }
             catch (Exception e)
             {
@@ -39,12 +40,11 @@ namespace Cc.Networking.Receivers
             {
                 if (_receiveSocket.EndReceive(asyncResult) > 1)
                 {
-                    _buffer = new byte[BitConverter.ToInt32(_buffer, 0)];
+                    _buffer = new byte[256];
                     LOG.Trace("Buffer created");
                     _receiveSocket.Receive(_buffer, _buffer.Length, SocketFlags.None);
                     LOG.Trace("_receiveSocket.Receive");
-                    LOG.Debug($"Received buffer: {_buffer[0]}");
-                    LOG.Info($"Received data: {Encoding.ASCII.GetString(_buffer)}");
+                    LOG.Info($"Received data in ReceiveCallback: {Encoding.ASCII.GetString(_buffer)}");
                     StartReceiving();
                 }
                 else
