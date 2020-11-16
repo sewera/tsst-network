@@ -10,7 +10,7 @@ namespace cn.Networking.Listeners
     public class Listener : IListener
     {
         private static readonly Logger LOG = LogManager.GetCurrentClassLogger();
-        
+
         public void Listen()
         {
             try
@@ -38,7 +38,7 @@ namespace cn.Networking.Listeners
             catch (Exception ex)
             {
                 LOG.Error($"Error in AcceptCallback on port: {configuration.CnPort}, asyncResult: {asyncResult}");
-                throw new SocketException((int) ListenerErrorCode.AcceptCallbackError);
+                throw new SocketException((int)ListenerErrorCode.AcceptCallbackError);
             }
         }
 
@@ -50,6 +50,6 @@ namespace cn.Networking.Listeners
         {
             this.configuration = configuration;
             ListenerSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-        } 
+        }
     }
 }

@@ -5,14 +5,13 @@ namespace cn.Utils
 {
     interface IClientNodeManager
     {
-        /// <summary>Accept destination addres and user's message
-        /// entered by user</summary>
+
         public void ConnectToCableCloud();
 
         public void Listen(Socket listenerSocket);
 
-        /// <summary>Accept destination addres and user's message
-        /// entered by user</summary>
-        public void SendPacket(MplsPacket packet);
+        public void SendPacket();
+
+        public int Send(long destinationPort, string message);
     }
 }

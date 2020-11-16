@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Net;
 using System.Xml;
 
@@ -9,21 +8,15 @@ namespace cn.Utils
         /// <summary>Name of our host client node</summary>
         public string CnName { get; set; }
 
-        /// <summary>IP address of our host client node</summary>
+        /// <summary>IP address of our network elements, 
+        /// for sake of this project - local host address</summary>
         public IPAddress IpAddress { get; set; }
 
         /// <summary>Port no of host client node</summary>
         public short CnPort { get; set; }
 
-        /// <summary>IP address of cable cloud</summary>
-        public IPAddress CloudAddress { get; set; }
-
         /// <summary>Port no of cable cloud</summary>
         public short CloudPort { get; set; }
-
-        /// <summary>Dictionary with pairs - remote client node name
-        /// and remote client node IP address  </summary>
-        public Dictionary<string, IPAddress> RemoteNodes = new Dictionary<string, IPAddress>();
 
         public Configuration()
         {
