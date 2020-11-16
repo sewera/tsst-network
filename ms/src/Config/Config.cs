@@ -6,18 +6,9 @@ namespace ms
 {
     public class Config : IConfig
     {
-        /// <summary>
-        /// Listener Port for Management Manager
-        /// </summary>
         public int Port { get; set; }
-        /// <summary>
-        /// List of messages that has to be sent
-        /// </summary>
         public List<Message> configMessages = new List<Message>();
 
-        /// <summary>
-        /// Default class constructor
-        /// </summary>
         public Config()
         {
             ;;
