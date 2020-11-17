@@ -34,8 +34,9 @@ namespace ms
         /// Send data to specific client
         /// <param name="data"> Data to be sent </param>
         /// <param name="clientAlias"> Alias of the client </param>
+        /// <returns> True if the data is sent, False if not <returns>
         /// </summary>
-        public static void SendData(string data, string clientAlias)
+        public static bool SendData(string data, string clientAlias)
         {
             try
             {
@@ -43,12 +44,12 @@ namespace ms
             }
             catch
             {
-                UserInterface.WriteLine($"Error finding client!\nThere is no client with alias {clientAlias}",UserInterface.Type.Syntax);
+                return false;
             }
-            
+            return true;
         }
         /// <summary>
-        /// Send data to specific client, [obsolete method]
+        /// Send data to specific client
         /// <param name="data"> Data to be sent </param>
         /// <param name="id"> Id of the client </param>
         /// </summary>
@@ -101,6 +102,23 @@ namespace ms
             }
             
             return true;
+        }
+        /// <summary>
+        /// Check if client with matching alias exists
+        /// <param name="alias"> Alias </param>
+        /// <returns> True if yes, False otherwise </returns>
+        /// </summary>
+        public static bool FindAlias(string alias)
+        {
+               
+            if(Clients.FindIndex(x => x.Alias == alias) >= 0)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 

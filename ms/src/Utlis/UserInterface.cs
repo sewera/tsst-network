@@ -36,13 +36,13 @@ namespace ms
                 }
                 else if (input == "exit")
                 {
+                    MessageSender.Quit();
                     break;
                 }
                 else
                 {
                      if (CheckSyntax(input))
                      {
-                        // SendMessage(new Message(ProcessCommand(input)));
                         SendMessage(new Message(ProcessCommand(input)));
                      }
                 }
@@ -54,7 +54,14 @@ namespace ms
         /// </summary>
         private static void SendMessage(Message message)
         {
-            ClientController.SendData(message._content, message.clientAlias);
+            if (ClientController.FindAlias(message.clientAlias))
+            {
+                MessageSender.AddMessage(message);
+            }
+            else
+            {
+                WriteLine($"Error finding client!\nThere is no client with alias {message.clientAlias}",Type.Syntax);
+            }
         }
         /// <summary>
         /// Show output on console
@@ -143,15 +150,16 @@ namespace ms
             // The next four params can only be numbers or dots
             for (int i=2;i<6;i++)
             {
-                if (!(int.TryParse(words[i], out _) || words[i] =="."))
+                int arg;
+                if ((!(int.TryParse(words[i], out arg) && (arg>0) ) || words[i] =="."))
                 {
-                    WriteLine("Syntax error!\nLinks and labels are expressed in numbers or dots",Type.Syntax);
+                    WriteLine("Syntax error!\nLinks and labels are expressed in positive numbers or dots",Type.Syntax);
                     result = false;
                 }
             }
 
 
-            // The next parameter is optional so we need to check if it even exists
+            // The next parameter is optional so we need to check if it exists
             if (words.Count == 7)
             {
                 if (words[6].Length < 2)
@@ -203,6 +211,7 @@ namespace ms
             input+=words[words.Count-1];
             // Here input can only be this format e.g. 'R1 add 2 3 4 5 -3' or 'R1 add 2 3 4 5'.
             // No spaces at the end or beginning and only one space between params.
+            // TODO use StringBuilder here
             return input;
         }
 
