@@ -82,11 +82,10 @@ If we want to create MPLS-Table as  shown below in Network Node with alias "R1",
 |    1    |   104    |  3:201   |    105    |
 |    2    |   100    |    3     |    103    |
 
-`R1 add 1 100 2 101`
-
-`R1 2 103 . .`
-
-`R1 1 104 3 105 -201`
-
-`R1 2 100 3 103`
+```
+R1 add 1 100 2 101
+R1 2 103 . .
+R1 1 104 3 105 -201
+R1 2 100 3 103
+```
 
