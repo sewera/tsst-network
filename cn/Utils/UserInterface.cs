@@ -22,14 +22,14 @@ namespace cn.Utils
 
         }
 
-        public (long, string) EnterReceiverAndMessage()
+        public (string, string) EnterReceiverAndMessage()
         {
             LOG.Info("Enter alias of remote host and message you want to send.\nInput format: <<port_serial_no>> [space] <<message>>");
 
             string input = Console.ReadLine();
             string[] parts = input.Split(' ', 2);
 
-            return (long.Parse(parts[0]), parts[1]);
+            return (parts[0], parts[1]);
         }
     }
 }

@@ -5,7 +5,7 @@ namespace cn.Networking.Clients
 {
     public class Client
     {
-        public Socket _socket { get; set; }
+        public Socket Socket { get; set; }
         public IDataReceiver Receive { get; set; }
         public int Id { get; set; }
 
@@ -13,7 +13,7 @@ namespace cn.Networking.Clients
         {
             Receive = new RawDataReceiver(socket, id);
             Receive.StartReceiving();
-            _socket = socket;
+            Socket = socket;
             Id = id;
         }
     }

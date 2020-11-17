@@ -15,7 +15,7 @@ namespace cn.Networking.Listeners
         {
             try
             {
-                ListenerSocket.Bind(new IPEndPoint(IPAddress.Any, configuration.CnPort));
+                ListenerSocket.Bind(new IPEndPoint(IPAddress.Any, _configuration.CnPort));
                 ListenerSocket.Listen(10);
                 ListenerSocket.BeginAccept(AcceptCallback, ListenerSocket);
             }
@@ -29,7 +29,7 @@ namespace cn.Networking.Listeners
         {
             try
             {
-                LOG.Info($"AcceptCallback port: {configuration.CnPort}. Protocol type: {ProtocolType.Tcp}");
+                LOG.Info($"AcceptCallback port: {_configuration.CnPort}. Protocol type: {ProtocolType.Tcp}");
                 var acceptedSocket = ListenerSocket.EndAccept(asyncResult);
                 ClientController.AddClient(acceptedSocket);
 
@@ -37,18 +37,18 @@ namespace cn.Networking.Listeners
             }
             catch (Exception ex)
             {
-                LOG.Error($"Error in AcceptCallback on port: {configuration.CnPort}, asyncResult: {asyncResult}");
+                LOG.Error($"Error in AcceptCallback on port: {_configuration.CnPort}, asyncResult: {asyncResult}");
                 throw new SocketException((int)ListenerErrorCode.AcceptCallbackError);
             }
         }
 
         public Socket ListenerSocket;
 
-        private Configuration configuration;
+        private Configuration _configuration;
 
         public Listener(Configuration configuration)
         {
-            this.configuration = configuration;
+            this._configuration = configuration;
             ListenerSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         }
     }
