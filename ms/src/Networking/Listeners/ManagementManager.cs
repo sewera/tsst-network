@@ -27,9 +27,6 @@ namespace ms
             ListenerSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         }
 
-        /// <summary>
-        /// This method starts the process of listening for incoming connections from clients - network nodes
-        /// </summary>
         public void startListening()
         {
             try
@@ -49,9 +46,7 @@ namespace ms
             }
         }
 
-        /// <summary>
-        /// This method is called when new connection popped up and needs to be serviced
-        /// <summary> 
+       
         public void AcceptCallback(IAsyncResult ar)
         {
             try
@@ -69,6 +64,11 @@ namespace ms
             {
                 throw new Exception("Base Accept error" + ex);
             }
+        }
+        
+        public void ReadConfig(Config config)
+        {
+            port = config.Port;
         }
     }
 }

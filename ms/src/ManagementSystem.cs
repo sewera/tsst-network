@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 
 namespace ms
 {
@@ -6,10 +7,14 @@ namespace ms
     {
         static void Main(string[] args)
         {
-            IManagementManager mm = new ManagementManager();
-            mm.startListening();
-            IConfig config = new Config();
+            Config config = new Config();
             config.ReadConfigFile("ManagementSystem.xml");
+            IManagementManager mm = new ManagementManager();
+            mm.ReadConfig(config);
+            mm.startListening();
+            MessageSender.ReadConfig(config);
+            new Thread(MessageSender.Start).Start();
+            
             UserInterface.Start();
         }
     }

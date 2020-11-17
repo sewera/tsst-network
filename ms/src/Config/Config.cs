@@ -9,7 +9,7 @@ namespace ms
         /// <summary>
         /// Listener socket port
         /// </summary>
-        public int Port { get; set; }
+        public short Port { get; set; }
         /// <summary>
         /// List of messages to be sent to network nodes in order to config their MPLS-tables
         /// </summary>
@@ -31,7 +31,7 @@ namespace ms
                     switch (xtr.Name)
                     {
                         case "listener_port":
-                            Port = Int32.Parse(xtr.ReadElementContentAsString());
+                            Port = short.Parse(xtr.ReadElementContentAsString());
                             break;
                         case "alias":
                             aliases.Add(xtr.ReadElementContentAsString());
