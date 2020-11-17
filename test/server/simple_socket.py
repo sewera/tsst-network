@@ -1,4 +1,5 @@
 import socket
+import msgpack
 
 ADDRESS = 'localhost'
 PORT = 7357
@@ -15,6 +16,7 @@ while True:
         buf = connection.recv(64)
         if len(buf) > 0:
             print(buf)
+            print(msgpack.loads(buf))
             buf = b''
     except KeyboardInterrupt:
         print()

@@ -7,6 +7,6 @@ namespace cn.Utils
 
         public void SendPacket();
 
-        public int Send(long destinationPort, string message, int packetsSend);
+        public int Send(string destinationPort, string message, int packetsSend);
     }
 }

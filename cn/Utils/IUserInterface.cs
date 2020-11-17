@@ -4,6 +4,6 @@ namespace cn.Utils
     {
         /// <summary>Accept destination addres and user's message
         /// entered by user</summary>
-        public (long, string) EnterReceiverAndMessage();
+        public (string, string) EnterReceiverAndMessage();
     }
 }

@@ -11,54 +11,60 @@ namespace cn.Models
         /// List of MPLS labels
         /// <summary>
         [Key(0)]
-        private IList<long> Labels { get; set; }
+        public IList<long> Labels { get; set; }
 
-        /// <summary>
+        /// <summary> unnecessary
         /// IP address (for sake of this project it's just localhost)
         /// </summary>
         [Key(1)]
-        private string Address { get; set; }
+        public string Address { get; set; }
 
         /// <summary>
-        /// Out port of host client node
+        /// Alias representation of out port of host client node
         /// </summary>
         [Key(2)]
-        private long SourcePort { get; set; }
+        public string SourcePort { get; set; }
 
         /// <summary>
-        /// Port of cable cloud 
+        /// Alias representation port of cable cloud 
         /// </summary>
         [Key(3)]
-        private long CableCloudPort { get; set; }
+        public string CableCloudPort { get; set; }
 
         /// <summary>
-        /// Port of remote detination client node
+        /// Alias representation port of remote detination client node
         /// </summary>
         [Key(4)]
-        private long DestinationPort { get; set; }
+        public string DestinationPort { get; set; }
 
         /// <summary>
         /// User's input message
         /// </summary>
         [Key(5)]
-        private string Message { get; set; }
+        public string Message { get; set; }
         
         /// <summary>
         /// MPLS packet identifier
         /// </summary>
         [Key(6)]
-        private int PacketId { get; set; }
+        public int PacketId { get; set; }
 
-        public MplsPacket(long destinationPort, string message, int packetId)
+        public MplsPacket(string destinationPort, string message, int packetId)
         {
             Address = "127.0.0.1";
-            SourcePort = 2137; //should be read from config file
-            CableCloudPort = 7357; // should be read from config file
+            SourcePort = "2137"; //should be read from config file
+            CableCloudPort = "7357"; // should be read from config file
             DestinationPort = destinationPort;
             Message = message;
             PacketId = packetId;
+            //PacketId = packetId;
         }
 
+        public MplsPacket()
+        {
+            
+        }
+        
         /// <summary>Converts <c>MPLSPacket</c> object to bytes</summary>
         /// <returns>MPLSPacket as bytes array</returns>
         public static byte[] ToBytes(MplsPacket packet)
