@@ -1,36 +1,62 @@
-using System.Net;
+using System;
+using System.Collections.Generic;
 using System.Xml;
 
 namespace cn.Utils
 {
-    public class Configuration : IConfiguration
+    public class Configuration
     {
-        /// <summary>Name of our host client node</summary>
-        public string CnName { get; set; }
+       
+        /// <summary>
+        /// Alias representation of cable cloud port
+        /// </summary>
+        public string CableCloudPort { get; set; }
 
-        /// <summary>IP address of our network elements, 
-        /// for sake of this project - local host address</summary>
-        public IPAddress IpAddress { get; set; }
-
-        /// <summary>Port no of host client node</summary>
-        public short CnPort { get; set; }
-
-        /// <summary>Port no of cable cloud</summary>
-        public short CloudPort { get; set; }
+        /// <summary>
+        /// Alias representation host client node port
+        /// </summary>
+        public string SourcePort { get; set; }
+        
+        /// <summary>
+        /// List of MPLS labels
+        /// </summary>
+        public IList<short> Labels { get; set; }
 
         public Configuration()
         {
 
         }
 
-        public Configuration ReadConfigFile(string configFile)
+        /// <summary>Read configuration file and 
+        /// load set of data about network elements</summary>
+        /// <param name="configFile">File with network data
+        /// saved in defined convention</param>
+        /// <returns>Configuration class instance with read
+        /// data</returns>
+        public static Configuration ReadConfigFile(string configFile)
         {
-            XmlDocument doc = new XmlDocument();
-            doc.Load(new XmlTextReader(configFile));
-            XmlNodeList xnl = doc.SelectNodes(string.Format("/hosts/host"));
+            Configuration configuration = new Configuration();
+            XmlTextReader reader = new XmlTextReader(configFile);
 
-            //TODO: finish
-            return null;
+            while (reader.Read())
+            {
+                if (reader.NodeType == XmlNodeType.Element)
+                {
+                    switch (reader.Name)
+                    {
+                        case "cable_cloud_port":
+                            configuration.CableCloudPort = reader.ReadElementContentAsString();
+                            break;
+                        case "source_port":
+                            configuration.SourcePort = reader.ReadElementContentAsString();
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+            return configuration;
         }
+        
     }
 }

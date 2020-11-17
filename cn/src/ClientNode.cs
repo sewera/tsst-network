@@ -1,9 +1,6 @@
 using NLog;
-using System;
-using cn.Models;
 using cn.Utils;
 using NLog.Config;
-using NLog.Fluent;
 using NLog.Targets;
 
 namespace cn
@@ -24,7 +21,8 @@ namespace cn
             LogManager.Configuration = config;
 
             IUserInterface userInterface = new UserInterface();
-            Configuration configuration = new Configuration();
+            Configuration configuration = 
+                Configuration.ReadConfigFile("C:\\Users\\szinus\\RiderProjects\\tsst-network\\cn\\Configuration.xml");
             ClientNodeManager cnManager = new ClientNodeManager(configuration, userInterface);
 
             cnManager.StartClientNode();
