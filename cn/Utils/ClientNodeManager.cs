@@ -3,7 +3,6 @@ using System.Text;
 using System.Net;
 using System.Net.Sockets;
 using NLog;
-using cn.Networking.Controllers;
 using cn.Models;
 
 namespace cn.Utils
@@ -16,11 +15,6 @@ namespace cn.Utils
         public Configuration configuration;
 
         /// <summary>
-        /// Socket listening for incoming connections
-        /// </summary>
-        public Socket ListenerSocket { get; set; }
-
-        /// <summary>
         /// Socket sending messages to the server
         /// </summary>
         public Socket Sender { get; set; }
@@ -30,7 +24,6 @@ namespace cn.Utils
             userInterface = new UserInterface();
             configuration = config;
 
-            ListenerSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             Sender = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         }
 
@@ -49,21 +42,6 @@ namespace cn.Utils
             }
         }
 
-        public void Listen(Socket listenerSocket)
-        {
-            try
-            {
-                Console.WriteLine($"Listening started on port: {configuration.CnPort}");
-                ListenerSocket.Bind(new IPEndPoint(IPAddress.Any, configuration.CnPort));
-                ListenerSocket.Listen(10);
-                ListenerSocket.BeginAccept(AcceptCallback, ListenerSocket);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Listening error" + ex);
-            }
-        }
-
         public void SendPacket()
         {
             (long destinationPort, string message) = userInterface.EnterReceiverAndMessage();
@@ -75,25 +53,6 @@ namespace cn.Utils
             MplsPacket packet = new MplsPacket(destinationPort, message);
             Sender.Connect(new IPEndPoint(IPAddress.Parse("127.0.0.1"), 7357));
             return Sender.Send(MplsPacket.ToBytes(packet));
-        }
-
-
-        /// <summary>
-        /// This method is called when incoming connection needs to be serviced
-        /// <summary> 
-        private void AcceptCallback(IAsyncResult ar)
-        {
-            try
-            {
-                Console.WriteLine($"Accept Callback port:{configuration.CnPort}");
-                Socket acceptedSocket = ListenerSocket.EndAccept(ar);
-                ClientController.AddClient(acceptedSocket);
-                ListenerSocket.BeginAccept(AcceptCallback, ListenerSocket);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Base Accept error" + ex);
-            }
         }
     }
 }

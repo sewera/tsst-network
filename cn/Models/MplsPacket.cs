@@ -52,14 +52,6 @@ namespace cn.Models
             Message = message;
         }
 
-        public MplsPacket()
-        {
-            Address = "127.0.0.1";
-            SourcePort = 2137; //should be read from config file
-            CableCloudPort = 7357; // should be read from config file
-            DestinationPort = 2137;
-        }
-
         /// <summary>Converts <c>MPLSPacket</c> object to bytes</summary>
         /// <returns>MPLSPacket as bytes array</returns>
         public static byte[] ToBytes(MplsPacket packet)
