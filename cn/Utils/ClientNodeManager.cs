@@ -10,15 +10,20 @@ namespace cn.Utils
     class ClientNodeManager : IClientNodeManager
     {
         private static readonly Logger LOG = LogManager.GetCurrentClassLogger();
+        
+        /// <summary>
+        ///  Number of sent packets, indicating their id
+        /// </summary>
+        private int _packetsSend = 0;
 
-        public IUserInterface userInterface;
-        public Configuration configuration;
+        private IUserInterface userInterface;
+        private Configuration configuration;
 
         /// <summary>
         /// Socket sending messages to the server
         /// </summary>
-        public Socket Sender { get; set; }
-
+        private Socket Sender { get; set; }
+        
         public ClientNodeManager(Configuration config)
         {
             userInterface = new UserInterface();
@@ -34,6 +39,7 @@ namespace cn.Utils
                 //TODO: CC PORT MUST BE READ FROM CONFIG FILES
                 LOG.Info($"Connecting to cable cloud at port: {configuration.CloudPort}");
                 Sender.Connect(new IPEndPoint(IPAddress.Parse("127.0.0.1"), 7357));
+                LOG.Info("Connection established");
                 Sender.Send(Encoding.ASCII.GetBytes("Heeeeeeeeres Johny"));
             }
             catch (Exception e)
@@ -44,13 +50,17 @@ namespace cn.Utils
 
         public void SendPacket()
         {
-            (long destinationPort, string message) = userInterface.EnterReceiverAndMessage();
-            Send(destinationPort, message);
+            LOG.Info($"Preparing MPLS packet no {_packetsSend}");
+            
+            (var destinationPort, var message) = userInterface.EnterReceiverAndMessage();
+            Send(destinationPort, message, _packetsSend);
+            _packetsSend++;
+            LOG.Info("Packet send");
         }
 
-        public int Send(long destinationPort, string message)
+        public int Send(long destinationPort, string message, int packetId)
         {
-            MplsPacket packet = new MplsPacket(destinationPort, message);
+            MplsPacket packet = new MplsPacket(destinationPort, message, packetId);
             Sender.Connect(new IPEndPoint(IPAddress.Parse("127.0.0.1"), 7357));
             return Sender.Send(MplsPacket.ToBytes(packet));
         }
