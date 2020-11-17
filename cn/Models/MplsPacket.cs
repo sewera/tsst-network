@@ -17,39 +17,46 @@ namespace cn.Models
         /// IP address (for sake of this project it's just localhost)
         /// </summary>
         [Key(1)]
-        public string Address { get; set; }
+        private string Address { get; set; }
 
         /// <summary>
         /// Out port of host client node
         /// </summary>
         [Key(2)]
-        public long SourcePort { get; set; }
+        private long SourcePort { get; set; }
 
         /// <summary>
         /// Port of cable cloud 
         /// </summary>
         [Key(3)]
-        public long CableCloudPort { get; set; }
+        private long CableCloudPort { get; set; }
 
         /// <summary>
         /// Port of remote detination client node
         /// </summary>
         [Key(4)]
-        public long DestinationPort { get; set; }
+        private long DestinationPort { get; set; }
 
         /// <summary>
         /// User's input message
         /// </summary>
         [Key(5)]
-        public string Message { get; set; }
+        private string Message { get; set; }
+        
+        /// <summary>
+        /// MPLS packet identifier
+        /// </summary>
+        [Key(6)]
+        private int PacketId { get; set; }
 
-        public MplsPacket(long destinationPort, string message)
+        public MplsPacket(long destinationPort, string message, int packetId)
         {
             Address = "127.0.0.1";
             SourcePort = 2137; //should be read from config file
             CableCloudPort = 7357; // should be read from config file
             DestinationPort = destinationPort;
             Message = message;
+            PacketId = packetId;
         }
 
         /// <summary>Converts <c>MPLSPacket</c> object to bytes</summary>
