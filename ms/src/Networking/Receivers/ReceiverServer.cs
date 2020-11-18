@@ -100,6 +100,7 @@ namespace ms
             _receiveSocket.Disconnect(true);
             // Remove client from the list
             ClientController.RemoveClient(_clientId);
+            LOG.Info($"Client: {_clientId} disconnected");
         }
     }
 }
