@@ -3,24 +3,7 @@
 <configuration>
 
     <cable_cloud_port>7357</cable_cloud_port>
-    
-    <alias>R1</alias>
     <source_port>10273</source_port>
-    
-    <remote_nodes>
-        
-        <remote_node>
-            <alias>R2</alias>
-        </remote_node>
-
-        <remote_node>
-            <alias>R3</alias>
-        </remote_node>
-
-        <remote_node>
-            <alias>R3</alias>
-        </remote_node>
-
-    </remote_nodes>
+    <labels></labels>
 
 </configuration>
