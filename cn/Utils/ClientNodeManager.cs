@@ -38,14 +38,14 @@ namespace cn.Utils
             while (true)
             {
                 SendPacket();
+                LOG.Info("Packet sent");
             }
         }
 
-        public void ConnectToCableCloud()
+        private void ConnectToCableCloud()
         {
             try
             {
-                //TODO: CC PORT MUST BE READ FROM CONFIG FILES
                 LOG.Info($"Connecting to cable cloud at port: {_configuration.CableCloudPort}");
                 Sender.Connect(new IPEndPoint(IPAddress.Parse("127.0.0.1"), 
                     Int32.Parse(_configuration.CableCloudPort)));
@@ -58,7 +58,7 @@ namespace cn.Utils
             }
         }
 
-        public void SendPacket()
+        private void SendPacket()
         {
             LOG.Info($"Preparing MPLS packet no {_packetsSend}");
             
@@ -69,18 +69,17 @@ namespace cn.Utils
             LOG.Info("Packet send");
         }
 
-        public void Send(string destinationPort, string message, int packetId)
+        private void Send(string destinationPort, string message, int packetId)
         {
             MplsPacket packet = 
-                new MplsPacket("2137", _configuration.CableCloudPort, destinationPort, message, packetId);
-            //TODO: CC port should be taken from config file
+                new MplsPacket(_configuration.SourcePort, _configuration.CableCloudPort, destinationPort, message, packetId);
             Sender.Send(MplsPacket.ToBytes(packet));
             byte[] buffer = new byte[1024];
             Sender.Receive(buffer);
             LOG.Info($"Received: {Encoding.ASCII.GetString(buffer)}");
         }
 
-        public void Send() // TODO: Implement hello packet sending
+        private void Send() // TODO: Implement hello packet sending
         {
             Sender.Send(Encoding.ASCII.GetBytes($"Hello from port: {_configuration.SourcePort}"));
             byte[] buffer = new byte[1024];

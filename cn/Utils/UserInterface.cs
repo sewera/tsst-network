@@ -6,17 +6,7 @@ namespace cn.Utils
     class UserInterface : IUserInterface
     {
         private static readonly Logger LOG = LogManager.GetCurrentClassLogger();
-
-        /// <summary>
-        /// Remote host port serial no - in our case its alias
-        /// </summary>
-        public long PortSerialNo { get; set; }
-
-        /// <summary>
-        /// User's input message
-        /// </summary>
-        public string Message { get; set; }
-
+        
         public UserInterface()
         {
 

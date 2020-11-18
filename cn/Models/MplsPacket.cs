@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Net;
 using MessagePack;
 
 namespace cn.Models
@@ -23,13 +22,13 @@ namespace cn.Models
         /// Alias representation of out port of host client node
         /// </summary>
         [Key(2)]
-        private string SourcePort { get; set; }
+        private string SourcePortAlias { get; set; }
 
         /// <summary>
         /// Alias representation port of cable cloud 
         /// </summary>
         [Key(3)]
-        private string CableCloudPort { get; set; }
+        private string CableCloudPortAlias { get; set; }
 
         /// <summary>
         /// Alias representation port of remote destination client node
@@ -49,11 +48,11 @@ namespace cn.Models
         [Key(6)]
         private int PacketId { get; set; }
 
-        public MplsPacket(string sourcePort, string cableCloudPort, string destinationPort, string message, int packetId)
+        public MplsPacket(string sourcePortAlias, string cableCloudPortAlias, string destinationPort, string message, int packetId)
         {
             Address = "127.0.0.1";
-            SourcePort = sourcePort; 
-            CableCloudPort = cableCloudPort; 
+            SourcePortAlias = sourcePortAlias; 
+            CableCloudPortAlias = cableCloudPortAlias; 
             DestinationPort = destinationPort;
             Message = message;
             PacketId = packetId;
