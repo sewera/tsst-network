@@ -1,5 +1,5 @@
 using System.Net.Sockets;
-
+using NLog;
 namespace ms
 {
     /// <summary>
@@ -29,6 +29,11 @@ namespace ms
         public string Alias { get; set; }
 
         /// <summary>
+        /// Logger
+        /// </summary>
+        private static readonly Logger LOG = LogManager.GetCurrentClassLogger();
+
+        /// <summary>
         /// Class contructor
         /// <param name="socket"> Socket pinned to specific client connection </param>
         /// <param name="id"> Client id </param>
@@ -40,6 +45,7 @@ namespace ms
             Receiver.StartReceiving();
             _socket = socket;
             Id = id;
+            Alias = "";
         }
 
         /// <summary>
@@ -50,6 +56,7 @@ namespace ms
         {
             Sender = new SenderServer(_socket);
             Sender.Send(data);
+            LOG.Info($"Data: '{data}' sent to client: {Id} with alias: {Alias}");
         }
     }
 }

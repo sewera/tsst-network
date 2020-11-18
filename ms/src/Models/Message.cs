@@ -44,9 +44,9 @@ namespace ms
         /// <summary>
         /// Outputs message on screen [Temporary method]
         /// </summary>
-        public void show()
+        public string show()
         {
-            Console.WriteLine($"{clientAlias} {_content}");
+            return $"{clientAlias} {_content}";
         }
     }
 }
