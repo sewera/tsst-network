@@ -1,23 +1,4 @@
 repos:
-- repo: https://github.com/jazzsewera/pre-commit-dotnet-hooks.git
-  rev: v0.4.0
-  hooks:
-  - id: dotnet-reformat
-    name: dotnet-reformat-cc
-    files: 'cc/src/.*\.cs'
-    args: ['cc/cc.csproj']
-  - id: dotnet-reformat
-    name: dotnet-reformat-cn
-    files: 'cn/src/.*\.cs'
-    args: ['cn/cn.csproj']
-  - id: dotnet-reformat
-    name: dotnet-reformat-ms
-    files: 'ms/src/.*\.cs'
-    args: ['ms/ms.csproj']
-  - id: dotnet-reformat
-    name: dotnet-reformat-nn
-    files: 'nn/src/.*\.cs'
-    args: ['nn/nn.csproj']
 - repo: https://github.com/jazzsewera/pre-commit-message-check-hook.git
   rev: v0.2.0
   hooks:
