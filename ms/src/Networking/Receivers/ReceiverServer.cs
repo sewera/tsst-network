@@ -1,6 +1,7 @@
 using System;
 using System.Net.Sockets;
 using System.Text;
+using NLog;
 
 namespace ms
 {
@@ -21,6 +22,10 @@ namespace ms
         /// Client Id
         /// <summary>     
         private int _clientId;
+        /// <summary>
+        /// Logger
+        /// </summary>
+        private static readonly Logger LOG = LogManager.GetCurrentClassLogger();
         public ReceiverServer(Socket receiveSocket, int clientId)
         {
             _receiveSocket = receiveSocket;
@@ -60,7 +65,7 @@ namespace ms
 
                     //TODO show received data
                     string data = Encoding.Default.GetString(_buffer);
-                    UserInterface.WriteLine($"Received data: {data}",UserInterface.Type.Received);
+                    LOG.Info($"Data: '{data}' received from client: {_clientId}");
                     // Add alias for client
                     ClientController.AddAlias(data,_clientId);
 

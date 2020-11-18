@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Xml;
 using System;
+using NLog;
 
 namespace ms
 {
@@ -14,6 +15,10 @@ namespace ms
         /// List of messages to be sent to network nodes in order to config their MPLS-tables
         /// </summary>
         public List<Message> configMessages = new List<Message>();
+        /// <summary>
+        /// Logger
+        /// </summary>
+        private static readonly Logger LOG = LogManager.GetCurrentClassLogger();
 
         public Config ReadConfigFile(string fileName)
         {
@@ -50,14 +55,11 @@ namespace ms
                 configMessages.Add(new Message(aliases[i],contents[i]));
             }
 
-            // <Temporarily here>
-            Console.WriteLine("Messages read from config file:");
-
+           
             foreach (Message m in configMessages)
             {
-                m.show();
+                LOG.Info($"Message read: {m.show()}");
             }
-            // </Temporarily here>
 
             return result;
         }

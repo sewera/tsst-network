@@ -1,6 +1,7 @@
 using System;
 using System.Net;
 using System.Net.Sockets;
+using NLog;
 
 namespace ms
 {
@@ -18,7 +19,10 @@ namespace ms
         /// Port on which socket will listen
         /// </summary>
         public short port = 1234;
-
+        /// <summary>
+        /// Logger
+        /// </summary>
+        private static readonly Logger LOG = LogManager.GetCurrentClassLogger();
         /// <summary>
         /// Class contructor initializing ListenerSocket
         /// </summary>
@@ -31,7 +35,7 @@ namespace ms
         {
             try
             {
-                UserInterface.WriteLine($"Listening started port: {port}", UserInterface.Type.Server);
+                LOG.Info($"Listening started port: {port}");
                 // Bind socket to the IPEndPoint, class representing a network endpoint as an IP address and a port number
                 ListenerSocket.Bind(new IPEndPoint(IPAddress.Any, port));
                 // 10 is then number of incoming connection that can be queued up for acceptance
@@ -51,7 +55,7 @@ namespace ms
         {
             try
             {
-                UserInterface.WriteLine($"Accept Callback port: {port}",UserInterface.Type.Server);
+                LOG.Info($"Accepted Callback port: {port}");
                 // Create new socket for client
                 Socket acceptedSocket = ListenerSocket.EndAccept(ar);
                 // Add new client to ClientController

@@ -24,8 +24,9 @@ namespace ms
             string input="";
             while (true)
             {
-                Console.Write("# ");
+                Console.ForegroundColor=ConsoleColor.Yellow;
                 input = Console.ReadLine();
+                Console.ResetColor();
                 if (input == "clear")
                 {
                     Console.Clear();
@@ -207,7 +208,7 @@ namespace ms
             {
                 input+=$"{words[i]} ";
             }
-            // Last element does not containt a '' after him
+            // Last element does not containt a ' ' after him
             input+=words[words.Count-1];
             // Here input can only be this format e.g. 'R1 add 2 3 4 5 -3' or 'R1 add 2 3 4 5'.
             // No spaces at the end or beginning and only one space between params.
