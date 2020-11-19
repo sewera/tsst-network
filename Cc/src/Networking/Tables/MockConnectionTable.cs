@@ -1,27 +1,31 @@
 using System.Collections.Generic;
 using Cc.Models;
 using Cc.Networking.Client;
+using NLog;
 
 namespace Cc.Networking.Tables
 {
-    internal class MockConnectionTable : IConnectionTable
+    public class MockConnectionTable : IConnectionTable
     {
-        private readonly List<IClientWorker> _clientWorkers = new List<IClientWorker>();
-        private List<(CcConnection, CcConnection, bool)> _connectionTable;
+        private static readonly Logger LOG = LogManager.GetCurrentClassLogger();
+        private readonly List<CcConnection> _ccConnections = new List<CcConnection>();
+        private List<(CcConnection, CcConnection, bool)> _connectionTable = new List<(CcConnection, CcConnection, bool)>();
 
-        public (CcConnection, CcConnection, bool) GetRouteFor(long portSerialNo)
+        public (CcConnection, CcConnection, bool) GetRouteFor(string portAlias)
         {
             return (null, null, false); // TODO
         }
 
-        public void AddClientWorker(IClientWorker clientWorker)
+        public void AddCcConnection(CcConnection ccConnection)
         {
-            _clientWorkers.Add(clientWorker);
+            _ccConnections.Add(ccConnection);
+            LOG.Debug($"Added CcConnection: {ccConnection}");
         }
 
-        public IClientWorker GetClientWorker(int index)
+        public CcConnection GetCcConnection(string portAlias)
         {
-            return _clientWorkers[index];
+            LOG.Debug($"Returning CcConnection: {_ccConnections[0]}");
+            return _ccConnections[0];
         }
     }
 }
