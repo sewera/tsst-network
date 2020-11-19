@@ -29,7 +29,7 @@ namespace Cc
             
             IConnectionTable connectionTable = new MockConnectionTable();
             IClientWorkerFactory clientWorkerFactory = new ClientWorkerFactory();
-            IListener listener = new Listener(clientWorkerFactory, connectionTable);
+            IListener listener = new Listener(configuration, clientWorkerFactory, connectionTable);
             IPacketForwarder packetForwarder = new MockPacketForwarder(connectionTable);
             ICommandParser commandParser = new MockCommandParser();
 

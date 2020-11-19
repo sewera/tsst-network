@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Cc.Cmd;
 using Cc.Cmd.Parsers;
 using Cc.Config;
@@ -47,9 +48,12 @@ namespace Cc
                 {
                     case CommandType.SEND:
                         LOG.Trace("Got SEND command");
-                        CcPacket ccPacket = new CcPacket();
-                        ccPacket.PortSerialNo = 2137;
-                        _packetForwarder.ProcessPacket(ccPacket);
+                        MplsPacket mplsPacket = new MplsPacket();
+                        mplsPacket.SourcePortAlias = "2345";
+                        mplsPacket.DestinationPortAlias = "3456";
+                        mplsPacket.MplsLabels = new List<long> {123, 345};
+                        mplsPacket.Message = "Test message";
+                        _packetForwarder.ForwardPacket(mplsPacket);
                         // TODO: Send to client
                         break;
                     default:

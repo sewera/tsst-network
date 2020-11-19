@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using Cc.Models;
 using NLog;
 
 namespace Cc.Networking.Client
@@ -15,10 +16,11 @@ namespace Cc.Networking.Client
         public ClientWorker(ClientState state)
         {
             _state = state;
-            _state.WorkSocket.BeginReceive(state.Buffer, 0, ClientState.BufferSize, 0, ReadCallback, state);
+            // FIXME: Catch connection reset exception to avoid program crashes after client crashes
+            _state.ClientSocket.BeginReceive(state.Buffer, 0, ClientState.BufferSize, 0, ReadCallback, state);
             LOG.Debug("Created ClientWorker for client socket: " +
-                      $"{((IPEndPoint)_state.WorkSocket.RemoteEndPoint).Address}" +
-                      $":{((IPEndPoint)_state.WorkSocket.RemoteEndPoint).Port}");
+                      $"{((IPEndPoint)_state.ClientSocket.RemoteEndPoint).Address}" +
+                      $":{((IPEndPoint)_state.ClientSocket.RemoteEndPoint).Port}");
         }
 
         public void ReadCallback(IAsyncResult ar)
@@ -28,23 +30,20 @@ namespace Cc.Networking.Client
             _state = (ClientState) ar.AsyncState;
             if (_state != null)
             {
-                Socket handler = _state.WorkSocket;
+                Socket handler = _state.ClientSocket;
 
                 // Read data from the client socket.
                 int bytesRead = handler.EndReceive(ar);
 
                 if (bytesRead > 0)
                 {
-                    // There might be more data, so store the data received so far.
-                    _state.Sb.Append(Encoding.ASCII.GetString(_state.Buffer, 0, bytesRead));
+                    _state.Packet = MplsPacket.FromBytes(_state.Buffer);
+                    LOG.Debug($"Received: {_state.Packet}");
 
-                    // Check for end-of-file tag. If it is not there, read
-                    // more data.
-                    string content = _state.Sb.ToString();
-                    LOG.Trace("ReadCallback: All data transferred, got '\\n\\n'");
-                    LOG.Debug($"Read {content.Length} bytes from socket.\nData: {content}");
                     // Echo the data back to the client.
-                    Send(content);
+                    // Send(_state.Packet);
+
+                    handler.BeginReceive(_state.Buffer, 0, ClientState.BufferSize, 0, ReadCallback, _state);
                 }
             }
             else
@@ -53,13 +52,10 @@ namespace Cc.Networking.Client
             }
         }
 
-        public void Send(string data)
+        public void Send(MplsPacket mplsPacket)
         {
-            // Convert the string data to byte data using ASCII encoding.
-            byte[] byteData = Encoding.ASCII.GetBytes(data);
-
-            // Begin sending the data to the remote device.
-            _state.WorkSocket.BeginSend(byteData, 0, byteData.Length, 0, SendCallback, _state.WorkSocket);
+            byte[] bytes = MplsPacket.ToBytes(mplsPacket);
+            _state.ClientSocket.BeginSend(bytes, 0, bytes.Length, 0, SendCallback, _state.ClientSocket);
         }
 
         public void SendCallback(IAsyncResult ar)
@@ -85,6 +81,11 @@ namespace Cc.Networking.Client
             {
                 LOG.Error(e);
             }
+        }
+
+        public int GetPort()
+        {
+            return ((IPEndPoint) _state.ClientSocket.RemoteEndPoint).Port;
         }
     }
 }

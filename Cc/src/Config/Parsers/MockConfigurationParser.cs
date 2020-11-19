@@ -8,9 +8,13 @@ namespace Cc.Config.Parsers
 
         public Configuration ParseConfiguration()
         {
+            const string listeningAddress = "127.0.0.1";
             const short listeningPort = 3001;
-            LOG.Debug($"Simulating Configuration parsing with default port: {listeningPort}");
-            return new Configuration.Builder().SetListeningPort(listeningPort).Build();
+            LOG.Debug($"Mock Configuration: {listeningAddress}:{listeningPort}");
+            return new Configuration.Builder()
+                .SetListeningAddress(listeningAddress)
+                .SetListeningPort(listeningPort)
+                .Build();
         }
     }
 }

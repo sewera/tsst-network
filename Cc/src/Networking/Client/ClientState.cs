@@ -1,5 +1,6 @@
 ﻿using System.Net.Sockets;
 using System.Text;
+using Cc.Models;
 
 namespace Cc.Networking.Client
 {
@@ -7,19 +8,18 @@ namespace Cc.Networking.Client
     {
         public ClientState(Socket workSocket)
         {
-            WorkSocket = workSocket;
+            ClientSocket = workSocket;
         }
 
-        // Size of receive buffer.
         public const int BufferSize = 1024;
 
         // Receive buffer.
         public byte[] Buffer = new byte[BufferSize];
 
         // Received data string.
-        public StringBuilder Sb = new StringBuilder(); // TODO: Change to msgpack
+        public MplsPacket Packet;
 
         // Client socket.
-        public Socket WorkSocket;
+        public Socket ClientSocket;
     }
 }
