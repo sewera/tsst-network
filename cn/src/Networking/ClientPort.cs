@@ -11,7 +11,7 @@ namespace cn.Networking
 {
     public class ClientPort : IClientPort
     {
-        private const int BUFFER_SIZE = 1024;
+        private const int BufferSize = 1024;
         private readonly Configuration _configuration;
         private static readonly Logger LOG = LogManager.GetCurrentClassLogger();
 
@@ -76,8 +76,8 @@ namespace cn.Networking
         {
             try
             {
-                byte[] buffer = new byte[BUFFER_SIZE];
-                _clientSocket.BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, ReceiveCallback, buffer);
+                byte[] buffer = new byte[BufferSize];
+                _clientSocket.BeginReceive(buffer, 0, BufferSize, SocketFlags.None, ReceiveCallback, buffer);
             }
             catch (Exception e)
             {
@@ -113,8 +113,8 @@ namespace cn.Networking
             }
             finally
             {
-                byte[] buffer = new byte[BUFFER_SIZE];
-                _clientSocket.BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, ReceiveCallback, buffer);
+                byte[] buffer = new byte[BufferSize];
+                _clientSocket.BeginReceive(buffer, 0, BufferSize, SocketFlags.None, ReceiveCallback, buffer);
             }
         }
 
