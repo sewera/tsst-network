@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using cn.Models;
 using cn.Ui.Parsers;
 using cn.Ui.Parsers.Exceptions;
@@ -22,7 +23,16 @@ namespace cn.Ui
         {
             _clientNodeManager.Start();
             _clientNodeManager.RegisterReceiveMessageEvent(MessageReceived);
+            ThreadStart startCommandParsing = StartCommandParsing;
+            LOG.Trace("Creating child thread to handle command parsing");
+            Thread commandParsingThread = new Thread(startCommandParsing);
+            LOG.Trace("Starting command parsing thread");
+            commandParsingThread.Start();
+            LOG.Trace("Started thread");
+        }
 
+        private void StartCommandParsing()
+        {
             Console.WriteLine("Enter alias of remote host and message you want to send.\nInput format: <<port_serial_no>> [space] <<message>>");
             while (true)
             {
@@ -44,6 +54,7 @@ namespace cn.Ui
         private static void MessageReceived(MplsPacket mplsPacket)
         {
             Console.WriteLine($"Received: {mplsPacket}");
+            Console.Write("> ");
         }
     }
 }

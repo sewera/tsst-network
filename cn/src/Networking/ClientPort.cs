@@ -99,9 +99,8 @@ namespace cn.Networking
                 if (bytesRead > 0)
                 {
                     MplsPacket receivedPacket = MplsPacket.FromBytes(buffer);
-                    // TODO: Send receivedPacket back to UserInterface, probably with events
-                    // https://docs.microsoft.com/en-us/dotnet/standard/events/how-to-raise-and-consume-events
-                    LOG.Info($"Received: {receivedPacket}");
+                    LOG.Debug($"Received: {receivedPacket}");
+                    OnMessageReceived(receivedPacket);
                 }
             }
             catch (MessagePackSerializationException e)
