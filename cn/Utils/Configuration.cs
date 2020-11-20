@@ -49,8 +49,6 @@ namespace cn.Utils
                         case "source_port":
                             configuration.SourcePort = reader.ReadElementContentAsString();
                             break;
-                        default:
-                            break;
                     }
                 }
             }
