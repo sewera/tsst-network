@@ -1,6 +1,7 @@
 using cn.Config;
 using cn.Models;
 using cn.Networking;
+using cn.Networking.Delegates;
 using NLog;
 
 namespace cn
@@ -24,6 +25,11 @@ namespace cn
             _clientPort = _clientPortFactory.GetPort(_configuration.ClientPortAlias);
             _clientPort.ConnectToCableCloud();
             _clientPort.StartReceiving();
+        }
+
+        public void RegisterReceiveMessageEvent(ReceiveMessage receiveMessage)
+        {
+            _clientPort.RegisterReceiveMessageEvent(receiveMessage);
         }
 
         public void Send(string destinationPortAlias, string message)
