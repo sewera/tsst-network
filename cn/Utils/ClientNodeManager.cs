@@ -70,8 +70,12 @@ namespace cn.Utils
 
         private void Send(string destinationPort, string message)
         {
-            MplsPacket packet = 
-                new MplsPacket(_configuration.SourcePort, _configuration.CableCloudPort, destinationPort, message);
+            MplsPacket packet = new MplsPacket.Builder()
+                .SetSourcePortAlias(_configuration.SourcePort)
+                .SetDestinationPortAlias(destinationPort)
+                .SetMplsLabels(_configuration.Labels)
+                .SetMessage(message)
+                .Build();
             Sender.Send(MplsPacket.ToBytes(packet));
             byte[] buffer = new byte[1024];
             Sender.Receive(buffer);
@@ -81,7 +85,9 @@ namespace cn.Utils
         private void Send()
         {
             //Sender.Send(Encoding.ASCII.GetBytes($"Hello from port: {_configuration.SourcePort}"));
-            MplsPacket packet = new MplsPacket(_configuration.SourcePort, _configuration.CableCloudPort);
+            MplsPacket packet = new MplsPacket.Builder()
+                .SetSourcePortAlias(_configuration.SourcePort)
+                .Build();
             Sender.Send(MplsPacket.ToBytes(packet));
             byte[] buffer = new byte[1024];
             Sender.Receive(buffer);

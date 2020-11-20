@@ -19,7 +19,7 @@ namespace cn.Utils
         /// <summary>
         /// List of MPLS labels
         /// </summary>
-        public IList<short> Labels { get; set; }
+        public List<long> Labels { get; set; }
 
         public Configuration()
         {

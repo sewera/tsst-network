@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using MessagePack;
 
@@ -6,88 +7,99 @@ namespace cn.Models
     [MessagePackObject]
     public class MplsPacket
     {
-        /// <summary>
-        /// List of MPLS labels
-        /// <summary>
-        [Key(0)]
-        private IList<long> Labels { get; set; }
+        [Key(0)] public string SourcePortAlias { get; set; }
 
-        /// <summary>
-        /// Alias representation of out port of host client node
-        /// </summary>
-        [Key(1)]
-        private string SourcePortAlias { get; set; }
+        [Key(1)] public string DestinationPortAlias { get; set; }
 
-        /// <summary>
-        /// Alias representation port of cable cloud 
-        /// </summary>
-        [Key(2)]
-        private string CableCloudPortAlias { get; set; }
+        [Key(2)] public List<long> MplsLabels { get; set; }
 
-        /// <summary>
-        /// Alias representation port of remote destination client node
-        /// </summary>
-        [Key(3)]
-        private string DestinationPortAlias { get; set; }
+        [Key(3)] public string Message { get; set; }
 
-        /// <summary>
-        /// User's input message
-        /// </summary>
-        [Key(4)]
-        private string Message { get; set; }
-
-        /// <summary>
-        /// Constructor used to prepare MPLS packet with message and remote host receiver
-        /// </summary>
-        /// <param name="sourcePortAlias"></param>
-        /// <param name="cableCloudPortAlias"></param>
-        /// <param name="destinationPortAlias"></param>
-        /// <param name="message"></param>
-        /// <param name="packetId"></param>
-        public MplsPacket(string sourcePortAlias, string cableCloudPortAlias, string destinationPortAlias, string message)
+        public static byte[] ToBytes(MplsPacket mplsPacket)
         {
-            SourcePortAlias = sourcePortAlias; 
-            CableCloudPortAlias = cableCloudPortAlias; 
-            DestinationPortAlias = destinationPortAlias;
-            Message = message;
-        }
-        
-        /// <summary>
-        /// Constructor used to prepare MPLS packet sent in initial message to Cloud Cable when connected
-        /// </summary>
-        /// <param name="sourcePortAlias"></param>
-        /// <param name="cableCloudPortAlias"></param>
-        public MplsPacket(string sourcePortAlias, string cableCloudPortAlias)
-        {
-            SourcePortAlias = sourcePortAlias; 
-            CableCloudPortAlias = cableCloudPortAlias;
-            DestinationPortAlias = "";
-            Message = "";
-        }
-        
-        public MplsPacket()
-        {
-            
-        }
-        
-        /// <summary>Converts <c>MPLSPacket</c> object to bytes</summary>
-        /// <returns>MPLSPacket as bytes array</returns>
-        public static byte[] ToBytes(MplsPacket packet)
-        {
-            return MessagePackSerializer.Serialize(packet);
+            return MessagePackSerializer.Serialize(mplsPacket);
         }
 
-        /// <summary>Converts bytes to <c>MPLSPacket</c> object</summary>
-        /// <returns>MPLSPacket object</returns>
-        public static MplsPacket ToObject(byte[] bytes)
+        public static MplsPacket FromBytes(byte[] bytes)
         {
             return MessagePackSerializer.Deserialize<MplsPacket>(bytes);
         }
-        
+
         public override string ToString()
         {
-            return $"[{SourcePortAlias}, {DestinationPortAlias}, [{string.Join(", ", Labels)}], {Message}]";
+            return $"[{SourcePortAlias}, {DestinationPortAlias}, [{string.Join(", ", MplsLabels)}], {Message}]";
+        }
+
+        private MplsPacket(string sourcePortAlias, string destinationPortAlias, List<long> mplsLabels, string message)
+        {
+            SourcePortAlias = sourcePortAlias;
+            DestinationPortAlias = destinationPortAlias;
+            MplsLabels = mplsLabels;
+            Message = message;
+        }
+
+        /// <summary>
+        /// Constructor only for MessagePack deserialization
+        /// </summary>
+        /// To manually create MplsPacket object, use <see cref="Builder"/>
+        public MplsPacket() {}
+
+        /// <summary>
+        /// Builder for MplsPacket
+        /// </summary>
+        /// Sample usage
+        /// <code>
+        /// MplsPacket packet = new MplsPacket.Builder()
+        ///     .SetSourcePortAlias("1234")
+        ///     .SetDestinationPortAlias("1235")
+        ///     .AddMplsLabel(100)
+        ///     .AddMplsLabel(200)
+        ///     .SetMessage("Hello")
+        ///     .Build();
+        /// </code>
+        public class Builder
+        {
+            private string _sourcePortAlias = string.Empty;
+            private string _destinationPortAlias = string.Empty;
+            private List<long> _mplsLabels;
+            private string _message = string.Empty;
+
+            public Builder SetSourcePortAlias(string sourcePortAlias)
+            {
+                _sourcePortAlias = sourcePortAlias;
+                return this;
+            }
+
+            public Builder SetDestinationPortAlias(string destinationPortAlias)
+            {
+                _destinationPortAlias = destinationPortAlias;
+                return this;
+            }
+
+            public Builder SetMplsLabels(List<long> mplsLabels)
+            {
+                _mplsLabels = mplsLabels;
+                return this;
+            }
+
+            public Builder AddMplsLabel(long mplsLabel)
+            {
+                _mplsLabels ??= new List<long>();
+                _mplsLabels.Add(mplsLabel);
+                return this;
+            }
+
+            public Builder SetMessage(string message)
+            {
+                _message = message;
+                return this;
+            }
+
+            public MplsPacket Build()
+            {
+                _mplsLabels ??= new List<long>();
+                return new MplsPacket(_sourcePortAlias, _destinationPortAlias, _mplsLabels, _message);
+            }
         }
     }
 }
-
