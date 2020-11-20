@@ -38,7 +38,6 @@ namespace cn.Utils
             while (true)
             {
                 SendPacket();
-                LOG.Info("Packet sent");
             }
         }
 
@@ -63,25 +62,27 @@ namespace cn.Utils
             LOG.Info($"Preparing MPLS packet no {_packetsSend}");
             
             (string destinationPort, string message) = _userInterface.EnterReceiverAndMessage();
-            Send(destinationPort, message, _packetsSend);
+            Send(destinationPort, message);
   
             _packetsSend++;
             LOG.Info("Packet send");
         }
 
-        private void Send(string destinationPort, string message, int packetId)
+        private void Send(string destinationPort, string message)
         {
             MplsPacket packet = 
-                new MplsPacket(_configuration.SourcePort, _configuration.CableCloudPort, destinationPort, message, packetId);
+                new MplsPacket(_configuration.SourcePort, _configuration.CableCloudPort, destinationPort, message);
             Sender.Send(MplsPacket.ToBytes(packet));
             byte[] buffer = new byte[1024];
             Sender.Receive(buffer);
             LOG.Info($"Received: {Encoding.ASCII.GetString(buffer)}");
         }
 
-        private void Send() // TODO: Implement hello packet sending
+        private void Send()
         {
-            Sender.Send(Encoding.ASCII.GetBytes($"Hello from port: {_configuration.SourcePort}"));
+            //Sender.Send(Encoding.ASCII.GetBytes($"Hello from port: {_configuration.SourcePort}"));
+            MplsPacket packet = new MplsPacket(_configuration.SourcePort, _configuration.CableCloudPort);
+            Sender.Send(MplsPacket.ToBytes(packet));
             byte[] buffer = new byte[1024];
             Sender.Receive(buffer);
             LOG.Info($"Received: {Encoding.ASCII.GetString(buffer)}");

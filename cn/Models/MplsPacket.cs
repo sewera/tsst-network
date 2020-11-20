@@ -12,50 +12,57 @@ namespace cn.Models
         [Key(0)]
         private IList<long> Labels { get; set; }
 
-        /// <summary> unnecessary
-        /// IP address (for sake of this project it's just localhost)
-        /// </summary>
-        [Key(1)]
-        private string Address { get; set; }
-
         /// <summary>
         /// Alias representation of out port of host client node
         /// </summary>
-        [Key(2)]
+        [Key(1)]
         private string SourcePortAlias { get; set; }
 
         /// <summary>
         /// Alias representation port of cable cloud 
         /// </summary>
-        [Key(3)]
+        [Key(2)]
         private string CableCloudPortAlias { get; set; }
 
         /// <summary>
         /// Alias representation port of remote destination client node
         /// </summary>
-        [Key(4)]
-        private string DestinationPort { get; set; }
+        [Key(3)]
+        private string DestinationPortAlias { get; set; }
 
         /// <summary>
         /// User's input message
         /// </summary>
-        [Key(5)]
+        [Key(4)]
         private string Message { get; set; }
-        
-        /// <summary>
-        /// MPLS packet identifier
-        /// </summary>
-        [Key(6)]
-        private int PacketId { get; set; }
 
-        public MplsPacket(string sourcePortAlias, string cableCloudPortAlias, string destinationPort, string message, int packetId)
+        /// <summary>
+        /// Constructor used to prepare MPLS packet with message and remote host receiver
+        /// </summary>
+        /// <param name="sourcePortAlias"></param>
+        /// <param name="cableCloudPortAlias"></param>
+        /// <param name="destinationPortAlias"></param>
+        /// <param name="message"></param>
+        /// <param name="packetId"></param>
+        public MplsPacket(string sourcePortAlias, string cableCloudPortAlias, string destinationPortAlias, string message)
         {
-            Address = "127.0.0.1";
             SourcePortAlias = sourcePortAlias; 
             CableCloudPortAlias = cableCloudPortAlias; 
-            DestinationPort = destinationPort;
+            DestinationPortAlias = destinationPortAlias;
             Message = message;
-            PacketId = packetId;
+        }
+        
+        /// <summary>
+        /// Constructor used to prepare MPLS packet sent in initial message to Cloud Cable when connected
+        /// </summary>
+        /// <param name="sourcePortAlias"></param>
+        /// <param name="cableCloudPortAlias"></param>
+        public MplsPacket(string sourcePortAlias, string cableCloudPortAlias)
+        {
+            SourcePortAlias = sourcePortAlias; 
+            CableCloudPortAlias = cableCloudPortAlias;
+            DestinationPortAlias = "";
+            Message = "";
         }
         
         public MplsPacket()
@@ -75,6 +82,11 @@ namespace cn.Models
         public static MplsPacket ToObject(byte[] bytes)
         {
             return MessagePackSerializer.Deserialize<MplsPacket>(bytes);
+        }
+        
+        public override string ToString()
+        {
+            return $"[{SourcePortAlias}, {DestinationPortAlias}, [{string.Join(", ", Labels)}], {Message}]";
         }
     }
 }
