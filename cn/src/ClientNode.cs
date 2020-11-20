@@ -1,5 +1,9 @@
+using cn.Config;
+using cn.Config.Parsers;
+using cn.Networking;
+using cn.Ui;
+using cn.Ui.Parsers;
 using NLog;
-using cn.Utils;
 using NLog.Config;
 using NLog.Targets;
 
@@ -20,12 +24,18 @@ namespace cn
             config.AddRule(LogLevel.Trace, LogLevel.Fatal, consoleTarget);
             LogManager.Configuration = config;
 
-            IUserInterface userInterface = new UserInterface();
-            Configuration configuration = 
-                Configuration.ReadConfigFile("C:\\Users\\szinus\\RiderProjects\\tsst-network\\cn\\Configuration.xml");
-            ClientNodeManager cnManager = new ClientNodeManager(configuration, userInterface);
+            // IConfigurationParser configurationParser = new XmlConfigurationParser("resources/configuration.xml");
+            IConfigurationParser configurationParser = new MockConfigurationParser();
+            Configuration configuration = configurationParser.ParseConfiguration();
 
-            cnManager.StartClientNode();
+            IClientPortFactory clientPortFactory = new ClientPortFactory(configuration);
+            ICommandParser commandParser = new CommandParser();
+            IClientNodeManager clientNodeManager = new ClientNodeManager(configuration, clientPortFactory);
+
+            IUserInterface userInterface = new UserInterface(commandParser, clientNodeManager);
+
+            clientNodeManager.Start();
+            userInterface.Start();
         }
     }
 }

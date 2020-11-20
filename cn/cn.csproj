@@ -7,4 +7,7 @@
     <PackageReference Include="NLog" Version="4.7.5" />
     <PackageReference Include="MessagePack" Version="2.2.60" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="src\Config" />
+  </ItemGroup>
 </Project>

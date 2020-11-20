@@ -1,0 +1,41 @@
+using cn.Config;
+using cn.Models;
+using cn.Networking;
+using NLog;
+
+namespace cn
+{
+    public class ClientNodeManager : IClientNodeManager
+    {
+        private static readonly Logger LOG = LogManager.GetCurrentClassLogger();
+        
+        private Configuration _configuration;
+        private IClientPortFactory _clientPortFactory;
+        private IClientPort _clientPort;
+
+        public ClientNodeManager(Configuration config, IClientPortFactory clientPortFactory)
+        {
+            _configuration = config;
+            _clientPortFactory = clientPortFactory;
+        }
+
+        public void Start()
+        {
+            _clientPort = _clientPortFactory.GetPort(_configuration.ClientPortAlias);
+            _clientPort.ConnectToCableCloud();
+            _clientPort.StartReceiving();
+        }
+
+        public void Send(string destinationPortAlias, string message)
+        {
+            MplsPacket packet = new MplsPacket.Builder()
+                .SetSourcePortAlias(_configuration.ClientPortAlias)
+                .SetDestinationPortAlias(destinationPortAlias)
+                .SetMplsLabels(_configuration.MplsLabels)
+                .SetMessage(message)
+                .Build();
+
+            _clientPort.Send(packet);
+        }
+    }
+}
