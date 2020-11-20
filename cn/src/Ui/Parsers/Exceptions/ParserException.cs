@@ -4,6 +4,11 @@ namespace cn.Ui.Parsers.Exceptions
 {
     public class ParserException : Exception
     {
-        public ParserException(string message) : base($"Parse exception: {message}") {}
+        public string ExceptionMessage { get; }
+
+        public ParserException(string message) : base($"Parse exception: {message}")
+        {
+            ExceptionMessage = message;
+        }
     }
 }

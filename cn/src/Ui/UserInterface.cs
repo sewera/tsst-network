@@ -1,5 +1,7 @@
 using System;
+using cn.Models;
 using cn.Ui.Parsers;
+using cn.Ui.Parsers.Exceptions;
 using NLog;
 
 namespace cn.Ui
@@ -16,33 +18,32 @@ namespace cn.Ui
             _clientNodeManager = clientNodeManager;
         }
 
-        public (string, string) EnterReceiverAndMessage()
-        {
-            LOG.Info("Enter alias of remote host and message you want to send.\nInput format: <<port_serial_no>> [space] <<message>>");
-
-            string input = Console.ReadLine();
-            if (input == null) throw new Exception("Wrong command");
-            string[] parts = input.Split(' ', 2);
-            return (parts[0], parts[1]);
-        }
-
         public void Start()
         {
+            _clientNodeManager.Start();
+            _clientNodeManager.RegisterReceiveMessageEvent(MessageReceived);
+
+            Console.WriteLine("Enter alias of remote host and message you want to send.\nInput format: <<port_serial_no>> [space] <<message>>");
             while (true)
             {
-                Console.WriteLine("Enter alias of remote host and message you want to send.\nInput format: <<port_serial_no>> [space] <<message>>");
                 Console.Write("> ");
                 string input = Console.ReadLine();
-                if (string.IsNullOrEmpty(input))
-                {
-                    LOG.Error("Input cannot be null nor empty");
-                    continue;
-                }
 
-                (string destinationPortAlias, string message) = _commandParser.ParseCommand(input);
-                _clientNodeManager.Send(destinationPortAlias, message);
+                try
+                {
+                    (string destinationPortAlias, string message) = _commandParser.ParseCommand(input);
+                    _clientNodeManager.Send(destinationPortAlias, message);
+                }
+                catch (ParserException e)
+                {
+                    LOG.Warn(e.ExceptionMessage);
+                }
             }
+        }
+
+        private static void MessageReceived(MplsPacket mplsPacket)
+        {
+            Console.WriteLine($"Received: {mplsPacket}");
         }
     }
 }
-

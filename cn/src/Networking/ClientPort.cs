@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Sockets;
 using cn.Config;
 using cn.Models;
+using cn.Networking.Delegates;
 using MessagePack;
 using NLog;
 
@@ -16,6 +17,8 @@ namespace cn.Networking
 
         private Socket _clientSocket;
         private string _clientPortAlias;
+
+        public event ReceiveMessage MessageReceived;
 
         public ClientPort(string clientPortAlias, Configuration configuration)
         {
@@ -82,6 +85,11 @@ namespace cn.Networking
             }
         }
 
+        public void RegisterReceiveMessageEvent(ReceiveMessage receiveMessage)
+        {
+            MessageReceived += receiveMessage;
+        }
+
         private void ReceiveCallback(IAsyncResult ar)
         {
             try
@@ -109,6 +117,11 @@ namespace cn.Networking
                 byte[] buffer = new byte[BUFFER_SIZE];
                 _clientSocket.BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, ReceiveCallback, buffer);
             }
+        }
+
+        protected virtual void OnMessageReceived(MplsPacket mplsPacket)
+        {
+            MessageReceived?.Invoke(mplsPacket);
         }
     }
 }

@@ -34,7 +34,6 @@ namespace cn
 
             IUserInterface userInterface = new UserInterface(commandParser, clientNodeManager);
 
-            clientNodeManager.Start();
             userInterface.Start();
         }
     }

@@ -1,8 +1,11 @@
-﻿namespace cn
+﻿using cn.Networking.Delegates;
+
+namespace cn
 {
     public interface IClientNodeManager
     {
-        void Start();
-        void Send(string destinationPortAlias, string message);
+        public void Start();
+        public void RegisterReceiveMessageEvent(ReceiveMessage receiveMessage);
+        public void Send(string destinationPortAlias, string message);
     }
 }
