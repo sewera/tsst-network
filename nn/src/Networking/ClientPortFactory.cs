@@ -1,6 +1,6 @@
-﻿using nn.src.Config;
+﻿using nn.Config;
 
-namespace nn.src.Networking
+namespace nn.Networking
 {
     public class ClientPortFactory : IClientPortFactory
     {

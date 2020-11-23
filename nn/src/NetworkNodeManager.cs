@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using NLog;
-using nn.src.Config;
-using nn.src.Models;
-using nn.src.Networking;
-using nn.src.Networking.Delegates;
+using nn.Config;
+using nn.Models;
+using nn.Networking;
+using nn.Networking.Delegates;
 
-namespace nn.src
+namespace nn
 {
     public class NetworkNodeManager : INetworkNodeManager
     {
@@ -24,27 +24,36 @@ namespace nn.src
 
         public void Start()
         {
-            // TODO: foreach port add to dictionary
-            _clientPort = _clientPortFactory.GetPort(_configuration.ClientPortAliases);
-            _clientPort.ConnectToCableCloud();
-            _clientPort.StartReceiving();
+            foreach (string clientPortAlias in _configuration.ClientPortAliases)
+            {
+                _clientPorts.Add(clientPortAlias, _clientPortFactory.GetPort(clientPortAlias));
+                _clientPorts[clientPortAlias].ConnectToCableCloud();
+                _clientPorts[clientPortAlias].StartReceiving();
+            }
         }
 
-        public void RegisterReceiveMessageEvent(ReceiveMessage receiveMessage)
+        public void RegisterReceiveMessageEvent(string clientPortAlias, ReceiveMessageDelegate receiveMessageDelegate)
         {
-            _clientPort.RegisterReceiveMessageEvent(receiveMessage);
+            _clientPorts[clientPortAlias].RegisterReceiveMessageEvent(receiveMessageDelegate);
         }
 
-        public void Send(string destinationPortAlias, string message)
+        public void Send(string sourcePortAlias, string destinationPortAlias, string message)
         {
             MplsPacket packet = new MplsPacket.Builder()
-                .SetSourcePortAlias(_configuration.ClientPortAliases)
+                .SetSourcePortAlias(sourcePortAlias)
                 .SetDestinationPortAlias(destinationPortAlias)
                 .SetMplsLabels(_configuration.MplsLabels)
                 .SetMessage(message)
                 .Build();
 
-            _clientPort.Send(packet);
+            try
+            {
+                _clientPorts[sourcePortAlias].Send(packet);
+            }
+            catch (KeyNotFoundException e)
+            {
+                LOG.Warn($"Port with alias: {sourcePortAlias} was not found in clientPorts dictionary");
+            }
         }
     }
 }

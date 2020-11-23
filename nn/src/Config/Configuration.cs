@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Net;
 
-namespace nn.src.Config
+namespace nn.Config
 {
     public class Configuration
     {
