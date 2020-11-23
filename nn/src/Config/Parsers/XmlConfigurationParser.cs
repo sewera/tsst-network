@@ -1,7 +1,7 @@
 using System.Xml;
 using NLog;
 
-namespace nn.src.Config.Parsers
+namespace nn.Config.Parsers
 {
     internal class XmlConfigurationParser : IConfigurationParser
     {

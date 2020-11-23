@@ -1,13 +1,11 @@
 using NLog;
 using NLog.Config;
 using NLog.Targets;
-using nn.src.Config;
-using nn.src.Config.Parsers;
-using nn.src.Networking;
-using nn.src.Ui;
-using nn.src.Ui.Parsers;
+using nn.Config;
+using nn.Config.Parsers;
+using nn.Networking;
 
-namespace nn.src
+namespace nn
 {
     class NetworkNode
     {
@@ -29,12 +27,9 @@ namespace nn.src
             Configuration configuration = configurationParser.ParseConfiguration();
 
             IClientPortFactory clientPortFactory = new ClientPortFactory(configuration);
-            ICommandParser commandParser = new CommandParser();
             INetworkNodeManager networkNodeManager = new NetworkNodeManager(configuration, clientPortFactory);
 
-            IUserInterface userInterface = new UserInterface(commandParser, networkNodeManager);
-
-            userInterface.Start();
+            networkNodeManager.Start();
         }
     }
 }

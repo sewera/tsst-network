@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+using MessagePack;
 
-namespace nn.src.Models
+namespace nn.Models
 {
     [MessagePackObject]
     public class MplsPacket

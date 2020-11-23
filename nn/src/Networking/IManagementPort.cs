@@ -1,4 +1,4 @@
-namespace nn.src.Networking
+namespace nn.Networking
 {
     public interface IManagementPort
     {

@@ -1,4 +1,4 @@
-namespace nn.src.Config.Parsers
+namespace nn.Config.Parsers
 {
     internal interface IConfigurationParser
     {

@@ -1,6 +1,6 @@
-using nn.src.Models;
+using nn.Models;
 
-namespace nn.src.Networking.Delegates
+namespace nn.Networking.Delegates
 {
-    public delegate void ReceiveMessage(MplsPacket mplsPacket);
+    public delegate void ReceiveMessageDelegate(MplsPacket mplsPacket);
 }

@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Net.Sockets;
+using MessagePack;
 using NLog;
-using nn.src.Config;
-using nn.src.Models;
-using nn.src.Networking.Delegates;
+using nn.Config;
+using nn.Models;
+using nn.Networking.Delegates;
 
-namespace nn.src.Networking
+namespace nn.Networking
 {
     public class ClientPort : IClientPort
     {
@@ -16,7 +17,7 @@ namespace nn.src.Networking
         private Socket _clientSocket;
         private string _clientPortAlias;
 
-        public event ReceiveMessage MessageReceived;
+        public event ReceiveMessageDelegate MessageReceived;
 
         public ClientPort(string clientPortAlias, Configuration configuration)
         {
@@ -58,7 +59,7 @@ namespace nn.src.Networking
                 _clientSocket.Connect(_configuration.CableCloudEndPoint);
                 LOG.Info("Connected");
                 MplsPacket packet = new MplsPacket.Builder()
-                    .SetSourcePortAlias(_configuration.ClientPortAliases)
+                    .SetSourcePortAlias(_clientPortAlias)
                     .Build();
                 _clientSocket.Send(MplsPacket.ToBytes(packet));
                 LOG.Debug($"Sent hello packet to CC: {packet}");
@@ -83,7 +84,7 @@ namespace nn.src.Networking
             }
         }
 
-        public void RegisterReceiveMessageEvent(ReceiveMessage receiveMessage)
+        public void RegisterReceiveMessageEvent(ReceiveMessageDelegate receiveMessage)
         {
             MessageReceived += receiveMessage;
         }
