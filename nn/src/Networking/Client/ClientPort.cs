@@ -121,7 +121,7 @@ namespace nn.Networking.Client
             }
             catch (Exception e)
             {
-                LOG.Error(e, "Error in data receiving");
+                LOG.Error(e, "Error in ReceiveCallback / OnMessageReceived event");
             }
             finally
             {

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using NLog;
 using nn.Config;
@@ -6,17 +5,16 @@ using nn.Models;
 
 namespace nn.Networking.Forwarding
 {
-    public class MplsPacketForwarder : IPacketForwarder
+    public class MockPacketForwarder : IPacketForwarder
     {
         private static readonly Logger LOG = LogManager.GetCurrentClassLogger();
 
         private readonly Configuration _configuration;
         private Dictionary<string, IPort<MplsPacket>> _clientPorts;
 
-        public MplsPacketForwarder(Configuration configuration)
+        public MockPacketForwarder(Configuration configuration)
         {
             _configuration = configuration;
-            // TODO: Parse configuration into table (list of dictionaries?)
         }
 
         public void ForwardPacket(MplsPacket packet)
@@ -27,16 +25,15 @@ namespace nn.Networking.Forwarding
                 return;
             }
 
-            // TODO: Implementation
-            LOG.Fatal($"ForwardPacket is not implemented. Packet: {packet}");
-            throw new NotImplementedException();
+            packet.MplsLabels = new List<long> {200, 300};
+            const string destinationLocalPortAlias = "R1/2";
+            LOG.Debug($"Sending packet {packet} via {destinationLocalPortAlias}");
+            _clientPorts[destinationLocalPortAlias].Send(packet);
         }
 
         public void ConfigureFromManagementSystem(ManagementPacket packet)
         {
-            // TODO: Implementation
-            LOG.Fatal($"ConfigureFromManagementSystem is not implemented. Packet: {packet}");
-            throw new NotImplementedException();
+            LOG.Info($"Received command from MS: {packet}");
         }
 
         public void SetClientPorts(Dictionary<string, IPort<MplsPacket>> clientPorts)
