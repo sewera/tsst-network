@@ -14,6 +14,9 @@ namespace cc.Config.Parsers
             return new Configuration.Builder()
                 .SetListeningAddress(listeningAddress)
                 .SetListeningPort(listeningPort)
+                .AddConnection(("1", "11", true))
+                .AddConnection(("2", "12", true))
+                .AddConnection(("3", "13", true))
                 .Build();
         }
     }

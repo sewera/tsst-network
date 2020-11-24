@@ -1,5 +1,4 @@
 ﻿using System.Net.Sockets;
-using System.Text;
 using cc.Models;
 
 namespace cc.Networking.Client
@@ -21,5 +20,7 @@ namespace cc.Networking.Client
 
         // Client socket.
         public Socket ClientSocket;
+
+        public string PortAlias;
     }
 }

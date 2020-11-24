@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
-using System.Threading;
 using cc.Config;
 using cc.Models;
 using cc.Networking.Client;
-using cc.Networking.Tables;
+using cc.Networking.Delegates;
 using NLog;
 
 namespace cc.Networking.Listeners
@@ -17,15 +15,14 @@ namespace cc.Networking.Listeners
 
         private readonly Configuration _configuration;
         private readonly IClientWorkerFactory _clientWorkerFactory;
-        private readonly IConnectionTable _connectionTable;
+
+        public event RegisterConnectionDelegate WorkerRegistered;
 
         public Listener(Configuration configuration,
-                        IClientWorkerFactory clientWorkerFactory,
-                        IConnectionTable connectionTable)
+                        IClientWorkerFactory clientWorkerFactory)
         {
             _configuration = configuration;
             _clientWorkerFactory = clientWorkerFactory;
-            _connectionTable = connectionTable;
         }
 
         public void Listen()
@@ -66,15 +63,25 @@ namespace cc.Networking.Listeners
                 handler.Receive(state.Buffer);
                 MplsPacket receivedPacket = MplsPacket.FromBytes(state.Buffer);
                 LOG.Debug($"Received: {receivedPacket}");
-                LOG.Trace("Adding CcConnection");
-                _connectionTable.AddCcConnection(
-                    new CcConnection(receivedPacket.SourcePortAlias, _clientWorkerFactory.GetClientWorker(state)));
+                LOG.Trace("Adding Connection");
+                state.PortAlias = receivedPacket.SourcePortAlias;
+                OnWorkerRegistered((receivedPacket.SourcePortAlias, new ClientWorker(state)));
                 listener.BeginAccept(AcceptCallback, listener);
             }
             else
             {
                 LOG.Fatal("listener is null in AcceptCallback");
             }
+        }
+
+        public void RegisterWorkerConnectionEvent(RegisterConnectionDelegate registerConnectionDelegate)
+        {
+            WorkerRegistered += registerConnectionDelegate;
+        }
+
+        protected virtual void OnWorkerRegistered((string, IClientWorker) worker)
+        {
+            WorkerRegistered?.Invoke(worker);
         }
     }
 }
