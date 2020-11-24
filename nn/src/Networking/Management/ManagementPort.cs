@@ -109,7 +109,7 @@ namespace nn.Networking.Management
                 {
                     ManagementPacket receivedPacket = ManagementPacket.FromBytes(buffer);
                     LOG.Debug($"Received: {receivedPacket}");
-                    OnMessageReceived(receivedPacket);
+                    OnMessageReceived(("", receivedPacket));
                 }
             }
             catch (MessagePackSerializationException e)
@@ -127,9 +127,9 @@ namespace nn.Networking.Management
             }
         }
 
-        protected virtual void OnMessageReceived(ManagementPacket managementPacket)
+        protected virtual void OnMessageReceived((string portAlias, ManagementPacket managementPacket) managementTuple)
         {
-            MessageReceived?.Invoke(managementPacket);
+            MessageReceived?.Invoke(managementTuple);
         }
     }
 }

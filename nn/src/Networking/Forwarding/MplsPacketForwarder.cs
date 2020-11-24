@@ -19,8 +19,9 @@ namespace nn.Networking.Forwarding
             // TODO: Parse configuration into table (list of dictionaries?)
         }
 
-        public void ForwardPacket(MplsPacket packet)
+        public void ForwardPacket((string portAlias, MplsPacket packet) forwardPacketTuple)
         {
+            (string portAlias, MplsPacket packet) = forwardPacketTuple;
             if (_clientPorts == null)
             {
                 LOG.Warn("Dictionary with clientPorts was not initialized yet");
@@ -32,8 +33,9 @@ namespace nn.Networking.Forwarding
             throw new NotImplementedException();
         }
 
-        public void ConfigureFromManagementSystem(ManagementPacket packet)
+        public void ConfigureFromManagementSystem((string portAlias, ManagementPacket packet) managementTuple)
         {
+            (string portAlias, ManagementPacket packet) = managementTuple;
             // TODO: Implementation
             LOG.Fatal($"ConfigureFromManagementSystem is not implemented. Packet: {packet}");
             throw new NotImplementedException();

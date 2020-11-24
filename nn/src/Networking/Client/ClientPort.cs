@@ -132,7 +132,7 @@ namespace nn.Networking.Client
 
         protected virtual void OnMessageReceived(MplsPacket mplsPacket)
         {
-            MessageReceived?.Invoke(mplsPacket);
+            MessageReceived?.Invoke((_clientPortAlias, mplsPacket));
         }
     }
 }
