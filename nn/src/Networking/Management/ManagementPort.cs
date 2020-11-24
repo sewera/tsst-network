@@ -57,7 +57,7 @@ namespace nn.Networking.Management
                     LOG.Info("Connected");
                     ManagementPacket packet = new ManagementPacket.Builder()
                         .SetCommandType("SYNC")
-                        .SetCommandData($"{((IPEndPoint) _managementSocket.LocalEndPoint).Port}")
+                        .SetCommandData($"{((IPEndPoint) _managementSocket.LocalEndPoint).Port}") // TODO: Send router alias from config
                         .Build();
                     _managementSocket.Send(packet.ToBytes());
                     LOG.Debug($"Sent hello packet to MS: {packet}");
