@@ -32,7 +32,7 @@ namespace cn
             ICommandParser commandParser = new CommandParser();
             IClientNodeManager clientNodeManager = new ClientNodeManager(configuration, clientPortFactory);
 
-            IUserInterface userInterface = new UserInterface(commandParser, clientNodeManager);
+            IUserInterface userInterface = new UserInterface(commandParser, clientNodeManager, configuration);
 
             userInterface.Start();
         }

@@ -1,10 +1,7 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
-using System.Xml;
 using System.Xml.Linq;
 using NLog;
+using NLog.Fluent;
 
 namespace cn.Config.Parsers 
 {
@@ -26,13 +23,23 @@ namespace cn.Config.Parsers
             LOG.Debug($"Reading configuration from {_filename}");
             XElement xelement = XElement.Load(_filename);	
 
-            configurationBuilder.SetCableCloudAddress(IPAddress.Parse(xelement.Descendants("cable_cloud_address").First().Value));
+            configurationBuilder.SetCableCloudAddress(xelement.Descendants("cable_cloud_address").First().Value);
             configurationBuilder.SetCableCloudPort(int.Parse(xelement.Descendants("cable_cloud_port").First().Value));
+			configurationBuilder.SetClientAlias(xelement.Descendants("client_alias").First().Value);
             configurationBuilder.SetClientPortAlias(xelement.Descendants("client_port").First().Value);
 
-            foreach (XElement element in xelement.Descendants("label"))
+            //foreach (XElement element in xelement.Descendants("labels"))
+            //{
+            //    LOG.Trace("Host: {}/nLabel: {}",element.Element("label").Value, long.Parse(element.Value));
+            //    configurationBuilder.AddMplsLabel(element.Element("label").Value, long.Parse(element.Value));
+            //}
+            // TODO: FINISH
+            var labels = from c in xelement.Descendants("labels")
+                select c.Element("host");
+
+            foreach (string host in labels)
             {
-                configurationBuilder.AddMplsLabel(int.Parse(element.Value));
+                LOG.Trace(host);
             }
             
             return configurationBuilder.Build();

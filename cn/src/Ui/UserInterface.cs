@@ -1,5 +1,8 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
+using cn.Config;
 using cn.Models;
 using cn.Ui.Parsers;
 using cn.Ui.Parsers.Exceptions;
@@ -11,12 +14,14 @@ namespace cn.Ui
     {
         private readonly ICommandParser _commandParser;
         private readonly IClientNodeManager _clientNodeManager;
+        private readonly Configuration _configuration;
         private static readonly Logger LOG = LogManager.GetCurrentClassLogger();
         
-        public UserInterface(ICommandParser commandParser, IClientNodeManager clientNodeManager)
+        public UserInterface(ICommandParser commandParser, IClientNodeManager clientNodeManager, Configuration configuration)
         {
             _commandParser = commandParser;
             _clientNodeManager = clientNodeManager;
+            _configuration = configuration;
         }
 
         public void Start()
@@ -33,7 +38,7 @@ namespace cn.Ui
 
         private void StartCommandParsing()
         {
-            Console.WriteLine("Enter alias of remote host and message you want to send.\nInput format: <<port_serial_no>> [space] <<message>>");
+            Console.WriteLine("Enter alias of remote host and message you want to send.\nInput format: <<remote_host_alias>> [space] <<message>>");
             while (true)
             {
                 Console.Write("> ");
@@ -41,14 +46,21 @@ namespace cn.Ui
 
                 try
                 {
-                    (string destinationPortAlias, string message) = _commandParser.ParseCommand(input);
-                    _clientNodeManager.Send(destinationPortAlias, message);
+                    (string remoteHostAlias, string message) = _commandParser.ParseCommand(input);
+                    _clientNodeManager.Send(remoteHostAlias, message, SelectOutLabel(remoteHostAlias));
                 }
                 catch (ParserException e)
                 {
                     LOG.Warn(e.ExceptionMessage);
                 }
             }
+        }
+
+        private List<long> SelectOutLabel(string remoteHostAlias)
+        {
+            List<long> mplsLabels = new List<long>();
+            //mplsLabels.Add(_configuration.MplsLabels[remoteHostAlias]);
+            return mplsLabels;
         }
 
         private static void MessageReceived(MplsPacket mplsPacket)
