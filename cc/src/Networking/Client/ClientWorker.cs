@@ -1,9 +1,8 @@
 using System;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
-using System.Threading.Tasks;
 using cc.Models;
+using cc.Networking.Delegates;
 using NLog;
 
 namespace cc.Networking.Client
@@ -12,6 +11,8 @@ namespace cc.Networking.Client
     {
         private static readonly Logger LOG = LogManager.GetCurrentClassLogger();
         private ClientState _state;
+
+        public event ReceiveMessageDelegate MessageReceived;
 
         public ClientWorker(ClientState state)
         {
@@ -40,8 +41,7 @@ namespace cc.Networking.Client
                     _state.Packet = MplsPacket.FromBytes(_state.Buffer);
                     LOG.Debug($"Received: {_state.Packet}");
 
-                    // Echo the data back to the client.
-                    // Send(_state.Packet);
+                    OnMessageReceived(_state.Packet);
 
                     handler.BeginReceive(_state.Buffer, 0, ClientState.BufferSize, 0, ReadCallback, _state);
                 }
@@ -86,6 +86,16 @@ namespace cc.Networking.Client
         public int GetPort()
         {
             return ((IPEndPoint) _state.ClientSocket.RemoteEndPoint).Port;
+        }
+
+        public void RegisterReceiveMessageEvent(ReceiveMessageDelegate receiveMessageDelegate)
+        {
+            MessageReceived += receiveMessageDelegate;
+        }
+
+        protected virtual void OnMessageReceived(MplsPacket packet)
+        {
+            MessageReceived?.Invoke((_state.PortAlias, packet));
         }
     }
 }

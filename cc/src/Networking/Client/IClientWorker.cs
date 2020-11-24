@@ -1,14 +1,15 @@
 ﻿using System;
-using System.Net.Sockets;
 using cc.Models;
+using cc.Networking.Delegates;
 
 namespace cc.Networking.Client
 {
     public interface IClientWorker
     {
-        void ReadCallback(IAsyncResult ar);
-        void Send(MplsPacket mplsPacket);
-        void SendCallback(IAsyncResult ar);
-        int GetPort();
+        public void ReadCallback(IAsyncResult ar);
+        public void Send(MplsPacket mplsPacket);
+        public void SendCallback(IAsyncResult ar);
+        public int GetPort();
+        public void RegisterReceiveMessageEvent(ReceiveMessageDelegate receiveMessageDelegate);
     }
 }
