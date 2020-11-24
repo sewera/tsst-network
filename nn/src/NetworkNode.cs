@@ -30,7 +30,8 @@ namespace nn
             IConfigurationParser configurationParser = new MockConfigurationParser();
             Configuration configuration = configurationParser.ParseConfiguration();
 
-            IPacketForwarder packetForwarder = new MplsPacketForwarder(configuration);
+            // IPacketForwarder packetForwarder = new MplsPacketForwarder(configuration);
+            IPacketForwarder packetForwarder = new MockPacketForwarder(configuration);
             IPort<ManagementPacket> managementPort = new ManagementPort(configuration);
             IClientPortFactory clientPortFactory = new ClientPortFactory(configuration);
             INetworkNodeManager networkNodeManager = new NetworkNodeManager(configuration, packetForwarder, managementPort, clientPortFactory);
