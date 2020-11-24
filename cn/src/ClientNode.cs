@@ -1,4 +1,3 @@
-using System.Linq;
 using cn.Config;
 using cn.Config.Parsers;
 using cn.Networking;
@@ -6,7 +5,6 @@ using cn.Ui;
 using cn.Ui.Parsers;
 using NLog;
 using NLog.Config;
-using NLog.Fluent;
 using NLog.Targets;
 
 namespace cn

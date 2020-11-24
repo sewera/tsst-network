@@ -24,15 +24,15 @@ namespace cn.Config.Parsers
             Configuration.Builder configurationBuilder = new Configuration.Builder();
 
             LOG.Debug($"Reading configuration from {_filename}");
-            XElement xelement = XElement.Load(_filename);
+            XElement xelement = XElement.Load(_filename);	
 
-            configurationBuilder.SetCableCloudAddress("127.0.0.1");
-            configurationBuilder.SetCableCloudPort(Int32.Parse(xelement.Descendants("cable_cloud_port").First().Value));
+            configurationBuilder.SetCableCloudAddress(IPAddress.Parse(xelement.Descendants("cable_cloud_address").First().Value));
+            configurationBuilder.SetCableCloudPort(int.Parse(xelement.Descendants("cable_cloud_port").First().Value));
             configurationBuilder.SetClientPortAlias(xelement.Descendants("client_port").First().Value);
 
             foreach (XElement element in xelement.Descendants("label"))
             {
-                configurationBuilder.AddMplsLabel(Int32.Parse(element.Value));
+                configurationBuilder.AddMplsLabel(int.Parse(element.Value));
             }
             
             return configurationBuilder.Build();
