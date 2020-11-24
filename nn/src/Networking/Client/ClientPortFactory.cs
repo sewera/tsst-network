@@ -1,6 +1,7 @@
 ﻿using nn.Config;
+using nn.Models;
 
-namespace nn.Networking
+namespace nn.Networking.Client
 {
     public class ClientPortFactory : IClientPortFactory
     {
@@ -11,7 +12,7 @@ namespace nn.Networking
             _configuration = configuration;
         }
 
-        public IClientPort GetPort(string portAlias)
+        public IPort<MplsPacket> GetPort(string portAlias)
         {
             return new ClientPort(portAlias, _configuration);
         }

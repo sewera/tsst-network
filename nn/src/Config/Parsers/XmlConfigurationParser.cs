@@ -16,6 +16,8 @@ namespace nn.Config.Parsers
 
         public Configuration ParseConfiguration()
         {
+            // TODO: Add management system address / port
+            // TODO: Add port aliases
             LOG.Debug($"Reading configuration from {_filename}");
             XmlTextReader reader = new XmlTextReader(_filename);
 

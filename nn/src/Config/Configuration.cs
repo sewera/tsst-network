@@ -14,6 +14,15 @@ namespace nn.Config
         /// <summary>IPEndPoint combining CableCloudAddress and CableCloudPort</summary>
         public IPEndPoint CableCloudEndPoint { get; }
 
+        /// <summary>CableCloud address</summary>
+        public IPAddress ManagementSystemAddress { get; }
+
+        /// <summary>CableCloud port to connect to</summary>
+        public int ManagementSystemPort { get; }
+
+        /// <summary>IPEndPoint combining CableCloudAddress and CableCloudPort</summary>
+        public IPEndPoint ManagementSystemEndPoint { get; }
+
         /// <summary>Alias representation host client node port</summary>
         public List<string> ClientPortAliases { get; }
 
@@ -23,12 +32,18 @@ namespace nn.Config
         private Configuration(IPAddress cableCloudAddress,
                               int cableCloudPort,
                               IPEndPoint cableCloudEndPoint,
+                              IPAddress managementSystemAddress,
+                              int managementSystemPort,
+                              IPEndPoint managementSystemEndPoint,
                               List<string> clientPortAliases,
                               List<long> mplsLabels)
         {
             CableCloudAddress = cableCloudAddress;
             CableCloudPort = cableCloudPort;
             CableCloudEndPoint = cableCloudEndPoint;
+            ManagementSystemAddress = managementSystemAddress;
+            ManagementSystemPort = managementSystemPort;
+            ManagementSystemEndPoint = managementSystemEndPoint;
             ClientPortAliases = clientPortAliases;
             MplsLabels = mplsLabels;
         }
@@ -37,6 +52,8 @@ namespace nn.Config
         {
             private IPAddress _cableCloudAddress;
             private int _cableCloudPort;
+            private IPAddress _managementSystemAddress;
+            private int _managementSystemPort;
             private List<string> _clientPortAliases;
             private List<long> _mplsLabels;
 
@@ -49,6 +66,18 @@ namespace nn.Config
             public Builder SetCableCloudPort(int cableCloudPort)
             {
                 _cableCloudPort = cableCloudPort;
+                return this;
+            }
+
+            public Builder SetManagementSystemAddress(string managementSystemAddress)
+            {
+                _managementSystemAddress = IPAddress.Parse(managementSystemAddress);
+                return this;
+            }
+
+            public Builder SetManagementSystemPort(int managementSystemPort)
+            {
+                _managementSystemPort = managementSystemPort;
                 return this;
             }
 
@@ -81,12 +110,17 @@ namespace nn.Config
             public Configuration Build()
             {
                 _cableCloudAddress ??= IPAddress.Parse("127.0.0.1");
+                _managementSystemAddress ??= IPAddress.Parse("127.0.0.1");
                 _mplsLabels ??= new List<long>();
                 _clientPortAliases ??= new List<string>();
                 IPEndPoint cableCloudEndPoint = new IPEndPoint(_cableCloudAddress, _cableCloudPort);
+                IPEndPoint managementSystemEndPoint = new IPEndPoint(_managementSystemAddress, _managementSystemPort);
                 return new Configuration(_cableCloudAddress,
                     _cableCloudPort,
                     cableCloudEndPoint,
+                    _managementSystemAddress,
+                    _managementSystemPort,
+                    managementSystemEndPoint,
                     _clientPortAliases,
                     _mplsLabels);
             }
