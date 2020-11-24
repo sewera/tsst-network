@@ -1,3 +1,4 @@
+using System.Linq;
 using cn.Config;
 using cn.Config.Parsers;
 using cn.Networking;
@@ -5,6 +6,7 @@ using cn.Ui;
 using cn.Ui.Parsers;
 using NLog;
 using NLog.Config;
+using NLog.Fluent;
 using NLog.Targets;
 
 namespace cn
@@ -24,8 +26,8 @@ namespace cn
             config.AddRule(LogLevel.Trace, LogLevel.Fatal, consoleTarget);
             LogManager.Configuration = config;
 
-            // IConfigurationParser configurationParser = new XmlConfigurationParser("resources/configuration.xml");
-            IConfigurationParser configurationParser = new MockConfigurationParser();
+            IConfigurationParser configurationParser = new XmlConfigurationParser("resources/configuration.xml");
+            //IConfigurationParser configurationParser = new MockConfigurationParser();
             Configuration configuration = configurationParser.ParseConfiguration();
 
             IClientPortFactory clientPortFactory = new ClientPortFactory(configuration);
