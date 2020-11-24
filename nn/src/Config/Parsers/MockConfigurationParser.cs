@@ -11,6 +11,8 @@ namespace nn.Config.Parsers
             return new Configuration.Builder()
                 .SetCableCloudAddress("127.0.0.1")
                 .SetCableCloudPort(3001)
+                .SetManagementSystemAddress("127.0.0.1")
+                .SetManagementSystemPort(4001)
                 .AddClientPortAlias("R1/1")
                 .AddClientPortAlias("R1/2")
                 .AddClientPortAlias("R1/3")

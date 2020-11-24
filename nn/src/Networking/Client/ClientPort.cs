@@ -6,18 +6,19 @@ using nn.Config;
 using nn.Models;
 using nn.Networking.Delegates;
 
-namespace nn.Networking
+namespace nn.Networking.Client
 {
-    public class ClientPort : IClientPort
+    public class ClientPort : IPort<MplsPacket>
     {
         private const int BufferSize = 1024;
+        private const int Retries = 10;
         private readonly Configuration _configuration;
         private static readonly Logger LOG = LogManager.GetCurrentClassLogger();
 
-        private Socket _clientSocket;
-        private string _clientPortAlias;
+        private readonly Socket _clientSocket;
+        private readonly string _clientPortAlias;
 
-        public event ReceiveMessageDelegate MessageReceived;
+        public event ReceiveMessageDelegate<MplsPacket> MessageReceived;
 
         public ClientPort(string clientPortAlias, Configuration configuration)
         {
@@ -34,7 +35,7 @@ namespace nn.Networking
             }
 
             LOG.Debug($"Sending packet: {mplsPacket}");
-            byte[] packetBytes = MplsPacket.ToBytes(mplsPacket);
+            byte[] packetBytes = mplsPacket.ToBytes();
             _clientSocket.BeginSend(packetBytes, 0, packetBytes.Length, SocketFlags.None, SendCallback, _clientSocket);
         }
 
@@ -51,40 +52,52 @@ namespace nn.Networking
             }
         }
 
-        public void ConnectToCableCloud()
+        public void Connect()
         {
-            try
+            for (int i = 1; i <= Retries; i++)
             {
-                LOG.Info($"Connecting to CableCloud on port: {_configuration.CableCloudPort}");
-                _clientSocket.Connect(_configuration.CableCloudEndPoint);
-                LOG.Info("Connected");
-                MplsPacket packet = new MplsPacket.Builder()
-                    .SetSourcePortAlias(_clientPortAlias)
-                    .Build();
-                _clientSocket.Send(MplsPacket.ToBytes(packet));
-                LOG.Debug($"Sent hello packet to CC: {packet}");
+                try
+                {
+                    LOG.Info($"Connecting to CableCloud on port: {_configuration.CableCloudPort}");
+                    _clientSocket.Connect(_configuration.CableCloudEndPoint);
+                    LOG.Info("Connected");
+                    MplsPacket packet = new MplsPacket.Builder()
+                        .SetSourcePortAlias(_clientPortAlias)
+                        .Build();
+                    _clientSocket.Send(packet.ToBytes());
+                    LOG.Debug($"Sent hello packet to CC: {packet}");
+                    return;
+                }
+                catch (Exception e)
+                {
+                    LOG.Warn(e, $"Failed to connect to cable cloud, try {i}/{Retries}");
+                }
             }
-            catch (Exception e)
-            {
-                LOG.Fatal(e, "Failed to connect to cable cloud");
-                Environment.Exit(1);
-            }
+            LOG.Fatal($"Failed to connect to cable cloud after {Retries} tries");
+            Environment.Exit(1);
         }
 
         public void StartReceiving()
         {
-            try
+            for (int i = 1; i <= Retries; i++)
             {
-                byte[] buffer = new byte[BufferSize];
-                _clientSocket.BeginReceive(buffer, 0, BufferSize, SocketFlags.None, ReceiveCallback, buffer);
+                try
+                {
+                    byte[] buffer = new byte[BufferSize];
+                    _clientSocket.BeginReceive(buffer, 0, BufferSize, SocketFlags.None, ReceiveCallback, buffer);
+                    return;
+                }
+                catch (Exception e)
+                {
+                    LOG.Warn(e, $"Could not start receiving, try {i}/{Retries}");
+                }
             }
-            catch (Exception e)
-            {
-                LOG.Warn(e, "Could not start receiving");
-            }
+
+            LOG.Fatal($"Could not start receiving after {Retries} retries");
+            Environment.Exit(2);
         }
 
-        public void RegisterReceiveMessageEvent(ReceiveMessageDelegate receiveMessage)
+        public void RegisterReceiveMessageEvent(ReceiveMessageDelegate<MplsPacket> receiveMessage)
         {
             MessageReceived += receiveMessage;
         }

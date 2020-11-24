@@ -4,7 +4,7 @@ using MessagePack;
 namespace nn.Models
 {
     [MessagePackObject]
-    public class MplsPacket
+    public class MplsPacket : ISerializablePacket
     {
         [Key(0)] public string SourcePortAlias { get; set; }
 
@@ -14,9 +14,9 @@ namespace nn.Models
 
         [Key(3)] public string Message { get; set; }
 
-        public static byte[] ToBytes(MplsPacket mplsPacket)
+        public byte[] ToBytes()
         {
-            return MessagePackSerializer.Serialize(mplsPacket);
+            return MessagePackSerializer.Serialize(this);
         }
 
         public static MplsPacket FromBytes(byte[] bytes)

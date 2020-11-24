@@ -3,7 +3,8 @@ using NLog;
 using nn.Config;
 using nn.Models;
 using nn.Networking;
-using nn.Networking.Delegates;
+using nn.Networking.Client;
+using nn.Networking.Forwarding;
 
 namespace nn
 {
@@ -11,48 +12,42 @@ namespace nn
     {
         private static readonly Logger LOG = LogManager.GetCurrentClassLogger();
         
-        private Configuration _configuration;
-        private IClientPortFactory _clientPortFactory;
-        private Dictionary<string, IClientPort> _clientPorts;
-        private IClientPort _clientPort;
+        private readonly Configuration _configuration;
+        private readonly IPacketForwarder _packetForwarder;
+        private readonly IClientPortFactory _clientPortFactory;
+        private readonly IPort<ManagementPacket> _managementPort;
+        private readonly Dictionary<string, IPort<MplsPacket>> _clientPorts = new Dictionary<string, IPort<MplsPacket>>();
 
-        public NetworkNodeManager(Configuration config, IClientPortFactory clientPortFactory)
+        public NetworkNodeManager(Configuration config,
+                                  IPacketForwarder packetForwarder,
+                                  IPort<ManagementPacket> managementPort,
+                                  IClientPortFactory clientPortFactory)
         {
             _configuration = config;
+            _packetForwarder = packetForwarder;
+            _managementPort = managementPort;
             _clientPortFactory = clientPortFactory;
         }
 
         public void Start()
         {
+            _managementPort.Connect();
+            _managementPort.RegisterReceiveMessageEvent(_packetForwarder.ConfigureFromManagementSystem);
+            _managementPort.StartReceiving();
+
             foreach (string clientPortAlias in _configuration.ClientPortAliases)
             {
                 _clientPorts.Add(clientPortAlias, _clientPortFactory.GetPort(clientPortAlias));
-                _clientPorts[clientPortAlias].ConnectToCableCloud();
+                _clientPorts[clientPortAlias].Connect();
+                _clientPorts[clientPortAlias].RegisterReceiveMessageEvent(_packetForwarder.ForwardPacket);
                 _clientPorts[clientPortAlias].StartReceiving();
             }
-        }
 
-        public void RegisterReceiveMessageEvent(string clientPortAlias, ReceiveMessageDelegate receiveMessageDelegate)
-        {
-            _clientPorts[clientPortAlias].RegisterReceiveMessageEvent(receiveMessageDelegate);
-        }
+            _packetForwarder.SetClientPorts(_clientPorts);
 
-        public void Send(string sourcePortAlias, string destinationPortAlias, string message)
-        {
-            MplsPacket packet = new MplsPacket.Builder()
-                .SetSourcePortAlias(sourcePortAlias)
-                .SetDestinationPortAlias(destinationPortAlias)
-                .SetMplsLabels(_configuration.MplsLabels)
-                .SetMessage(message)
-                .Build();
-
-            try
+            while (true)
             {
-                _clientPorts[sourcePortAlias].Send(packet);
-            }
-            catch (KeyNotFoundException e)
-            {
-                LOG.Warn($"Port with alias: {sourcePortAlias} was not found in clientPorts dictionary");
+                // TODO: Make more elegant solution to program exiting
             }
         }
     }

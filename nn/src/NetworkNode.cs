@@ -3,7 +3,11 @@ using NLog.Config;
 using NLog.Targets;
 using nn.Config;
 using nn.Config.Parsers;
+using nn.Models;
 using nn.Networking;
+using nn.Networking.Client;
+using nn.Networking.Forwarding;
+using nn.Networking.Management;
 
 namespace nn
 {
@@ -26,8 +30,10 @@ namespace nn
             IConfigurationParser configurationParser = new MockConfigurationParser();
             Configuration configuration = configurationParser.ParseConfiguration();
 
+            IPacketForwarder packetForwarder = new MplsPacketForwarder(configuration);
+            IPort<ManagementPacket> managementPort = new ManagementPort(configuration);
             IClientPortFactory clientPortFactory = new ClientPortFactory(configuration);
-            INetworkNodeManager networkNodeManager = new NetworkNodeManager(configuration, clientPortFactory);
+            INetworkNodeManager networkNodeManager = new NetworkNodeManager(configuration, packetForwarder, managementPort, clientPortFactory);
 
             networkNodeManager.Start();
         }
