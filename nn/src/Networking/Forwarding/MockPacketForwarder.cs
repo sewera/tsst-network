@@ -17,8 +17,9 @@ namespace nn.Networking.Forwarding
             _configuration = configuration;
         }
 
-        public void ForwardPacket(MplsPacket packet)
+        public void ForwardPacket((string portAlias, MplsPacket packet) forwardPacketTuple)
         {
+            (string portAlias, MplsPacket packet) = forwardPacketTuple;
             if (_clientPorts == null)
             {
                 LOG.Warn("Dictionary with clientPorts was not initialized yet");
@@ -31,8 +32,9 @@ namespace nn.Networking.Forwarding
             _clientPorts[destinationLocalPortAlias].Send(packet);
         }
 
-        public void ConfigureFromManagementSystem(ManagementPacket packet)
+        public void ConfigureFromManagementSystem((string portAlias, ManagementPacket packet) managementTuple)
         {
+            (string portAlias, ManagementPacket packet) = managementTuple;
             LOG.Info($"Received command from MS: {packet}");
         }
 
