@@ -13,22 +13,27 @@ namespace cn.Config
 
         /// <summary>IPEndPoint combining CableCloudAddress and CableCloudPort</summary>
         public IPEndPoint CableCloudEndPoint { get; }
+        
+        /// <summary>Alias representation of client</summary>
+        public string ClientAlias { get;  }
 
         /// <summary>Alias representation host client node port</summary>
         public string ClientPortAlias { get; }
 
-        /// <summary>List of MPLS labels</summary>
-        public List<long> MplsLabels { get; }
+        /// <summary>Dictionary of MPLS labels with key being host alias</summary>
+        public IDictionary<string, long> MplsLabels { get; }
 
         private Configuration(IPAddress cableCloudAddress,
                               int cableCloudPort,
                               IPEndPoint cableCloudEndPoint,
+                              string clientAlias,
                               string clientPortAlias,
-                              List<long> mplsLabels)
+                              IDictionary<string, long> mplsLabels)
         {
             CableCloudAddress = cableCloudAddress;
             CableCloudPort = cableCloudPort;
             CableCloudEndPoint = cableCloudEndPoint;
+            ClientAlias = clientAlias;
             ClientPortAlias = clientPortAlias;
             MplsLabels = mplsLabels;
         }
@@ -37,8 +42,9 @@ namespace cn.Config
         {
             private IPAddress _cableCloudAddress;
             private int _cableCloudPort;
+            private string _clientAlias;
             private string _clientPortAlias = string.Empty;
-            private List<long> _mplsLabels;
+            private IDictionary<string, long> _mplsLabels;
 
             public Builder SetCableCloudAddress(string cableCloudAddress)
             {
@@ -51,6 +57,12 @@ namespace cn.Config
                 _cableCloudPort = cableCloudPort;
                 return this;
             }
+            
+            public Builder SetClientAlias(string clientAlias)
+            {
+                _clientAlias = clientAlias;
+                return this;
+            }
 
             public Builder SetClientPortAlias(string clientPortAlias)
             {
@@ -58,14 +70,14 @@ namespace cn.Config
                 return this;
             }
 
-            public Builder AddMplsLabel(long mplsLabel)
+            public Builder AddMplsLabel(string hostAlias, long mplsLabel)
             {
-                _mplsLabels ??= new List<long>();
-                _mplsLabels.Add(mplsLabel);
+                _mplsLabels ??= new Dictionary<string, long>();
+                _mplsLabels.Add(hostAlias, mplsLabel);
                 return this;
             }
 
-            public Builder SetMplsLabels(List<long> mplsLabels)
+            public Builder SetMplsLabels(IDictionary<string, long> mplsLabels)
             {
                 _mplsLabels = mplsLabels;
                 return this;
@@ -74,11 +86,12 @@ namespace cn.Config
             public Configuration Build()
             {
                 _cableCloudAddress ??= IPAddress.Parse("127.0.0.1");
-                _mplsLabels ??= new List<long>();
+                _mplsLabels ??= new Dictionary<string, long>();
                 IPEndPoint cableCloudEndPoint = new IPEndPoint(_cableCloudAddress, _cableCloudPort);
                 return new Configuration(_cableCloudAddress,
                     _cableCloudPort,
                     cableCloudEndPoint,
+                    _clientAlias,
                     _clientPortAlias,
                     _mplsLabels);
             }

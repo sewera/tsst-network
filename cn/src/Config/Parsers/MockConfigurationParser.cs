@@ -13,8 +13,8 @@ namespace cn.Config.Parsers
                 .SetCableCloudAddress("127.0.0.1")
                 .SetCableCloudPort(3001)
                 .SetClientPortAlias("TestClient")
-                .AddMplsLabel(100)
-                .AddMplsLabel(200)
+                .AddMplsLabel("H1",101)
+                .AddMplsLabel("H2",102)
                 .Build();
         }
     }
