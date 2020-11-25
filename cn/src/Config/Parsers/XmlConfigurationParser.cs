@@ -1,9 +1,8 @@
-using System;
-using System.IO;
-using System.Xml;
+using System.Linq;
+using System.Xml.Linq;
 using NLog;
 
-namespace cn.Config.Parsers
+namespace cn.Config.Parsers 
 {
     internal class XmlConfigurationParser : IConfigurationParser
     {
@@ -18,26 +17,22 @@ namespace cn.Config.Parsers
 
         public Configuration ParseConfiguration()
         {
-            LOG.Debug($"Reading configuration from {_filename}");
-            XmlTextReader reader = new XmlTextReader(_filename);
-
             Configuration.Builder configurationBuilder = new Configuration.Builder();
 
-            while (reader.Read())
+            LOG.Debug($"Reading configuration from {_filename}");
+            XElement xelement = XElement.Load(_filename);	
+
+            configurationBuilder.SetCableCloudAddress(xelement.Descendants("cable_cloud_address").First().Value);
+            configurationBuilder.SetCableCloudPort(int.Parse(xelement.Descendants("cable_cloud_port").First().Value));
+			configurationBuilder.SetClientAlias(xelement.Descendants("client_alias").First().Value);
+            configurationBuilder.SetClientPortAlias(xelement.Descendants("client_port").First().Value);
+
+            foreach (XElement element in xelement.Descendants("label"))
             {
-                if (reader.NodeType == XmlNodeType.Element)
-                {
-                    switch (reader.Name)
-                    {
-                        case "cable-cloud-port":
-                            configurationBuilder.SetCableCloudPort(reader.ReadElementContentAsInt());
-                            break;
-                        case "client-port-alias":
-                            configurationBuilder.SetClientPortAlias(reader.ReadElementContentAsString());
-                            break;
-                    }
-                }
+                LOG.Trace("Remote client node: {}/nLabel: {}", element.FirstAttribute.Value,element.Value);
+                configurationBuilder.AddMplsLabel(element.FirstAttribute.Value, long.Parse(element.Value));
             }
+            
             return configurationBuilder.Build();
         }
     }

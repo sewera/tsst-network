@@ -1,4 +1,5 @@
-﻿using cn.Networking.Delegates;
+﻿using System.Collections.Generic;
+using cn.Networking.Delegates;
 
 namespace cn
 {
@@ -6,6 +7,6 @@ namespace cn
     {
         public void Start();
         public void RegisterReceiveMessageEvent(ReceiveMessage receiveMessage);
-        public void Send(string destinationPortAlias, string message);
+        public void Send(string destinationPortAlias, string message, List<long> labels);
     }
 }

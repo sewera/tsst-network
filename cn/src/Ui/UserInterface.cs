@@ -33,7 +33,7 @@ namespace cn.Ui
 
         private void StartCommandParsing()
         {
-            Console.WriteLine("Enter alias of remote host and message you want to send.\nInput format: <<port_serial_no>> [space] <<message>>");
+            Console.WriteLine("Enter alias of remote host and message you want to send.\nInput format: <<remote_host_alias>> [space] <<message>>");
             while (true)
             {
                 Console.Write("> ");
@@ -41,8 +41,8 @@ namespace cn.Ui
 
                 try
                 {
-                    (string destinationPortAlias, string message) = _commandParser.ParseCommand(input);
-                    _clientNodeManager.Send(destinationPortAlias, message);
+                    (string remoteHostAlias, string message) = _commandParser.ParseCommand(input);
+                    _clientNodeManager.Send(remoteHostAlias, message, _commandParser.SelectOutLabel(remoteHostAlias));
                 }
                 catch (ParserException e)
                 {
