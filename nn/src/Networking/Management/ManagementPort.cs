@@ -3,6 +3,8 @@ using System.Net;
 using System.Net.Sockets;
 using MessagePack;
 using NLog;
+using System.Collections.Generic;
+using System.Text;
 using nn.Config;
 using nn.Models;
 using nn.Networking.Delegates;
@@ -55,12 +57,10 @@ namespace nn.Networking.Management
                     LOG.Info($"Connecting to ManagementSystem on port: {_configuration.ManagementSystemPort}");
                     _managementSocket.Connect(_configuration.ManagementSystemEndPoint);
                     LOG.Info("Connected");
-                    ManagementPacket packet = new ManagementPacket.Builder()
-                        .SetCommandType("SYNC")
-                        .SetCommandData($"{((IPEndPoint) _managementSocket.LocalEndPoint).Port}") // TODO: Send router alias from config
-                        .Build();
-                    _managementSocket.Send(packet.ToBytes());
-                    LOG.Debug($"Sent hello packet to MS: {packet}");
+                    // Sending alias to MS
+                    string data="R1"; // TODO: Read alias from config
+                    SendAliasToManagementSystem(data);
+                    LOG.Debug($"Sent hello packet to MS: {data}");
                     return;
                 }
                 catch (Exception e)
@@ -130,6 +130,16 @@ namespace nn.Networking.Management
         protected virtual void OnMessageReceived((string portAlias, ManagementPacket managementPacket) managementTuple)
         {
             MessageReceived?.Invoke(managementTuple);
+        }
+
+        private void SendAliasToManagementSystem(string data)
+        {
+            // Need to give Management System some time for adding new network node to his list of network nodes.
+            System.Threading.Thread.Sleep(10); 
+            var fullPacket = new List<byte>();
+            fullPacket.AddRange(BitConverter.GetBytes(data.Length));
+            fullPacket.AddRange(Encoding.Default.GetBytes(data));
+            _managementSocket.Send(fullPacket.ToArray());
         }
     }
 }
