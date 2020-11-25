@@ -31,10 +31,6 @@ namespace cc
             _packetForwarder.SetClientPorts(_clientWorkers);
             _listener.RegisterWorkerConnectionEvent(RegisterWorker);
             _listener.Listen();
-            while (true)
-            {
-                // wait
-            }
         }
 
         public void RegisterWorker((string, IClientWorker) worker)
@@ -42,6 +38,11 @@ namespace cc
             (string portAlias, IClientWorker clientWorker) = worker;
             _clientWorkers.Add(portAlias, clientWorker);
             clientWorker.RegisterReceiveMessageEvent(_packetForwarder.ForwardPacket);
+        }
+
+        public void SetConnectionAlive((string, string, bool) requestedConnection)
+        {
+            _packetForwarder.SetConnectionAlive(requestedConnection);
         }
     }
 }
