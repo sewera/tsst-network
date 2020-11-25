@@ -1,7 +1,5 @@
 using System;
-using System.Collections.Generic;
 using System.Threading;
-using cn.Config;
 using cn.Models;
 using cn.Ui.Parsers;
 using cn.Ui.Parsers.Exceptions;
@@ -13,14 +11,12 @@ namespace cn.Ui
     {
         private readonly ICommandParser _commandParser;
         private readonly IClientNodeManager _clientNodeManager;
-        private readonly Configuration _configuration;
         private static readonly Logger LOG = LogManager.GetCurrentClassLogger();
         
-        public UserInterface(ICommandParser commandParser, IClientNodeManager clientNodeManager, Configuration configuration)
+        public UserInterface(ICommandParser commandParser, IClientNodeManager clientNodeManager)
         {
             _commandParser = commandParser;
             _clientNodeManager = clientNodeManager;
-            _configuration = configuration;
         }
 
         public void Start()
@@ -46,27 +42,13 @@ namespace cn.Ui
                 try
                 {
                     (string remoteHostAlias, string message) = _commandParser.ParseCommand(input);
-                    _clientNodeManager.Send(remoteHostAlias.ToUpper(), message, SelectOutLabel(remoteHostAlias.ToUpper()));
+                    _clientNodeManager.Send(remoteHostAlias, message, _commandParser.SelectOutLabel(remoteHostAlias));
                 }
                 catch (ParserException e)
                 {
                     LOG.Warn(e.ExceptionMessage);
                 }
             }
-        }
-
-        private List<long> SelectOutLabel(string remoteHostAlias)
-        {
-            List<long> mplsLabels = new List<long>();
-            try
-            {
-                mplsLabels.Add(_configuration.MplsLabels[remoteHostAlias]);
-            }
-            catch (KeyNotFoundException e)
-            {
-                throw new ParserException("Could not find any matching MPLS label for given remote client node alias");
-            }
-            return mplsLabels;
         }
 
         private static void MessageReceived(MplsPacket mplsPacket)

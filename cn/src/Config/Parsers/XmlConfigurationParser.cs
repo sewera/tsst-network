@@ -1,7 +1,6 @@
 using System.Linq;
 using System.Xml.Linq;
 using NLog;
-using NLog.Fluent;
 
 namespace cn.Config.Parsers 
 {
