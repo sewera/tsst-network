@@ -87,7 +87,7 @@ namespace nn.Config
                 return this;
             }
 
-            public Builder AddClientPortAlias(string clientPortAlias)
+            public Builder AddPortAlias(string clientPortAlias)
             {
                 _clientPortAliases ??= new List<string>();
                 _clientPortAliases.Add(clientPortAlias);

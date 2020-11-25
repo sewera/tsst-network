@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+
+<management_system>
+
+    <listener_port>4001</listener_port>
+
+    <config_messages>
+
+        <message router="R1">add 2 2 1 3 -4</message>
+        <message router="R2">add 2 2 1 3 -4</message>
+        <message router="R3">add 2 2 1 3 -4</message>
+
+    </config_messages>
+
+</management_system>

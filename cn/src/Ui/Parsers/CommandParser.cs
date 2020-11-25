@@ -33,6 +33,7 @@ namespace cn.Ui.Parsers
                 throw new ParserException("Wrong command");
             }
         }
+        
         public List<long> SelectOutLabel(string remoteHostAlias)
         {
             List<long> mplsLabels = new List<long>();
