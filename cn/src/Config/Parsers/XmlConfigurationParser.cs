@@ -28,18 +28,10 @@ namespace cn.Config.Parsers
 			configurationBuilder.SetClientAlias(xelement.Descendants("client_alias").First().Value);
             configurationBuilder.SetClientPortAlias(xelement.Descendants("client_port").First().Value);
 
-            //foreach (XElement element in xelement.Descendants("labels"))
-            //{
-            //    LOG.Trace("Host: {}/nLabel: {}",element.Element("label").Value, long.Parse(element.Value));
-            //    configurationBuilder.AddMplsLabel(element.Element("label").Value, long.Parse(element.Value));
-            //}
-            // TODO: FINISH
-            var labels = from c in xelement.Descendants("labels")
-                select c.Element("host");
-
-            foreach (string host in labels)
+            foreach (XElement element in xelement.Descendants("label"))
             {
-                LOG.Trace(host);
+                LOG.Trace("Remote client node: {}/nLabel: {}", element.FirstAttribute.Value,element.Value);
+                configurationBuilder.AddMplsLabel(element.FirstAttribute.Value, long.Parse(element.Value));
             }
             
             return configurationBuilder.Build();
