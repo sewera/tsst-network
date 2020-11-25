@@ -66,8 +66,16 @@ namespace cc.Networking.Forwarding
                 (string port1, string port2, _) = connection;
                 return port1 == portAlias1 && port2 == portAlias2 || port1 == portAlias2 && port2 == portAlias1;
             });
-            _connectionTable.RemoveAt(index);
-            _connectionTable.Add(requestedConnection);
+            LOG.Trace($"SetConnectionAlive index: {index}");
+            try
+            {
+                _connectionTable.RemoveAt(index);
+                _connectionTable.Add(requestedConnection);
+            }
+            catch (ArgumentOutOfRangeException e)
+            {
+                LOG.Warn($"The requested connection: {portAlias1} <-> {portAlias2} could not be found");
+            }
         }
     }
 }
