@@ -9,5 +9,6 @@ namespace cc.Networking.Forwarding
         /// <summary>Forward packet (send it to appropriate client)</summary>
         public void ForwardPacket((string, MplsPacket) forwardPacketTuple);
         public void SetClientPorts(Dictionary<string, IClientWorker> clientWorkers);
+        public void SetConnectionAlive((string, string, bool) requestedConnection);
     }
 }
