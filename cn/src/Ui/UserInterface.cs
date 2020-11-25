@@ -47,7 +47,7 @@ namespace cn.Ui
                 try
                 {
                     (string remoteHostAlias, string message) = _commandParser.ParseCommand(input);
-                    _clientNodeManager.Send(remoteHostAlias, message, SelectOutLabel(remoteHostAlias));
+                    _clientNodeManager.Send(remoteHostAlias.ToUpper(), message, SelectOutLabel(remoteHostAlias.ToUpper()));
                 }
                 catch (ParserException e)
                 {
@@ -59,7 +59,14 @@ namespace cn.Ui
         private List<long> SelectOutLabel(string remoteHostAlias)
         {
             List<long> mplsLabels = new List<long>();
-            //mplsLabels.Add(_configuration.MplsLabels[remoteHostAlias]);
+            try
+            {
+                mplsLabels.Add(_configuration.MplsLabels[remoteHostAlias]);
+            }
+            catch (KeyNotFoundException e)
+            {
+                LOG.Warn("Could not find any matching MPLS label for given remote client node alias");
+            }
             return mplsLabels;
         }
 
