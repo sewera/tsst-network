@@ -1,12 +1,37 @@
-﻿using System;
+using cc.Config;
+using cc.Config.Parsers;
+using cc.Networking.Client;
+using cc.Networking.Forwarding;
+using cc.Networking.Listeners;
+using NLog;
+using NLog.Config;
+using NLog.Targets;
 
 namespace cc
 {
-    class CableCloud
+    internal class CableCloud
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            LoggingConfiguration config = new LoggingConfiguration();
+            ColoredConsoleTarget consoleTarget = new ColoredConsoleTarget
+            {
+                Name = "console",
+                Layout = "[${time} | ${level:format=FirstCharacter} | ${logger}] ${message}"
+            };
+            config.AddRule(LogLevel.Trace, LogLevel.Fatal, consoleTarget);
+            LogManager.Configuration = config;
+
+            IConfigurationParser configurationParser = new MockConfigurationParser();
+            Configuration configuration = configurationParser.ParseConfiguration();
+            
+            IClientWorkerFactory clientWorkerFactory = new ClientWorkerFactory();
+            IListener listener = new Listener(configuration, clientWorkerFactory);
+            IPacketForwarder packetForwarder = new PacketForwarder(configuration);
+
+            ICableCloudManager cableCloudManager = new CableCloudManager(configuration, listener, packetForwarder);
+
+            cableCloudManager.Start();
         }
     }
 }
