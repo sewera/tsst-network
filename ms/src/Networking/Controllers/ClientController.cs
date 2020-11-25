@@ -20,7 +20,7 @@ namespace ms
         public static void AddClient(Socket socket)
         {
             Clients.Add(new Client(socket, Clients.Count));
-            SendData($"Server connected u as client: {Clients.Count-1}",Clients.Count-1);
+            //SendData($"Server connected u as client: {Clients.Count-1}",Clients.Count-1);
         }
         /// <summary>
         /// Remove client connection from the list
@@ -71,6 +71,7 @@ namespace ms
             else
             {
                Clients[Clients.FindIndex(x => x.Id == id)].Alias=alias;
+               UserInterface.WriteLine($"'{alias}' added succesfully ",UserInterface.Type.Syntax);
             }
         }
         /// <summary>

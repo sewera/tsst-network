@@ -179,6 +179,7 @@ namespace ms
                     if(!Char.IsDigit(words[6],i))
                     {
                         WriteLine("Syntax error!\nLast param should end with a number",Type.Syntax);
+                        result = false;
                     }
                 }
             }
