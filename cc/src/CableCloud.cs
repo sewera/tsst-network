@@ -22,7 +22,8 @@ namespace cc
             config.AddRule(LogLevel.Trace, LogLevel.Fatal, consoleTarget);
             LogManager.Configuration = config;
 
-            IConfigurationParser configurationParser = new MockConfigurationParser();
+            //IConfigurationParser configurationParser = new MockConfigurationParser();
+            IConfigurationParser configurationParser = new XmlConfigurationParser("resources/configuration.xml");
             Configuration configuration = configurationParser.ParseConfiguration();
             
             IClientWorkerFactory clientWorkerFactory = new ClientWorkerFactory();

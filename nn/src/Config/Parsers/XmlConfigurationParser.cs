@@ -33,7 +33,7 @@ namespace nn.Config.Parsers
                             configurationBuilder.SetCableCloudPort(reader.ReadElementContentAsInt());
                             break;
                         case "client-port-alias":
-                            configurationBuilder.AddClientPortAlias(reader.ReadElementContentAsString());
+                            configurationBuilder.AddPortAlias(reader.ReadElementContentAsString());
                             break;
                     }
                 }

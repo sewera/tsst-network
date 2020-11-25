@@ -21,9 +21,9 @@ namespace ms
         /// <summary>
         /// Read config file, actually config messages
         /// </summary>
-        public static void ReadConfig(Config config)
+        public static void ReadConfig(Configuration configuration)
         {
-            foreach(Message m in config.configMessages)
+            foreach(Message m in configuration.configMessages)
             {
                 messages.Enqueue(m);
             }
