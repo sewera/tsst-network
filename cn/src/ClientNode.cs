@@ -24,14 +24,15 @@ namespace cn
             config.AddRule(LogLevel.Trace, LogLevel.Fatal, consoleTarget);
             LogManager.Configuration = config;
 
+            // TODO: get filename from launch command
             IConfigurationParser configurationParser = new XmlConfigurationParser("resources/configuration.xml");
             Configuration configuration = configurationParser.ParseConfiguration();
 
             IClientPortFactory clientPortFactory = new ClientPortFactory(configuration);
-            ICommandParser commandParser = new CommandParser();
+            ICommandParser commandParser = new CommandParser(configuration);
             IClientNodeManager clientNodeManager = new ClientNodeManager(configuration, clientPortFactory);
 
-            IUserInterface userInterface = new UserInterface(commandParser, clientNodeManager, configuration);
+            IUserInterface userInterface = new UserInterface(commandParser, clientNodeManager);
 
             userInterface.Start();
         }
