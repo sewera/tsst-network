@@ -25,7 +25,6 @@ namespace cn
             LogManager.Configuration = config;
 
             IConfigurationParser configurationParser = new XmlConfigurationParser("resources/configuration.xml");
-            //IConfigurationParser configurationParser = new MockConfigurationParser();
             Configuration configuration = configurationParser.ParseConfiguration();
 
             IClientPortFactory clientPortFactory = new ClientPortFactory(configuration);

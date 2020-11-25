@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using NLog;
 
 namespace cn.Config.Parsers
