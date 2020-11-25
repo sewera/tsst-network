@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using cn.Config;
 using cn.Models;
@@ -65,7 +64,7 @@ namespace cn.Ui
             }
             catch (KeyNotFoundException e)
             {
-                LOG.Warn("Could not find any matching MPLS label for given remote client node alias");
+                throw new ParserException("Could not find any matching MPLS label for given remote client node alias");
             }
             return mplsLabels;
         }

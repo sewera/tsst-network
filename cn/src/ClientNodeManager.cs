@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using cn.Config;
 using cn.Models;
 using cn.Networking;
@@ -11,7 +10,7 @@ namespace cn
     public class ClientNodeManager : IClientNodeManager
     {
         private static readonly Logger LOG = LogManager.GetCurrentClassLogger();
-        
+
         private Configuration _configuration;
         private IClientPortFactory _clientPortFactory;
         private IClientPort _clientPort;
@@ -33,21 +32,17 @@ namespace cn
         {
             _clientPort.RegisterReceiveMessageEvent(receiveMessage);
         }
-        
+
         public void Send(string destinationPortAlias, string message, List<long> labels)
         {
-            if (labels.Any())
-            {
-                MplsPacket packet = new MplsPacket.Builder()
-                    .SetSourcePortAlias(_configuration.ClientPortAlias)
-                    .SetDestinationPortAlias(destinationPortAlias)
-                    .SetMplsLabels(labels)
-                    .SetMessage(message)
-                    .Build();
+            MplsPacket packet = new MplsPacket.Builder()
+                .SetSourcePortAlias(_configuration.ClientPortAlias)
+                .SetDestinationPortAlias(destinationPortAlias)
+                .SetMplsLabels(labels)
+                .SetMessage(message)
+                .Build();
 
-                _clientPort.Send(packet);
-            }
-            else LOG.Warn("Can't send MPLS packet without remote client node alias matching any label");
+            _clientPort.Send(packet);
         }
     }
 }
