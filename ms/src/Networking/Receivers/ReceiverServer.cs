@@ -67,7 +67,16 @@ namespace ms
                     string data = Encoding.Default.GetString(_buffer);
                     LOG.Info($"Data: '{data}' received from client: {_clientId}");
                     // Add alias for client
-                    ClientController.AddAlias(data,_clientId);
+                    try
+                    {
+                        ClientController.AddAlias(data,_clientId);
+                    }
+                    catch(Exception e)
+                    {
+                        Console.WriteLine(e);
+                    }
+
+                    
 
                     // Now we have to start all over again with waiting for a data to come from the socket
                     StartReceiving();

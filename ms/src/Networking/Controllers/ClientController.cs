@@ -17,9 +17,11 @@ namespace ms
         /// Add new client connection to the list
         /// <param name="socket"> Socket associated with a specific client </param>
         /// </summary>
+
+        private static int counter=0;
         public static void AddClient(Socket socket)
         {
-            Clients.Add(new Client(socket, Clients.Count));
+            Clients.Add(new Client(socket, counter++));
             //SendData($"Server connected u as client: {Clients.Count-1}",Clients.Count-1);
         }
         /// <summary>
@@ -71,7 +73,8 @@ namespace ms
             else
             {
                Clients[Clients.FindIndex(x => x.Id == id)].Alias=alias;
-               UserInterface.WriteLine($"'{alias}' added succesfully ",UserInterface.Type.Syntax);
+               //Clients[id].Alias=alias;
+               UserInterface.WriteLine($"'{alias}' added succesfully for client: {id} ",UserInterface.Type.Syntax);
             }
         }
         /// <summary>
