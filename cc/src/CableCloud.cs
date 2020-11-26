@@ -23,7 +23,7 @@ namespace cc
             LogManager.Configuration = config;
 
             //IConfigurationParser configurationParser = new MockConfigurationParser();
-            IConfigurationParser configurationParser = new XmlConfigurationParser("resources/configuration.xml");
+            IConfigurationParser configurationParser = new XmlConfigurationParser("resources/CableCloud.xml");
             Configuration configuration = configurationParser.ParseConfiguration();
             
             IClientWorkerFactory clientWorkerFactory = new ClientWorkerFactory();

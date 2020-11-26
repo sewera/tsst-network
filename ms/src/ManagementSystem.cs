@@ -11,7 +11,7 @@ namespace ms
         static void Main(string[] args)
         {
             LoggerSetup();
-            Configuration configuration = new Configuration("resources/configuration.xml");
+            Configuration configuration = new Configuration("resources/ManagementSystem.xml");
             configuration.ReadConfigFile();
             IManagementManager mm = new ManagementManager();
             mm.ReadConfig(configuration);
