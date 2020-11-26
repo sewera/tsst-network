@@ -61,6 +61,15 @@ namespace cc
             ICommandParser commandParser = new CommandParser(configuration);
             IUserInterface userInterface = new UserInterface(commandParser, cableCloudManager);
 
+            try
+            {
+                Console.Title = "CC";
+            }
+            catch (Exception)
+            {
+                LOG.Trace("Could not set the title");
+            }
+
             userInterface.Start();
         }
     }
