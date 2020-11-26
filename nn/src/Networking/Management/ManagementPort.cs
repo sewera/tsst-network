@@ -56,10 +56,8 @@ namespace nn.Networking.Management
                     LOG.Info($"Connecting to ManagementSystem on port: {_configuration.ManagementSystemPort}");
                     _managementSocket.Connect(_configuration.ManagementSystemEndPoint);
                     LOG.Info("Connected");
-                    // Sending alias to MS
-                    string data="R1"; // TODO: Read alias from config
-                    SendAliasToManagementSystem(data);
-                    LOG.Debug($"Sent hello packet to MS: {data}");
+                    SendAliasToManagementSystem(_configuration.RouterAlias);
+                    LOG.Debug($"Sent hello packet to MS: {_configuration.RouterAlias}");
                     return;
                 }
                 catch (Exception e)
