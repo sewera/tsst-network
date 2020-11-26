@@ -12,6 +12,7 @@ args = parser.parse_args()
 project_root = Path(__file__).parent
 config_dir = Path('resources/config')
 exec_dir = Path('bin/Release/netcoreapp3.1')
+log_dir = Path('logs')
 
 cc = Path('cc')
 cc_csproj = Path('cc.csproj')
@@ -59,16 +60,16 @@ if os.name == 'nt':
         os.system('taskkill /F /IM cmd.exe /T')
         exit(0)
 
-    os.system(f'start cmd.exe /k "{(project_root/cc/exec_dir/cc_exe).absolute()} -c {(project_root/cc/config_dir/cc_config).absolute()}"')
+    os.system(f'start cmd.exe /k "{(project_root/cc/exec_dir/cc_exe).absolute()} -c {(project_root/cc/config_dir/cc_config).absolute()} -l {(project_root/log_dir).absolute()}"')
 
-    os.system(f'start cmd.exe /k "{(project_root/ms/exec_dir/ms_exe).absolute()} -c {(project_root/ms/config_dir/ms_config).absolute()}"')
+    os.system(f'start cmd.exe /k "{(project_root/ms/exec_dir/ms_exe).absolute()} -c {(project_root/ms/config_dir/ms_config).absolute()} -l {(project_root/log_dir).absolute()}"')
     time.sleep(2)
 
     for nn_config in nn_configs:
-        os.system(f'start cmd.exe /k "{(project_root/nn/exec_dir/nn_exe).absolute()} -c {(project_root/nn/config_dir/nn_config).absolute()}"')
+        os.system(f'start cmd.exe /k "{(project_root/nn/exec_dir/nn_exe).absolute()} -c {(project_root/nn/config_dir/nn_config).absolute()} -l {(project_root/log_dir).absolute()}"')
 
     for cn_config in cn_configs:
-        os.system(f'start cmd.exe /k "{(project_root/cn/exec_dir/cn_exe).absolute()} -c {(project_root/cn/config_dir/cn_config).absolute()}"')
+        os.system(f'start cmd.exe /k "{(project_root/cn/exec_dir/cn_exe).absolute()} -c {(project_root/cn/config_dir/cn_config).absolute()} -l {(project_root/log_dir).absolute()}"')
 else:
     if args.build:
         os.system(f'{os.getenv("TERM")} -e dotnet build -c Release {(project_root/cc/cc_csproj).absolute()}')
@@ -84,13 +85,13 @@ else:
         os.system('killall ms')
         exit(0)
 
-    os.popen(f'{os.getenv("TERM")} -e {(project_root/cc/exec_dir/cc).absolute()} -c {(project_root/cc/config_dir/cc_config).absolute()}')
+    os.popen(f'{os.getenv("TERM")} -e {(project_root/cc/exec_dir/cc).absolute()} -c {(project_root/cc/config_dir/cc_config).absolute()} -l {(project_root/log_dir).absolute()}')
 
-    os.popen(f'{os.getenv("TERM")} -e {(project_root/ms/exec_dir/ms).absolute()} -c {(project_root/ms/config_dir/ms_config).absolute()}')
+    os.popen(f'{os.getenv("TERM")} -e {(project_root/ms/exec_dir/ms).absolute()} -c {(project_root/ms/config_dir/ms_config).absolute()} -l {(project_root/log_dir).absolute()}')
     time.sleep(2)
 
     for nn_config in nn_configs:
-        os.popen(f'{os.getenv("TERM")} -e {(project_root/nn/exec_dir/nn).absolute()} -c {(project_root/nn/config_dir/nn_config).absolute()}')
+        os.popen(f'{os.getenv("TERM")} -e {(project_root/nn/exec_dir/nn).absolute()} -c {(project_root/nn/config_dir/nn_config).absolute()} -l {(project_root/log_dir).absolute()}')
 
     for cn_config in cn_configs:
-        os.popen(f'{os.getenv("TERM")} -e {(project_root/cn/exec_dir/cn).absolute()} -c {(project_root/cn/config_dir/cn_config).absolute()}')
+        os.popen(f'{os.getenv("TERM")} -e {(project_root/cn/exec_dir/cn).absolute()} -c {(project_root/cn/config_dir/cn_config).absolute()} -l {(project_root/log_dir).absolute()}')

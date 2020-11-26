@@ -31,7 +31,7 @@ namespace cc.Ui
 
         private void StartCommandParsing()
         {
-            Console.WriteLine("Enter alias of remote host and message you want to send.\nInput format: <<remote_host_alias>> [space] <<message>>");
+            Console.WriteLine("Enter connection you want to set. Syntax: <port1> <port2> [up|down]");
             while (true)
             {
                 Console.Write("> ");
