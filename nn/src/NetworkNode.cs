@@ -58,6 +58,15 @@ namespace nn
             IClientPortFactory clientPortFactory = new ClientPortFactory(configuration);
             INetworkNodeManager networkNodeManager = new NetworkNodeManager(configuration, packetForwarder, managementPort, clientPortFactory);
 
+            try
+            {
+                Console.Title = configuration.RouterAlias;
+            }
+            catch (Exception)
+            {
+                LOG.Trace("Could not set the title");
+            }
+
             networkNodeManager.Start();
         }
     }

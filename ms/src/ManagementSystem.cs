@@ -35,6 +35,16 @@ namespace ms
 
             Configuration configuration = new Configuration(filename);
             configuration.ReadConfigFile();
+
+            try
+            {
+                Console.Title = "MS";
+            }
+            catch (Exception)
+            {
+                LOG.Trace("Could not set the title");
+            }
+
             IManagementManager mm = new ManagementManager();
             mm.ReadConfig(configuration);
             mm.startListening();

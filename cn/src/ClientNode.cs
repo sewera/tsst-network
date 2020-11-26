@@ -56,6 +56,15 @@ namespace cn
 
             IUserInterface userInterface = new UserInterface(commandParser, clientNodeManager);
 
+            try
+            {
+                Console.Title = configuration.ClientAlias;
+            }
+            catch (Exception)
+            {
+                LOG.Trace("Could not set the title");
+            }
+
             userInterface.Start();
         }
     }
