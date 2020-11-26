@@ -29,12 +29,6 @@ namespace nn.Networking.Client
 
         public void Send(MplsPacket mplsPacket)
         {
-            if (mplsPacket.SourcePortAlias != _clientPortAlias)
-            {
-                LOG.Warn("Source port alias is not the same as current client port alias");
-            }
-
-            LOG.Debug($"Sending packet: {mplsPacket}");
             byte[] packetBytes = mplsPacket.ToBytes();
             _clientSocket.BeginSend(packetBytes, 0, packetBytes.Length, SocketFlags.None, SendCallback, _clientSocket);
         }

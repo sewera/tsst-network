@@ -62,7 +62,7 @@ namespace cc.Networking.Listeners
                 // FIXME: Add error handling when client doesn't send a hello packet
                 handler.Receive(state.Buffer);
                 MplsPacket receivedPacket = MplsPacket.FromBytes(state.Buffer);
-                LOG.Debug($"Received: {receivedPacket}");
+                LOG.Info($"Received: {receivedPacket}");
                 LOG.Trace("Adding Connection");
                 state.PortAlias = receivedPacket.SourcePortAlias;
                 OnWorkerRegistered((receivedPacket.SourcePortAlias, new ClientWorker(state)));
