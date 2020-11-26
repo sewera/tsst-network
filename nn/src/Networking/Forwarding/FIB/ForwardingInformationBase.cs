@@ -114,6 +114,7 @@ namespace nn.Networking.Forwarding.FIB
                     else
                     {
                         // If any other case happen, we assume packet is lost
+                        isFound=false;
                     }
                 }
             }
