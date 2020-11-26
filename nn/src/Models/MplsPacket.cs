@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using MessagePack;
 
@@ -35,6 +36,24 @@ namespace nn.Models
             DestinationPortAlias = destinationPortAlias;
             MplsLabels = mplsLabels;
             Message = message;
+        }
+
+        /// <summary>
+        /// Return and remove last label from label stack
+        /// </summary>
+        public int PopLabel()
+        {
+            long result = (MplsLabels[MplsLabels.Count-1]);
+            MplsLabels.RemoveAt(MplsLabels.Count-1);
+            // Couldn't use int.Parse(), dunno perché
+            return Convert.ToInt32(result);
+        }
+        /// <summary>
+        /// Add label to the label stack
+        /// </summary>
+        public void PushLabel(int mplsLabel)
+        {
+            MplsLabels.Add(mplsLabel);
         }
 
         /// <summary>
