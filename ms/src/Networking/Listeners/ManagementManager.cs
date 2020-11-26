@@ -70,9 +70,9 @@ namespace ms
             }
         }
         
-        public void ReadConfig(Config config)
+        public void ReadConfig(Configuration configuration)
         {
-            port = config.Port;
+            port = configuration.Port;
         }
     }
 }

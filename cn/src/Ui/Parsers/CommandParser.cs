@@ -28,11 +28,12 @@ namespace cn.Ui.Parsers
                     throw new ParserException("Command parts cannot be neither null nor empty");
                 return (parts[0].ToUpper(), parts[1]);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw new ParserException("Wrong command");
             }
         }
+        
         public List<long> SelectOutLabel(string remoteHostAlias)
         {
             List<long> mplsLabels = new List<long>();
@@ -40,7 +41,7 @@ namespace cn.Ui.Parsers
             {
                 mplsLabels.Add(_configuration.MplsLabels[remoteHostAlias]);
             }
-            catch (KeyNotFoundException e)
+            catch (KeyNotFoundException)
             {
                 throw new ParserException("Could not find any matching MPLS label for given remote client node alias");
             }

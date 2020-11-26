@@ -1,4 +1,5 @@
-using System.Xml;
+using System.Linq;
+using System.Xml.Linq;
 using NLog;
 
 namespace nn.Config.Parsers
@@ -16,28 +17,23 @@ namespace nn.Config.Parsers
 
         public Configuration ParseConfiguration()
         {
-            // TODO: Add management system address / port
-            // TODO: Add port aliases
-            LOG.Debug($"Reading configuration from {_filename}");
-            XmlTextReader reader = new XmlTextReader(_filename);
-
             Configuration.Builder configurationBuilder = new Configuration.Builder();
+            
+            LOG.Debug($"Reading configuration from {_filename}");
+            XElement xelement = XElement.Load(_filename);
 
-            while (reader.Read())
+            configurationBuilder.SetRouterAlias(xelement.Descendants("router_alias").First().Value);
+            configurationBuilder.SetCableCloudAddress(xelement.Descendants("cable_cloud_address").First().Value);
+            configurationBuilder.SetCableCloudPort(int.Parse(xelement.Descendants("cable_cloud_port").First().Value));
+            configurationBuilder.SetManagementSystemAddress(xelement.Descendants("management_system_address").First().Value);
+            configurationBuilder.SetManagementSystemPort(int.Parse(xelement.Descendants("management_system_port").First().Value));
+
+            foreach (XElement element in xelement.Descendants("port_alias"))
             {
-                if (reader.NodeType == XmlNodeType.Element)
-                {
-                    switch (reader.Name)
-                    {
-                        case "cable-cloud-port":
-                            configurationBuilder.SetCableCloudPort(reader.ReadElementContentAsInt());
-                            break;
-                        case "client-port-alias":
-                            configurationBuilder.AddClientPortAlias(reader.ReadElementContentAsString());
-                            break;
-                    }
-                }
+                LOG.Trace($"Router {xelement.Descendants("router_alias").First().Value} port alias: {element.Value}");
+                configurationBuilder.AddPortAlias(element.Value);
             }
+            
             return configurationBuilder.Build();
         }
     }

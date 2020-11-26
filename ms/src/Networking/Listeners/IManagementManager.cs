@@ -16,6 +16,6 @@ namespace ms
         /// <summary>
         /// Read config, actually the Listener Socket port
         /// </summary>
-        void ReadConfig(Config config);
+        void ReadConfig(Configuration configuration);
     }
 }

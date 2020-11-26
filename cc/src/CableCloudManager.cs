@@ -33,7 +33,7 @@ namespace cc
             _listener.Listen();
         }
 
-        public void RegisterWorker((string, IClientWorker) worker)
+        private void RegisterWorker((string, IClientWorker) worker)
         {
             (string portAlias, IClientWorker clientWorker) = worker;
             _clientWorkers.Add(portAlias, clientWorker);

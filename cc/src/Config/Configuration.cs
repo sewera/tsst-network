@@ -7,6 +7,7 @@ namespace cc.Config
     {
         public IPAddress ListeningAddress { get; set; }
         public short ListeningPort { get; set; }
+        
         public List<(string, string, bool)> ConnectionTable;
 
         private Configuration(IPAddress listeningAddress, short listeningPort, List<(string, string, bool)> connectionTable)

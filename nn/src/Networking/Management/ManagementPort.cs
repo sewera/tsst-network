@@ -1,5 +1,4 @@
 using System;
-using System.Net;
 using System.Net.Sockets;
 using MessagePack;
 using NLog;
@@ -65,7 +64,6 @@ namespace nn.Networking.Management
                 }
                 catch (Exception e)
                 {
-                    throw e;
                     LOG.Warn(e, $"Failed to connect to management system, try {i}/{Retries}");
                 }
             }
