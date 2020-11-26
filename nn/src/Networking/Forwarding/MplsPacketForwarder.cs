@@ -20,7 +20,6 @@ namespace nn.Networking.Forwarding
         {
             _configuration = configuration;
             FIB = new ForwardingInformationBase();
-            // TODO: Parse configuration into table (list of dictionaries?)
         }
 
         public void ForwardPacket((string portAlias, MplsPacket packet) forwardPacketTuple)
