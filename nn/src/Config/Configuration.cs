@@ -5,6 +5,8 @@ namespace nn.Config
 {
     public class Configuration
     {
+        public string RouterAlias { get; }
+
         /// <summary>CableCloud address</summary>
         public IPAddress CableCloudAddress { get; }
 
@@ -26,18 +28,16 @@ namespace nn.Config
         /// <summary>Alias representation host client node port</summary>
         public List<string> ClientPortAliases { get; }
 
-        /// <summary>List of MPLS labels</summary>
-        public List<long> MplsLabels { get; }
-
-        private Configuration(IPAddress cableCloudAddress,
+        private Configuration(string routerAlias,
+                              IPAddress cableCloudAddress,
                               int cableCloudPort,
                               IPEndPoint cableCloudEndPoint,
                               IPAddress managementSystemAddress,
                               int managementSystemPort,
                               IPEndPoint managementSystemEndPoint,
-                              List<string> clientPortAliases,
-                              List<long> mplsLabels)
+                              List<string> clientPortAliases)
         {
+            RouterAlias = routerAlias;
             CableCloudAddress = cableCloudAddress;
             CableCloudPort = cableCloudPort;
             CableCloudEndPoint = cableCloudEndPoint;
@@ -45,17 +45,22 @@ namespace nn.Config
             ManagementSystemPort = managementSystemPort;
             ManagementSystemEndPoint = managementSystemEndPoint;
             ClientPortAliases = clientPortAliases;
-            MplsLabels = mplsLabels;
         }
 
         public class Builder
         {
+            private string _routerAlias;
             private IPAddress _cableCloudAddress;
             private int _cableCloudPort;
             private IPAddress _managementSystemAddress;
             private int _managementSystemPort;
             private List<string> _clientPortAliases;
-            private List<long> _mplsLabels;
+
+            public Builder SetRouterAlias(string routerAlias)
+            {
+                _routerAlias = routerAlias;
+                return this;
+            }
 
             public Builder SetCableCloudAddress(string cableCloudAddress)
             {
@@ -94,35 +99,23 @@ namespace nn.Config
                 return this;
             }
 
-            public Builder AddMplsLabel(long mplsLabel)
-            {
-                _mplsLabels ??= new List<long>();
-                _mplsLabels.Add(mplsLabel);
-                return this;
-            }
-
-            public Builder SetMplsLabels(List<long> mplsLabels)
-            {
-                _mplsLabels = mplsLabels;
-                return this;
-            }
-
             public Configuration Build()
             {
                 _cableCloudAddress ??= IPAddress.Parse("127.0.0.1");
                 _managementSystemAddress ??= IPAddress.Parse("127.0.0.1");
-                _mplsLabels ??= new List<long>();
                 _clientPortAliases ??= new List<string>();
-                IPEndPoint cableCloudEndPoint = new IPEndPoint(_cableCloudAddress, _cableCloudPort);
-                IPEndPoint managementSystemEndPoint = new IPEndPoint(_managementSystemAddress, _managementSystemPort);
-                return new Configuration(_cableCloudAddress,
+                IPEndPoint cableCloudEndPoint = new IPEndPoint(_cableCloudAddress,
+                    _cableCloudPort);
+                IPEndPoint managementSystemEndPoint = new IPEndPoint(_managementSystemAddress,
+                    _managementSystemPort);
+                return new Configuration(_routerAlias,
+                    _cableCloudAddress,
                     _cableCloudPort,
                     cableCloudEndPoint,
                     _managementSystemAddress,
                     _managementSystemPort,
                     managementSystemEndPoint,
-                    _clientPortAliases,
-                    _mplsLabels);
+                    _clientPortAliases);
             }
         }
     }

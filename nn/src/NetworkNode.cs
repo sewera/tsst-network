@@ -26,8 +26,8 @@ namespace nn
             config.AddRule(LogLevel.Trace, LogLevel.Fatal, consoleTarget);
             LogManager.Configuration = config;
 
-            // IConfigurationParser configurationParser = new XmlConfigurationParser("resources/configuration.xml");
-            IConfigurationParser configurationParser = new MockConfigurationParser();
+            IConfigurationParser configurationParser = new XmlConfigurationParser("resources/configuration.xml");
+            //IConfigurationParser configurationParser = new MockConfigurationParser();
             Configuration configuration = configurationParser.ParseConfiguration();
 
             // IPacketForwarder packetForwarder = new MplsPacketForwarder(configuration);
