@@ -8,18 +8,17 @@ namespace nn.Networking.Forwarding.FIB
     /// </summary>
     class FibRow
     {
-        private int _inLink=0;
-        private int _inLabel=0;
-        private int _outLink=0;
-        private int _outLabel=0;
-        private bool _isNextLabel=false;
-        private int _nextLabel {get; set;}
+        private int _inLink = 0;
+        private int _inLabel = 0;
+        private int _outLink = 0;
+        private int _outLabel = 0;
+        private bool _isNextLabel = false;
+        private int _nextLabel = 0;
 
         /// <summary>
         /// Class constructor from strig
         /// <param name="CommandData"> String being CommandData from ManagementSystem <param>
         /// </summary>
-
         public FibRow(string CommandData)
         {
             List<string> words = new List<string>(CommandData.Split(' '));
@@ -36,7 +35,7 @@ namespace nn.Networking.Forwarding.FIB
             if (words.Count > 4)
             {
                 _isNextLabel = true;
-                _nextLabel = int.Parse(words[4]);
+                _nextLabel = -int.Parse(words[4]);
             }
         }
         /// <summary>
@@ -50,7 +49,6 @@ namespace nn.Networking.Forwarding.FIB
                 return true;
             }
             return false;
-            // Is that readable code?
         }
         /// <summary>
         /// Get second part of row
