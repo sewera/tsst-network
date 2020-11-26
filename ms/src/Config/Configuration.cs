@@ -37,7 +37,7 @@ namespace ms
 
             foreach (XElement element in xelement.Descendants("message"))
             {
-                LOG.Trace("Ruter: {}\tConfig message: {}", element.FirstAttribute.Value,element.Value);
+                LOG.Trace($"Router: {element.FirstAttribute.Value}\tConfig message: {element.Value}");
                 configMessages.Add(new Message(element.FirstAttribute.Value,element.Value));
             }
 
