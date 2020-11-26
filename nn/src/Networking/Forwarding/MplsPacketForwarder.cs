@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using NLog;
 using nn.Config;
 using nn.Models;
+using nn.Networking.Forwarding.FIB;
 
 namespace nn.Networking.Forwarding
 {
@@ -13,9 +14,12 @@ namespace nn.Networking.Forwarding
         private readonly Configuration _configuration;
         private Dictionary<string, IPort<MplsPacket>> _clientPorts;
 
+        private ForwardingInformationBase FIB;
+
         public MplsPacketForwarder(Configuration configuration)
         {
             _configuration = configuration;
+            FIB = new ForwardingInformationBase();
             // TODO: Parse configuration into table (list of dictionaries?)
         }
 
@@ -36,9 +40,18 @@ namespace nn.Networking.Forwarding
         public void ConfigureFromManagementSystem((string portAlias, ManagementPacket packet) managementTuple)
         {
             (string portAlias, ManagementPacket packet) = managementTuple;
-            // TODO: Implementation
-            LOG.Fatal($"ConfigureFromManagementSystem is not implemented. Packet: {packet}");
-            throw new NotImplementedException();
+            if(packet.CommandType == "add")
+            {
+                FIB.AddRow(packet.CommandData);
+            }
+            else if (packet.CommandType == "delete")
+            {
+                FIB.DeleteRow(packet.CommandData);
+            }
+            else
+            {
+                ;;
+            }
         }
 
         public void SetClientPorts(Dictionary<string, IPort<MplsPacket>> clientPorts)

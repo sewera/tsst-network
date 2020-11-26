@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using nn.Models;
+using System;
 
 namespace nn.Networking.Forwarding.FIB
 {
@@ -17,7 +18,7 @@ namespace nn.Networking.Forwarding.FIB
         /// <summary>
         /// Class contructor
         /// </summary>
-        ForwardingInformationBase()
+        public ForwardingInformationBase()
         {
             rows = new List<FibRow>();
         }
@@ -41,6 +42,19 @@ namespace nn.Networking.Forwarding.FIB
         {
             FibRow predicate = new FibRow(CommandData);
             rows.RemoveAll(item => item==predicate);
+        }
+        /// <summary>
+        /// Show Mpls-Table
+        /// </summary>
+        public void ShowTable()
+        {
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("-----------------------------------");
+            foreach (var v in rows)
+            {
+                Console.WriteLine(v.ToString());
+            }
+            Console.ResetColor();
         }
 
 

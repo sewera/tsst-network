@@ -61,6 +61,11 @@ namespace nn.Networking.Forwarding.FIB
             return (_outLink,_outLabel,_isNextLabel,_nextLabel);
         }
 
+        public override string ToString()
+        {
+            return $"InLink: {_inLink},InLabel: {_inLabel},OutLink: {_outLink},OutLabel: {_outLabel},isNextLabel: {_isNextLabel.ToString()},NextLabel: {_nextLabel}";
+        }
+
          public static bool operator ==(FibRow a, FibRow b)
          {
              return (a._inLink == b._inLink)           &&
