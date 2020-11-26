@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
@@ -12,12 +11,12 @@ namespace ms
         static void Main(string[] args)
         {
             LoggerSetup();
-            Config config = new Config();
-            config.ReadConfigFile("ManagementSystem.xml");
+            Configuration configuration = new Configuration("resources/ManagementSystem.xml");
+            configuration.ReadConfigFile();
             IManagementManager mm = new ManagementManager();
-            mm.ReadConfig(config);
+            mm.ReadConfig(configuration);
             mm.startListening();
-            MessageSender.ReadConfig(config);
+            MessageSender.ReadConfig(configuration);
             new Thread(MessageSender.Start).Start();
             UserInterface.Start();
         }

@@ -27,7 +27,7 @@ namespace nn.Networking.Forwarding
             }
 
             packet.MplsLabels = new List<long> {200, 300};
-            const string destinationLocalPortAlias = "R1/2";
+            const string destinationLocalPortAlias = "12";
             LOG.Debug($"Sending packet {packet} via {destinationLocalPortAlias}");
             _clientPorts[destinationLocalPortAlias].Send(packet);
         }

@@ -29,7 +29,7 @@ namespace cn.Config.Parsers
 
             foreach (XElement element in xelement.Descendants("label"))
             {
-                LOG.Trace("Remote client node: {}/nLabel: {}", element.FirstAttribute.Value,element.Value);
+                LOG.Trace($"Remote client node: {element.FirstAttribute.Value}\tLabel: {element.Value}");
                 configurationBuilder.AddMplsLabel(element.FirstAttribute.Value, long.Parse(element.Value));
             }
             
