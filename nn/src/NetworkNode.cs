@@ -1,3 +1,4 @@
+using System;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
@@ -26,8 +27,29 @@ namespace nn
             config.AddRule(LogLevel.Trace, LogLevel.Fatal, consoleTarget);
             LogManager.Configuration = config;
 
-            IConfigurationParser configurationParser = new XmlConfigurationParser("resources/configuration.xml");
-            //IConfigurationParser configurationParser = new MockConfigurationParser();
+            string filename = "";
+            try
+            {
+                LOG.Trace($"Args: {string.Join(", ", args)}");
+                if (args[0] == "-c")
+                    filename = args[1];
+                else if (args[1] == "-c")
+                    filename = args[2];
+                else
+                    LOG.Warn("Use '-c <filename>' to pass a config file to program");
+            }
+            catch (IndexOutOfRangeException)
+            {
+                LOG.Warn("Use '-c <filename>' to pass a config file to program");
+                LOG.Warn("Using MockConfigurationParser instead");
+            }
+
+            IConfigurationParser configurationParser;
+            if (string.IsNullOrWhiteSpace(filename))
+                configurationParser = new MockConfigurationParser();
+            else
+                configurationParser = new XmlConfigurationParser(filename);
+
             Configuration configuration = configurationParser.ParseConfiguration();
 
             // IPacketForwarder packetForwarder = new MplsPacketForwarder(configuration);
