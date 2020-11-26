@@ -74,7 +74,7 @@ namespace ms
             else
             {
                Clients[Clients.FindIndex(x => x.Id == id)].Alias=alias;
-               UserInterface.WriteLine($"'{alias}' added succesfully for client: {id} ",UserInterface.Type.Received);
+               UserInterface.WriteLine($"'{alias}' added successfully for client: {id} ",UserInterface.Type.Received);
             }
         }
         /// <summary>
