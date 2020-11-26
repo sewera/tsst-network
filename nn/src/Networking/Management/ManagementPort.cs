@@ -131,7 +131,7 @@ namespace nn.Networking.Management
         private void SendAliasToManagementSystem(string data)
         {
             // Need to give Management System some time for adding new network node to his list of network nodes.
-            System.Threading.Thread.Sleep(10); 
+            System.Threading.Thread.Sleep(20); 
             var fullPacket = new List<byte>();
             fullPacket.AddRange(BitConverter.GetBytes(data.Length));
             fullPacket.AddRange(Encoding.Default.GetBytes(data));
