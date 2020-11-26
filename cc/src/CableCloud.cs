@@ -18,29 +18,21 @@ namespace cc
 
         public static void Main(string[] args)
         {
-            LoggingConfiguration config = new LoggingConfiguration();
-            ColoredConsoleTarget consoleTarget = new ColoredConsoleTarget
-            {
-                Name = "console",
-                Layout = "[${time} | ${level:format=FirstCharacter} | ${logger}] ${message}"
-            };
-            config.AddRule(LogLevel.Trace, LogLevel.Fatal, consoleTarget);
-            LogManager.Configuration = config;
-
             string filename = "";
+            string logs = "";
             try
             {
                 LOG.Trace($"Args: {string.Join(", ", args)}");
                 if (args[0] == "-c")
                     filename = args[1];
-                else if (args[1] == "-c")
-                    filename = args[2];
+                if (args[2] == "-l")
+                    logs = args[3];
                 else
-                    LOG.Warn("Use '-c <filename>' to pass a config file to program");
+                    LOG.Warn("Use '-c <filename> -l <log_filename>' to pass a config file to program and set where logs should be");
             }
             catch (IndexOutOfRangeException)
             {
-                LOG.Warn("Use '-c <filename>' to pass a config file to program");
+                LOG.Warn("Use '-c <filename> -l <log_filename>' to pass a config file to program and set where logs should be");
                 LOG.Warn("Using MockConfigurationParser instead");
             }
 
@@ -51,7 +43,22 @@ namespace cc
                 configurationParser = new XmlConfigurationParser(filename);
 
             Configuration configuration = configurationParser.ParseConfiguration();
-            
+            LoggingConfiguration config = new LoggingConfiguration();
+            ColoredConsoleTarget consoleTarget = new ColoredConsoleTarget
+            {
+                Name = "console",
+                Layout = "[${time} | ${level:format=FirstCharacter} | ${logger}] ${message}"
+            };
+            FileTarget fileTarget = new FileTarget
+            {
+                FileName = logs + "/CableCloud.log",
+                DeleteOldFileOnStartup = true,
+                Layout = "[${time} | ${level:format=FirstCharacter} | ${logger}] ${message}"
+            };
+            config.AddRule(LogLevel.Trace, LogLevel.Fatal, consoleTarget);
+            config.AddRule(LogLevel.Debug, LogLevel.Fatal, fileTarget);
+            LogManager.Configuration = config;
+
             IClientWorkerFactory clientWorkerFactory = new ClientWorkerFactory();
             IListener listener = new Listener(configuration, clientWorkerFactory);
             IPacketForwarder packetForwarder = new PacketForwarder(configuration);
