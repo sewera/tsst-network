@@ -11,24 +11,24 @@ namespace ms
         private static readonly Logger LOG = LogManager.GetCurrentClassLogger();
         static void Main(string[] args)
         {
-            LoggerSetup();
-
             string filename = "";
+            string logs = "";
             try
             {
                 LOG.Trace($"Args: {string.Join(", ", args)}");
                 if (args[0] == "-c")
                     filename = args[1];
-                else if (args[1] == "-c")
-                    filename = args[2];
+                if (args[2] == "-l")
+                    logs = args[3];
                 else
-                    LOG.Warn("Use '-c <filename>' to pass a config file to program");
+                    LOG.Warn("Use '-c <filename> -l <log_filename>' to pass a config file to program and set where logs should be");
             }
             catch (IndexOutOfRangeException)
             {
-                LOG.Warn("Use '-c <filename>' to pass a config file to program");
-                LOG.Warn("Using MockConfigurationParser instead");
+                LOG.Warn("Use '-c <filename> -l <log_filename>' to pass a config file to program and set where logs should be");
             }
+
+            LoggerSetup(logs);
 
             if(string.IsNullOrEmpty(filename))
                 filename = "resources/ManagementSystem.xml";
@@ -53,7 +53,7 @@ namespace ms
             UserInterface.Start();
         }
 
-        private static void LoggerSetup()
+        private static void LoggerSetup(string logs)
         {
             LoggingConfiguration config = new LoggingConfiguration();
             ColoredConsoleTarget consoleTarget = new ColoredConsoleTarget
@@ -61,7 +61,14 @@ namespace ms
                 Name = "console",
                 Layout = "[${time} | ${level:format=FirstCharacter} | ${logger}] ${message}"
             };
+            FileTarget fileTarget = new FileTarget
+            {
+                FileName = logs + "/ManagementSystem.log",
+                DeleteOldFileOnStartup = true,
+                Layout = "[${time} | ${level:format=FirstCharacter} | ${logger}] ${message}"
+            };
             config.AddRule(LogLevel.Trace, LogLevel.Fatal, consoleTarget);
+            config.AddRule(LogLevel.Debug, LogLevel.Fatal, fileTarget);
             LogManager.Configuration = config;
         }
     }
