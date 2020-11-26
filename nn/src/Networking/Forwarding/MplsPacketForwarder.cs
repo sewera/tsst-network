@@ -25,15 +25,23 @@ namespace nn.Networking.Forwarding
 
         public void ForwardPacket((string portAlias, MplsPacket packet) forwardPacketTuple)
         {
-            (string portAlias, MplsPacket packet) = forwardPacketTuple;
             if (_clientPorts == null)
             {
                 LOG.Warn("Dictionary with clientPorts was not initialized yet");
                 return;
             }
-
-            // TODO: Implementation
-            LOG.Fatal($"ForwardPacket is not implemented. Packet: {packet}");
+            try
+            {
+                (string outPort, MplsPacket outPacket) = FIB.Commutate(forwardPacketTuple);
+            }
+            catch(Exception e)
+            {
+                LOG.Info(e.Message);
+            }
+            // TODO
+            // Now send outPacket with outPort, summon initial NN developer
+            
+            LOG.Fatal($"ForwardPacket is not implemented. Packet: {forwardPacketTuple.packet}");
             throw new NotImplementedException();
         }
 
