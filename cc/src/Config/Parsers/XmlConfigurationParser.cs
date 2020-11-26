@@ -28,7 +28,7 @@ namespace cc.Config.Parsers
             foreach (XElement element in xelement.Descendants("connection"))
             {
                 string[] connection = element.Value.Split(',', 2);
-                LOG.Trace("{} <---> {}", connection[0], connection[1]);
+                LOG.Trace($"{connection[0]} <---> {connection[1]}");
                     
                 configurationBuilder.AddConnection((connection[0], connection[1], true));
             }
