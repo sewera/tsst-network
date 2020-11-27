@@ -99,7 +99,7 @@ namespace cn.Networking
                 if (bytesRead > 0)
                 {
                     MplsPacket receivedPacket = MplsPacket.FromBytes(buffer);
-                    LOG.Debug($"Received: {receivedPacket}");
+                    LOG.Info($"Received: {receivedPacket}");
                     OnMessageReceived(receivedPacket);
                 }
             }
