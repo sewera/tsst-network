@@ -34,7 +34,7 @@ namespace cn.Networking
                 LOG.Warn("Source port alias is not the same as current client port alias");
             }
 
-            LOG.Debug($"Sending packet: {mplsPacket}");
+            LOG.Info($"Sending packet: {mplsPacket} on port {_clientPortAlias}");
             byte[] packetBytes = MplsPacket.ToBytes(mplsPacket);
             _clientSocket.BeginSend(packetBytes, 0, packetBytes.Length, SocketFlags.None, SendCallback, _clientSocket);
         }
@@ -63,7 +63,7 @@ namespace cn.Networking
                     .SetSourcePortAlias(_configuration.ClientPortAlias)
                     .Build();
                 _clientSocket.Send(MplsPacket.ToBytes(packet));
-                LOG.Debug($"Sent hello packet to CC: {packet}");
+                LOG.Info($"Sent hello packet to CC: {packet}");
             }
             catch (Exception e)
             {
@@ -99,7 +99,7 @@ namespace cn.Networking
                 if (bytesRead > 0)
                 {
                     MplsPacket receivedPacket = MplsPacket.FromBytes(buffer);
-                    LOG.Debug($"Received: {receivedPacket}");
+                    LOG.Info($"Received: {receivedPacket}");
                     OnMessageReceived(receivedPacket);
                 }
             }
