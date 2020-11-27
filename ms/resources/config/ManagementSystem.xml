@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 
 <management_system>
-    
+
     <listener_port>4001</listener_port>
-    
+
     <config_messages>
-        
+
         <message router="R1">add 12 101 14 141</message>
         <message router="R1">add 12 102 13 131 -1001</message>
         <message router="R1">add 12 103 13 132 -1001</message>
@@ -28,7 +28,7 @@
         <message router="R4">add 41 101 44 441 -1004</message>
         <message router="R4">add 41 102 44 442 -1004</message>
         <message router="R4">add 41 103 44 443 -1004</message>
-        <message router="R4">add 44 1005 41 206 </message>
+        <message router="R4">add 44 1005 41 -1005 </message>
         <message router="R5">add 52 1001 . . </message>
         <message router="R5">add 52 131 51 511 -1005 </message>
         <message router="R5">add 52 132 53 532</message>
@@ -39,7 +39,7 @@
         <message router="R5">add 51 442 54 541</message>
         <message router="R5">add 51 443 53 531</message>
         <message router="R5">add 53 312 52 522 -1002</message>
-        
+
     </config_messages>
-    
+
 </management_system>

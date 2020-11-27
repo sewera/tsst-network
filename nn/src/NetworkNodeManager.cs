@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading;
 using NLog;
 using nn.Config;
 using nn.Models;
@@ -44,11 +45,9 @@ namespace nn
             }
 
             _packetForwarder.SetClientPorts(_clientPorts);
-
-            while (true)
-            {
-                // TODO: Make more elegant solution to program exiting
-            }
+            
+            ManualResetEvent allDone = new ManualResetEvent(false);
+            allDone.WaitOne();
         }
     }
 }
