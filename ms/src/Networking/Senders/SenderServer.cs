@@ -37,6 +37,9 @@ namespace ms
                         .SetCommandType(commandType)
                         .SetCommandData(commandData) 
                         .Build();
+                        Console.ForegroundColor=ConsoleColor.Blue;
+                        Console.WriteLine($"{packet.ToString()}");
+                        Console.ResetColor();
                     _sendSocked.Send(packet.ToBytes());
             }
             catch (Exception e)

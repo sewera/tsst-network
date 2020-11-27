@@ -34,6 +34,7 @@ namespace nn.Networking.Forwarding
             {
                 LOG.Info($"Received packet {forwardPacketTuple.packet} on port {forwardPacketTuple.portAlias}");
                 (string outPort, MplsPacket outPacket) = FIB.Commutate(forwardPacketTuple);
+                LOG.Info($"Forwarding packet {outPacket} to port {outPort}");
                 _clientPorts[outPort].Send(outPacket);
                 LOG.Info($"Forwarded packet {outPacket} on port {outPort}");
             }

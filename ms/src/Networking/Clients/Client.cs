@@ -14,17 +14,9 @@ namespace ms
         /// <summary>
         /// Object for receiving packets from this client
         /// <summary>
-        public ReceiverServer Receiver { get; set; }
-        /// <summary>
-        /// Object for sending packets to this client
-        /// <summary>
         public SenderServer Sender { get; set; }
         /// <summary>
         /// Client identifier
-        /// <summary>
-        public int Id { get; set; }
-        /// <summary>
-        /// Client's network node alias
         /// <summary>
         public string Alias { get; set; }
 
@@ -38,14 +30,11 @@ namespace ms
         /// <param name="socket"> Socket pinned to specific client connection </param>
         /// <param name="id"> Client id </param>
         /// <summary>
-        public Client(Socket socket, int id)
+        public Client(Socket socket, string alias)
         {
             // Create receive server for this client
-            Receiver = new ReceiverServer(socket, id);
-            Receiver.StartReceiving();
             _socket = socket;
-            Id = id;
-            Alias = "";
+            Alias = alias;
         }
 
         /// <summary>
@@ -56,7 +45,7 @@ namespace ms
         {
             Sender = new SenderServer(_socket);
             Sender.Send(data);
-            LOG.Info($"Data: '{data}' sent to client: {Id} with alias: {Alias}");
+            LOG.Info($"Data: '{data}' sent to NetworkNode: {Alias}");
         }
     }
 }
