@@ -33,6 +33,7 @@ namespace nn.Networking.Forwarding
             try
             {
                 (string outPort, MplsPacket outPacket) = FIB.Commutate(forwardPacketTuple);
+                LOG.Info($"Forwarding packet {outPacket} to port {outPort}");
                 _clientPorts[outPort].Send(outPacket);
             }
             catch(Exception e)

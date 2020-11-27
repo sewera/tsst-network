@@ -111,7 +111,7 @@ namespace nn.Networking.Client
                 if (bytesRead > 0)
                 {
                     MplsPacket receivedPacket = MplsPacket.FromBytes(buffer);
-                    LOG.Debug($"Received: {receivedPacket}");
+                    LOG.Debug($"Received: {receivedPacket} on port: {_clientPortAlias}");
                     OnMessageReceived(receivedPacket);
                 }
             }
