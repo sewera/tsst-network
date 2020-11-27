@@ -15,23 +15,14 @@ namespace ms
         /// <summary>
         /// Id of next client connected to server
         /// </summary>
-        private static int counter=0;
 
         /// <summary>
         /// Add new client connection to the list
         /// <param name="socket"> Socket associated with a specific client </param>
         /// </summary>
-        public static void AddClient(Socket socket)
+        public static void AddClient(Socket socket,string alias)
         {
-            Clients.Add(new Client(socket, counter++));
-        }
-        /// <summary>
-        /// Remove client connection from the list
-        /// <param name="id"> Id of client to be deleted </param>
-        /// </summary>
-        public static void RemoveClient(int id)
-        {
-            Clients.RemoveAt(Clients.FindIndex(x => x.Id == id));
+            Clients.Add(new Client(socket, alias));
         }
         /// <summary>
         /// Send data to specific client
@@ -50,32 +41,6 @@ namespace ms
                 return false;
             }
             return true;
-        }
-        /// <summary>
-        /// Send data to specific client
-        /// <param name="data"> Data to be sent </param>
-        /// <param name="id"> Id of the client </param>
-        /// </summary>
-        private static void SendData(string data, int id)
-        {
-            Clients[Clients.FindIndex(x => x.Id == id)].SendData(data);
-        }
-        /// <summary>
-        /// Add alias for specific client
-        /// <param name="alias"> String meant to be alias </param>
-        /// <param name="id"> Id of the client </param>
-        /// </summary>
-        public static void AddAlias(string alias, int id)
-        {
-            if (!(CheckAlias(alias)))
-            {
-                UserInterface.WriteLine($"Can't add alias to client\n'{alias}' is not an alias",UserInterface.Type.Syntax);
-            }
-            else
-            {
-               Clients[Clients.FindIndex(x => x.Id == id)].Alias=alias;
-               UserInterface.WriteLine($"'{alias}' added succesfully for client: {id} ",UserInterface.Type.Received);
-            }
         }
         /// <summary>
         /// Check if string match network node alias format

@@ -21,7 +21,7 @@
         <message router="R2">add 23 321 24 241</message>
         <message router="R3">add 34 101 31 311</message>
         <message router="R3">add 34 102 32 321</message>
-        <message router="R3">add 32 103 31 312</message>
+        <message router="R3">add 34 103 31 312</message>
         <message router="R3">add 32 231 34 342</message>
         <message router="R3">add 31 531 34 341</message>
         <message router="R3">add 31 532 34 343</message>
