@@ -133,7 +133,6 @@ namespace nn.Networking.Management
             // Need to give Management System some time for adding new network node to his list of network nodes.
             System.Threading.Thread.Sleep(20); 
             var fullPacket = new List<byte>();
-            fullPacket.AddRange(BitConverter.GetBytes(data.Length));
             fullPacket.AddRange(Encoding.Default.GetBytes(data));
             _managementSocket.Send(fullPacket.ToArray());
         }

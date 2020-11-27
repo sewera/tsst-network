@@ -2,7 +2,7 @@ using System;
 using System.Net.Sockets;
 using System.Text;
 using NLog;
-
+/*
 namespace ms
 {
     /// <summary>
@@ -69,7 +69,7 @@ namespace ms
                     // Add alias for client
                     try
                     {
-                        ClientController.AddAlias(data,_clientId);
+                        //ClientController.AddAlias(data,_clientId);
                     }
                     catch(Exception e)
                     {
@@ -108,8 +108,9 @@ namespace ms
             // Close connection
             _receiveSocket.Disconnect(true);
             // Remove client from the list
-            ClientController.RemoveClient(_clientId);
+            //ClientController.RemoveClient(_clientId);
             LOG.Info($"Client: {_clientId} disconnected");
         }
     }
 }
+*/
