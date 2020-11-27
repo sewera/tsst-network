@@ -1,6 +1,7 @@
 using System;
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
 using NLog;
 
 namespace ms
@@ -57,9 +58,15 @@ namespace ms
             {
                 LOG.Info($"Accepted Callback port: {port}");
                 // Create new socket for client
-                Socket acceptedSocket = ListenerSocket.EndAccept(ar);
+                Socket handler = ListenerSocket.EndAccept(ar);
+                byte[]_buffer = new byte[2];
+                handler.Receive(_buffer);
+                string data = Encoding.Default.GetString(_buffer);
+                Console.ForegroundColor = ConsoleColor.Blue;
+                Console.WriteLine($"Data: '{data}'");
+                Console.ResetColor();
                 // Add new client to ClientController
-                ClientController.AddClient(acceptedSocket);
+                ClientController.AddClient(handler,data);
 
                 // Start listening again
                 ListenerSocket.BeginAccept(AcceptCallback, ListenerSocket);

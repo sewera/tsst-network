@@ -29,6 +29,7 @@ namespace nn.Networking.Client
 
         public void Send(MplsPacket mplsPacket)
         {
+            LOG.Debug($"Sending packet: {mplsPacket}");
             byte[] packetBytes = mplsPacket.ToBytes();
             _clientSocket.BeginSend(packetBytes, 0, packetBytes.Length, SocketFlags.None, SendCallback, _clientSocket);
         }
@@ -105,7 +106,7 @@ namespace nn.Networking.Client
                 if (bytesRead > 0)
                 {
                     MplsPacket receivedPacket = MplsPacket.FromBytes(buffer);
-                    LOG.Debug($"Received: {receivedPacket}");
+                    LOG.Debug($"Received: {receivedPacket} on port: {_clientPortAlias}");
                     OnMessageReceived(receivedPacket);
                 }
             }
