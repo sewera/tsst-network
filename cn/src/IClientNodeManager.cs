@@ -7,6 +7,6 @@ namespace cn
     {
         public void Start();
         public void RegisterReceiveMessageEvent(ReceiveMessage receiveMessage);
-        public void Send(string destinationPortAlias, string message, List<long> labels);
+        public void Send(string mplsOutLabel, string message, (List<long>, string) labels);
     }
 }

@@ -33,12 +33,12 @@ namespace cn
             _clientPort.RegisterReceiveMessageEvent(receiveMessage);
         }
 
-        public void Send(string destinationPortAlias, string message, List<long> labels)
+        public void Send(string mplsOutLabel, string message, (List<long>, string) labels)
         {
             MplsPacket packet = new MplsPacket.Builder()
                 .SetSourcePortAlias(_configuration.ClientPortAlias)
-                .SetDestinationPortAlias(destinationPortAlias)
-                .SetMplsLabels(labels)
+                .SetDestinationPortAlias(labels.Item2)
+                .SetMplsLabels(labels.Item1)
                 .SetMessage(message)
                 .Build();
 

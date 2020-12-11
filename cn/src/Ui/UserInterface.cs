@@ -33,7 +33,8 @@ namespace cn.Ui
 
         private void StartCommandParsing()
         {
-            Console.WriteLine("Enter alias of remote host and message you want to send.\nInput format: <<remote_host_alias>> [space] <<message>>");
+            Console.WriteLine("Enter MPLS out label to direct packet to specific remote host and message you want to send.\n" +
+                              "Input format: <<mpls_out_label>> [space] <<message>>");
             while (true)
             {
                 Console.Write("> ");
@@ -41,8 +42,8 @@ namespace cn.Ui
 
                 try
                 {
-                    (string remoteHostAlias, string message) = _commandParser.ParseCommand(input);
-                    _clientNodeManager.Send(remoteHostAlias, message, _commandParser.SelectOutLabel(remoteHostAlias));
+                    (string mplsOutLabel, string message) = _commandParser.ParseCommand(input); 
+                    _clientNodeManager.Send(mplsOutLabel, message, _commandParser.CheckMplsOutLabel(mplsOutLabel));
                 }
                 catch (ParserException e)
                 {
