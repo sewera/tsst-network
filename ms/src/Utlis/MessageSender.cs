@@ -35,10 +35,10 @@ namespace ms
         /// </summary>
         public static void SendConfigCommands()
         {
-            while(messages.Count >0)
+            while(messages.Count > 0)
             {
                     Message m = messages.Dequeue();
-                    if(!(ClientController.SendData(m._content,m.clientAlias)))
+                    if(!ClientController.SendData(m._content, m.clientAlias))
                     {
                         messages.Enqueue(m);
                     }
