@@ -49,7 +49,7 @@ namespace ms
             mm.ReadConfig(configuration);
             mm.startListening();
             MessageSender.ReadConfig(configuration);
-            new Thread(MessageSender.Start).Start();
+            new Thread(MessageSender.SendConfigCommands).Start();
             UserInterface.Start();
         }
 
