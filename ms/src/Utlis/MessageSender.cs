@@ -14,11 +14,6 @@ namespace ms
         private static Queue<Message> messages= new Queue<Message>();
 
         /// <summary>
-        /// Auxiliary field to determine if Start method should break its while loop
-        /// </summary>
-        private static bool quit = false;
-
-        /// <summary>
         /// Read config file, actually config messages
         /// </summary>
         public static void ReadConfig(Configuration configuration)
@@ -36,28 +31,17 @@ namespace ms
             messages.Enqueue(message);
         }
         /// <summary>
-        /// Quit while loop in Start method
-        /// </summary>
-        public static void Quit()
-        {
-            quit = true;
-        }
-
-        /// <summary>
         /// Start sending messages
         /// </summary>
-        public static void Start()
+        public static void SendConfigCommands()
         {
-            while(quit==false)
+            while(messages.Count >0)
             {
-                if(messages.Count > 0)
-                {
                     Message m = messages.Dequeue();
                     if(!(ClientController.SendData(m._content,m.clientAlias)))
                     {
                         messages.Enqueue(m);
                     }
-                }
             }
         }
     }
