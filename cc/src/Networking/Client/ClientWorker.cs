@@ -9,6 +9,7 @@ namespace cc.Networking.Client
 {
     public class ClientWorker : IClientWorker
     {
+        public event ClientRemovedEventHandler ClientRemoved;
         private static readonly Logger LOG = LogManager.GetCurrentClassLogger();
         private ClientState _state;
 
@@ -113,6 +114,11 @@ namespace cc.Networking.Client
             MessageReceived += receiveMessageDelegate;
         }
 
+        public void RegisterClientRemovedEvent(ClientRemovedEventHandler ClientRemovedDelegate)
+        {
+            ClientRemoved += ClientRemovedDelegate;
+        }
+
         protected virtual void OnMessageReceived(MplsPacket packet)
         {
             MessageReceived?.Invoke((_state.PortAlias, packet));
@@ -123,6 +129,7 @@ namespace cc.Networking.Client
             try
             {
                 _state.ClientSocket.Disconnect(true);
+                OnClientRemoved(_state.PortAlias);
                 LOG.Info($"Client: {_state.PortAlias} disconnected");
             }
             catch(Exception e)
@@ -130,6 +137,15 @@ namespace cc.Networking.Client
                 LOG.Info($"{e}");
             }
             
+        }
+
+         protected virtual void OnClientRemoved(String portAlias)
+        {
+            // Check if there are any subsribers to this event:
+            if (ClientRemoved != null)
+            {
+                ClientRemoved(this, new ClientRemovedEventArgs() {PortAlias = portAlias});
+            }
         }
     }
 }

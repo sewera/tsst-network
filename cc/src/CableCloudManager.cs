@@ -38,6 +38,7 @@ namespace cc
             (string portAlias, IClientWorker clientWorker) = worker;
             _clientWorkers.Add(portAlias, clientWorker);
             clientWorker.RegisterReceiveMessageEvent(_packetForwarder.ForwardPacket);
+            clientWorker.RegisterClientRemovedEvent(_packetForwarder.OnClientRemoved);
         }
 
         public void SetConnectionAlive((string, string, bool) requestedConnection)
