@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Net.Sockets;
+using System.Threading;
 
 namespace ms
 {
@@ -28,7 +29,7 @@ namespace ms
             words.RemoveAll(item => item == "");
             string commandType = words[0];
             words.RemoveAt(0);
-            string commandData = string.Join(' ',words);
+            string commandData = string.Join(' ', words);
 
             try
             {
@@ -37,9 +38,10 @@ namespace ms
                         .SetCommandType(commandType)
                         .SetCommandData(commandData) 
                         .Build();
-                        Console.ForegroundColor=ConsoleColor.Blue;
-                        Console.WriteLine($"{packet.ToString()}");
-                        Console.ResetColor();
+                    Console.ForegroundColor = ConsoleColor.Blue;
+                    Console.WriteLine($"{packet.ToString()}");
+                    Console.ResetColor();
+                    Thread.Sleep(100);
                     _sendSocked.Send(packet.ToBytes());
             }
             catch (Exception e)
