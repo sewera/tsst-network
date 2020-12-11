@@ -12,6 +12,7 @@ namespace nn.Config.Parsers
                 .SetCableCloudAddress("127.0.0.1")
                 .SetCableCloudPort(3001)
                 .SetManagementSystemAddress("127.0.0.1")
+                .SetRouterAlias("R9")
                 .SetManagementSystemPort(4001)
                 .AddPortAlias("11")
                 .AddPortAlias("12")

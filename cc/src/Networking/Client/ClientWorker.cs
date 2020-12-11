@@ -28,27 +28,47 @@ namespace cc.Networking.Client
         {
             // Retrieve the state object and the handler socket
             // from the asynchronous state object.
-            _state = (ClientState) ar.AsyncState;
-            if (_state != null)
+            try
             {
-                Socket handler = _state.ClientSocket;
-
-                // Read data from the client socket.
-                int bytesRead = handler.EndReceive(ar);
-
-                if (bytesRead > 0)
+                _state = (ClientState) ar.AsyncState;
+                if (_state != null)
                 {
-                    _state.Packet = MplsPacket.FromBytes(_state.Buffer);
-                    LOG.Debug($"Received: {_state.Packet}");
+                    Socket handler = _state.ClientSocket;
 
-                    OnMessageReceived(_state.Packet);
+                    // Read data from the client socket.
+                    int bytesRead = handler.EndReceive(ar);
 
-                    handler.BeginReceive(_state.Buffer, 0, ClientState.BufferSize, 0, ReadCallback, _state);
+                    if (bytesRead > 0)
+                    {
+                        _state.Packet = MplsPacket.FromBytes(_state.Buffer);
+                        LOG.Debug($"Received: {_state.Packet}");
+
+                        OnMessageReceived(_state.Packet);
+
+                        handler.BeginReceive(_state.Buffer, 0, ClientState.BufferSize, 0, ReadCallback, _state);
+                    }
+                    else
+                    {
+                        Disconnect();
+                    }
+                }
+                else
+                {
+                    LOG.Fatal("_state.WorkSocket is null in ReadCallback");
                 }
             }
-            else
+            catch
             {
-                LOG.Fatal("_state.WorkSocket is null in ReadCallback");
+                // If exeption is throw check if socket is connected, because you can start receiving again. If not - Disconnect.
+                if (!_state.ClientSocket.Connected)
+                {
+                    Disconnect();
+                }
+                else
+                {
+                    // HERE
+                    _state.ClientSocket.BeginReceive(_state.Buffer, 0, ClientState.BufferSize, 0, ReadCallback, _state);
+                }
             }
         }
 
@@ -96,6 +116,20 @@ namespace cc.Networking.Client
         protected virtual void OnMessageReceived(MplsPacket packet)
         {
             MessageReceived?.Invoke((_state.PortAlias, packet));
+        }
+
+        private void Disconnect()
+        {
+            try
+            {
+                _state.ClientSocket.Disconnect(true);
+                LOG.Info($"Client: {_state.PortAlias} disconnected");
+            }
+            catch(Exception e)
+            {
+                LOG.Info($"{e}");
+            }
+            
         }
     }
 }
