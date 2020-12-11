@@ -15,7 +15,6 @@ namespace ms
             Server,Received,Console,Syntax,Help
         }
 
-
         /// <summary>
         /// Run the UserInterface
         /// </summary>
@@ -37,7 +36,6 @@ namespace ms
                 }
                 else if (input == "exit")
                 {
-                    MessageSender.Quit();
                     break;
                 }
                 else
@@ -57,11 +55,11 @@ namespace ms
         {
             if (ClientController.FindAlias(message.clientAlias))
             {
-                MessageSender.AddMessage(message);
+                ClientController.SendData(message._content, message.clientAlias);
             }
             else
             {
-                WriteLine($"Error finding client!\nThere is no client with alias {message.clientAlias}",Type.Syntax);
+                WriteLine($"Error finding client!\nThere is no client with alias {message.clientAlias}", Type.Syntax);
             }
         }
         /// <summary>
@@ -120,23 +118,23 @@ namespace ms
 
             //TODO now if you allow command like that to pass remember to process it the same way before sending to network node
 
-            if (words.Count<6)
+            if (words.Count < 6)
             {
-                WriteLine("Syntax error!\nCommand too short",Type.Syntax);
+                WriteLine("Syntax error!\nCommand too short", Type.Syntax);
                 return false;
             }
             // First word should be router alias
             if (words[0][0] != 'R')
             {
-                WriteLine("Syntax error!\nFirst param should be network node alias",Type.Syntax);
+                WriteLine("Syntax error!\nFirst param should be network node alias", Type.Syntax);
                 result = false;
             }
             // The rest of the first should be all numbers
-            for (int i=1; i<words[0].Length; i++)
+            for (int i = 1; i < words[0].Length; i++)
             {
-                if(!Char.IsDigit(words[0],i))
+                if(!Char.IsDigit(words[0], i))
                 {
-                    WriteLine("Syntax error!\nFirst param should be network node alias",Type.Syntax);
+                    WriteLine("Syntax error!\nFirst param should be network node alias", Type.Syntax);
                     result = false;
                 }
             }
@@ -144,17 +142,17 @@ namespace ms
             // Second word can only be 'add' or 'delete'
             if (!(words[1] == "add" || words[1] == "delete"))
             {
-                WriteLine("Syntax error!\nOnly keywords are 'add' and 'delete'",Type.Syntax);
+                WriteLine("Syntax error!\nOnly keywords are 'add' and 'delete'", Type.Syntax);
                 result = false;
             }
 
             // The next four params can only be numbers or dots
-            for (int i=2;i<6;i++)
+            for (int i=2; i < 6; i++)
             {
                 int arg;
-                if ((!(int.TryParse(words[i], out arg) && (arg>0) ) || words[i] =="."))
+                if ((!(int.TryParse(words[i], out arg) && (arg > 0) ) || words[i] =="."))
                 {
-                    WriteLine("Syntax error!\nLinks and labels are expressed in positive numbers or dots",Type.Syntax);
+                    WriteLine("Syntax error!\nLinks and labels are expressed in positive numbers or dots", Type.Syntax);
                     result = false;
                 }
             }
@@ -165,20 +163,20 @@ namespace ms
             {
                 if (words[6].Length < 2)
                 {
-                    WriteLine("Syntax error!\nLast param is too short",Type.Syntax);
+                    WriteLine("Syntax error!\nLast param is too short", Type.Syntax);
                      result = false;
                 }
 
                 if (words[6][0] != '-')
                 {
-                    WriteLine("Syntax error!\nLast param should start with '-'",Type.Syntax);
+                    WriteLine("Syntax error!\nLast param should start with '-'", Type.Syntax);
                     result = false;
                 }
-                for (int i=1; i<words[6].Length;i++)
+                for (int i=1; i < words[6].Length; i++)
                 {
-                    if(!Char.IsDigit(words[6],i))
+                    if(!Char.IsDigit(words[6], i))
                     {
-                        WriteLine("Syntax error!\nLast param should end with a number",Type.Syntax);
+                        WriteLine("Syntax error!\nLast param should end with a number", Type.Syntax);
                         result = false;
                     }
                 }
@@ -186,13 +184,13 @@ namespace ms
 
             if (words.Count > 7)
             {
-                WriteLine("Syntax error!\nToo much params",Type.Syntax);
+                WriteLine("Syntax error!\nToo much params", Type.Syntax);
                 result = false;
             }
 
             if (result != true)
             {
-                WriteLine("Type 'help' for help",Type.Syntax);
+                WriteLine("Type 'help' for help", Type.Syntax);
             }
 
             return result;
@@ -205,7 +203,7 @@ namespace ms
             List<string> words = new List<string>(input.Split(' '));
             words.RemoveAll(item => item == "");
             input="";
-            for(int i=0;i<words.Count-1;i++)
+            for(int i=0; i < words.Count-1; i++)
             {
                 input+=$"{words[i]} ";
             }
@@ -223,7 +221,7 @@ namespace ms
         private static void ShowHelp()
         {
             // TODO
-            WriteLine("Help: ///TODO",Type.Help);
+            WriteLine("Help: ///TODO", Type.Help);
         }
     }
 }
