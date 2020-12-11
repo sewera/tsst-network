@@ -37,7 +37,6 @@ namespace ms
                 }
                 else if (input == "exit")
                 {
-                    MessageSender.Quit();
                     break;
                 }
                 else
@@ -57,7 +56,7 @@ namespace ms
         {
             if (ClientController.FindAlias(message.clientAlias))
             {
-                MessageSender.AddMessage(message);
+                ClientController.SendData(message._content,message.clientAlias);
             }
             else
             {
