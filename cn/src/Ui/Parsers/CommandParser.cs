@@ -34,18 +34,26 @@ namespace cn.Ui.Parsers
             }
         }
         
-        public List<long> SelectOutLabel(string remoteHostAlias)
+        public (List<long>, string) CheckMplsOutLabel(string mplsOutLabel)
         {
             List<long> mplsLabels = new List<long>();
+            string remoteHostAlias = String.Empty;
             try
             {
-                mplsLabels.Add(_configuration.MplsLabels[remoteHostAlias]);
+                foreach((string alias, long label) in _configuration.MplsLabels)
+                {
+                    if (long.Parse(mplsOutLabel) == label)
+                    {
+                        mplsLabels.Add(long.Parse(mplsOutLabel));
+                        remoteHostAlias = alias;
+                    }
+                }
             }
-            catch (KeyNotFoundException)
+            catch (FormatException)
             {
-                throw new ParserException("Could not find any matching MPLS label for given remote client node alias");
+                throw new ParserException("Could not find given MPLS label");
             }
-            return mplsLabels;
+            return (mplsLabels, remoteHostAlias);
         }
     }
 }
