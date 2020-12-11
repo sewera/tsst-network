@@ -118,7 +118,7 @@ namespace ms
 
             //TODO now if you allow command like that to pass remember to process it the same way before sending to network node
 
-            if (words.Count<6)
+            if (words.Count < 6)
             {
                 WriteLine("Syntax error!\nCommand too short", Type.Syntax);
                 return false;
@@ -130,9 +130,9 @@ namespace ms
                 result = false;
             }
             // The rest of the first should be all numbers
-            for (int i=1; i<words[0].Length; i++)
+            for (int i = 1; i < words[0].Length; i++)
             {
-                if(!Char.IsDigit(words[0],i))
+                if(!Char.IsDigit(words[0], i))
                 {
                     WriteLine("Syntax error!\nFirst param should be network node alias", Type.Syntax);
                     result = false;
@@ -147,10 +147,10 @@ namespace ms
             }
 
             // The next four params can only be numbers or dots
-            for (int i=2;i<6;i++)
+            for (int i=2; i < 6; i++)
             {
                 int arg;
-                if ((!(int.TryParse(words[i], out arg) && (arg>0) ) || words[i] =="."))
+                if ((!(int.TryParse(words[i], out arg) && (arg > 0) ) || words[i] =="."))
                 {
                     WriteLine("Syntax error!\nLinks and labels are expressed in positive numbers or dots", Type.Syntax);
                     result = false;
@@ -172,9 +172,9 @@ namespace ms
                     WriteLine("Syntax error!\nLast param should start with '-'", Type.Syntax);
                     result = false;
                 }
-                for (int i=1; i<words[6].Length;i++)
+                for (int i=1; i < words[6].Length; i++)
                 {
-                    if(!Char.IsDigit(words[6],i))
+                    if(!Char.IsDigit(words[6], i))
                     {
                         WriteLine("Syntax error!\nLast param should end with a number", Type.Syntax);
                         result = false;
@@ -203,7 +203,7 @@ namespace ms
             List<string> words = new List<string>(input.Split(' '));
             words.RemoveAll(item => item == "");
             input="";
-            for(int i=0;i<words.Count-1;i++)
+            for(int i=0; i < words.Count-1; i++)
             {
                 input+=$"{words[i]} ";
             }
