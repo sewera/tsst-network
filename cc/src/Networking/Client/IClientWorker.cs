@@ -11,5 +11,7 @@ namespace cc.Networking.Client
         public void SendCallback(IAsyncResult ar);
         public int GetPort();
         public void RegisterReceiveMessageEvent(ReceiveMessageDelegate receiveMessageDelegate);
+
+        public void RegisterClientRemovedEvent(ClientRemovedEventHandler ClientRemovedDelegate);
     }
 }
