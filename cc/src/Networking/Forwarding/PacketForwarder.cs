@@ -77,5 +77,14 @@ namespace cc.Networking.Forwarding
                 LOG.Warn($"The requested connection: {portAlias1} <-> {portAlias2} could not be found");
             }
         }
+        public void RemoveClientWorker(String portAlias)
+        {
+            _clientWorkers.Remove(portAlias);
+        }
+
+        public void OnClientRemoved(object source, ClientRemovedEventArgs eventArgs)
+        {
+            RemoveClientWorker(eventArgs.PortAlias);
+        }
     }
 }

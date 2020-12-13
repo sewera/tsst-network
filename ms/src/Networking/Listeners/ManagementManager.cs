@@ -73,7 +73,8 @@ namespace ms
             }
             catch (Exception ex)
             {
-                throw new Exception("Base Accept error" + ex);
+                //throw new Exception("Base Accept error" + ex);
+                Console.WriteLine("Connection was forcibly closed by the remote host");
             }
         }
         
