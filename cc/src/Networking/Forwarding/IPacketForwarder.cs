@@ -10,5 +10,7 @@ namespace cc.Networking.Forwarding
         public void ForwardPacket((string, MplsPacket) forwardPacketTuple);
         public void SetClientPorts(Dictionary<string, IClientWorker> clientWorkers);
         public void SetConnectionAlive((string, string, bool) requestedConnection);
+
+        public void OnClientRemoved(object source, ClientRemovedEventArgs eventArgs);
     }
 }
