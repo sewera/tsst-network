@@ -2,7 +2,7 @@ using System;
 using System.Net.Sockets;
 using System.Text;
 using NLog;
-/*
+
 namespace ms
 {
     /// <summary>
@@ -19,17 +19,17 @@ namespace ms
         /// <summary>
         private Socket _receiveSocket;
         /// <summary>
-        /// Client Id
+        /// Client Alias
         /// <summary>     
-        private int _clientId;
+        private string _clientAlias;
         /// <summary>
         /// Logger
         /// </summary>
         private static readonly Logger LOG = LogManager.GetCurrentClassLogger();
-        public ReceiverServer(Socket receiveSocket, int clientId)
+        public ReceiverServer(Socket receiveSocket, string alias)
         {
             _receiveSocket = receiveSocket;
-            _clientId = clientId;
+            _clientAlias = alias;
         }
        
         /// <summary>
@@ -65,7 +65,7 @@ namespace ms
 
                     //TODO show received data
                     string data = Encoding.Default.GetString(_buffer);
-                    LOG.Info($"Data: '{data}' received from client: {_clientId}");
+                    LOG.Info($"Data: '{data}' received from client: {_clientAlias}");
                     // Add alias for client
                     try
                     {
@@ -108,9 +108,8 @@ namespace ms
             // Close connection
             _receiveSocket.Disconnect(true);
             // Remove client from the list
-            //ClientController.RemoveClient(_clientId);
-            LOG.Info($"Client: {_clientId} disconnected");
+            ClientController.RemoveClient(_clientAlias);
+            LOG.Info($"Client: {_clientAlias} disconnected");
         }
     }
 }
-*/
