@@ -17,6 +17,7 @@ namespace nn.Config.Parsers
                 .AddPortAlias("11")
                 .AddPortAlias("12")
                 .AddPortAlias("13")
+                .AddPortAlias("14")
                 .Build();
         }
     }
