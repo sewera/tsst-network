@@ -14,6 +14,10 @@ namespace ms
         /// <summary>
         /// Object for receiving packets from this client
         /// <summary>
+         /// <summary>
+        /// Object for receiving packets from this client
+        /// <summary>
+        public ReceiverServer Receiver { get; set; }
         public SenderServer Sender { get; set; }
         /// <summary>
         /// Client identifier
@@ -33,6 +37,8 @@ namespace ms
         public Client(Socket socket, string alias)
         {
             // Create receive server for this client
+            Receiver = new ReceiverServer(socket, alias);
+            Receiver.StartReceiving();
             _socket = socket;
             Alias = alias;
         }

@@ -89,6 +89,23 @@ namespace ms
                 return false;
             }
         }
+        /// <summary>
+        /// Remove client
+        /// <param name="alias"> Alias </param>
+        /// <returns> True if removing was succesful, false if not </returns>
+        /// </summary>
+        public static bool RemoveClient(string alias)
+        {
+            try
+            {
+                Clients.RemoveAt(Clients.FindIndex(x => x.Alias == alias));
+            }
+            catch
+            {
+                return false;
+            }
+            return true;
+        }
     }
 
 }
