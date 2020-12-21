@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using ms.Config;
 
 namespace ms
 {
@@ -18,7 +19,7 @@ namespace ms
         /// </summary>
         public static void ReadConfig(Configuration configuration)
         {
-            foreach(Message m in configuration.configMessages)
+            foreach(Message m in configuration.ConfigMessages)
             {
                 messages.Enqueue(m);
             }

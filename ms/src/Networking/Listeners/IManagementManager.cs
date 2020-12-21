@@ -1,4 +1,5 @@
 using System;
+using ms.Config;
 
 namespace ms
 {
