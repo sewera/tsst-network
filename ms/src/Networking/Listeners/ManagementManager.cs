@@ -2,6 +2,7 @@ using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using ms.Config;
 using NLog;
 
 namespace ms
@@ -19,7 +20,7 @@ namespace ms
         /// <summary>
         /// Port on which socket will listen
         /// </summary>
-        public short port = 1234;
+        public int port = 1234;
         /// <summary>
         /// Logger
         /// </summary>
@@ -71,7 +72,7 @@ namespace ms
                 // Start listening again
                 ListenerSocket.BeginAccept(AcceptCallback, ListenerSocket);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 //throw new Exception("Base Accept error" + ex);
                 Console.WriteLine("Connection was forcibly closed by the remote host");

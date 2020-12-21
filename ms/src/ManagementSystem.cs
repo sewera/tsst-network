@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Threading;
+using ms.Config;
+using ms.Config.Parsers;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
@@ -30,11 +32,10 @@ namespace ms
 
             LoggerSetup(logs);
 
-            if(string.IsNullOrEmpty(filename))
-                filename = "resources/ManagementSystem.xml";
+            if(string.IsNullOrEmpty(filename)) filename = "resources/config/ManagementSystem.xml";
 
-            Configuration configuration = new Configuration(filename);
-            configuration.ReadConfigFile();
+            IConfigurationParser configurationParser = new XmlConfigurationParser(filename);
+            Configuration configuration = configurationParser.ParseConfiguration();
 
             try
             {
