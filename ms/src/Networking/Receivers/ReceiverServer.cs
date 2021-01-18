@@ -1,40 +1,45 @@
 using System;
 using System.Net.Sockets;
 using System.Text;
+using ms.Networking.Controllers;
 using NLog;
 
-namespace ms
+namespace ms.Networking.Receivers
 {
     /// <summary>
     /// Receiver Server for each client
-    /// <summary>
+    /// </summary>
     public class ReceiverServer
     {
         /// <summary>
         /// Buffer for received bytes
-        /// <summary>
+        /// </summary>
         private byte[] _buffer;
+
         /// <summary>
         /// Client socket
-        /// <summary>
+        /// </summary>
         private Socket _receiveSocket;
+
         /// <summary>
         /// Client Alias
-        /// <summary>     
+        /// </summary>
         private string _clientAlias;
+
         /// <summary>
         /// Logger
         /// </summary>
         private static readonly Logger LOG = LogManager.GetCurrentClassLogger();
+
         public ReceiverServer(Socket receiveSocket, string alias)
         {
             _receiveSocket = receiveSocket;
             _clientAlias = alias;
         }
-       
+
         /// <summary>
         /// After this method is called the _receiveSocket is waiting for the incoming bytes
-        /// <summary> 
+        /// </summary>
         public void StartReceiving()
         {
             try
@@ -44,22 +49,25 @@ namespace ms
                 // If any beats come, save them in _buffer and call Receive Callback method
                 _receiveSocket.BeginReceive(_buffer, 0, _buffer.Length, SocketFlags.None, ReceiveCallback, null);
             }
-            catch { }
+            catch
+            {
+            }
         }
+
         /// <summary>
         /// This method is called when _receiveSocket has received aby bytes, it receives the bytes and call StartReceiving() again
-        /// <summary> 
+        /// </summary>
         private void ReceiveCallback(IAsyncResult AR)
         {
             try
             {
                 // If only 1 byte received, it means client wants to disconnect from the server
                 //TODO fix this if statement
-                if ( _receiveSocket.EndReceive(AR) > 1)
+                if (_receiveSocket.EndReceive(AR) > 1)
                 {
                     // Convert first 4 bytes to int,in order to set _buffer size
                     _buffer = new byte[BitConverter.ToInt32(_buffer, 0)];
-                   
+
                     // Keep receiving data
                     _receiveSocket.Receive(_buffer, _buffer.Length, SocketFlags.None);
 
@@ -71,12 +79,11 @@ namespace ms
                     {
                         //ClientController.AddAlias(data,_clientId);
                     }
-                    catch(Exception e)
+                    catch (Exception e)
                     {
                         Console.WriteLine(e);
                     }
 
-                    
 
                     // Now we have to start all over again with waiting for a data to come from the socket
                     StartReceiving();
@@ -102,7 +109,7 @@ namespace ms
 
         /// <summary>
         /// Disconnect _receiveSockets
-        /// <summary> 
+        /// </summary>
         private void Disconnect()
         {
             // Close connection

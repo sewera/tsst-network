@@ -1,6 +1,6 @@
 using MessagePack;
 
-namespace ms
+namespace ms.Models
 {
     [MessagePackObject]
     public class ManagementPacket

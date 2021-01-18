@@ -1,7 +1,8 @@
-using System.Net.Sockets;
 using System.Collections.Generic;
+using System.Net.Sockets;
+using ms.Networking.Clients;
 
-namespace ms
+namespace ms.Networking.Controllers
 {
     /// <summary>
     /// Class handling list with client connections
@@ -12,23 +13,24 @@ namespace ms
         /// List with client connections
         /// </summary>
         public static List<Client> Clients = new List<Client>();
+
         /// <summary>
         /// Id of next client connected to server
         /// </summary>
-
         /// <summary>
         /// Add new client connection to the list
         /// <param name="socket"> Socket associated with a specific client </param>
         /// </summary>
-        public static void AddClient(Socket socket,string alias)
+        public static void AddClient(Socket socket, string alias)
         {
             Clients.Add(new Client(socket, alias));
         }
+
         /// <summary>
         /// Send data to specific client
         /// <param name="data"> Data to be sent </param>
         /// <param name="clientAlias"> Alias of the client </param>
-        /// <returns> True if the data is sent, False if not <returns>
+        /// <returns> True if the data is sent, False if not </returns>
         /// </summary>
         public static bool SendData(string data, string clientAlias)
         {
@@ -40,8 +42,10 @@ namespace ms
             {
                 return false;
             }
+
             return true;
         }
+
         /// <summary>
         /// Check if string match network node alias format
         /// <param name="alias"> String meant to be alias </param>
@@ -62,16 +66,17 @@ namespace ms
             }
 
             // Check if the rest of the string are digits.
-            for (int i=1;i<alias.Length;i++)
+            for (int i = 1; i < alias.Length; i++)
             {
                 if (!(char.IsDigit(alias[i])))
                 {
                     return false;
                 }
             }
-            
+
             return true;
         }
+
         /// <summary>
         /// Check if client with matching alias exists
         /// <param name="alias"> Alias </param>
@@ -79,16 +84,9 @@ namespace ms
         /// </summary>
         public static bool FindAlias(string alias)
         {
-               
-            if(Clients.FindIndex(x => x.Alias == alias) >= 0)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return Clients.FindIndex(x => x.Alias == alias) >= 0;
         }
+
         /// <summary>
         /// Remove client
         /// <param name="alias"> Alias </param>
@@ -104,8 +102,8 @@ namespace ms
             {
                 return false;
             }
+
             return true;
         }
     }
-
 }

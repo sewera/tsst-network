@@ -1,28 +1,30 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Net.Sockets;
 using System.Threading;
+using ms.Models;
 
-namespace ms
+namespace ms.Networking.Senders
 {
     /// <summary>
     /// Sender Server for each client
-    /// <summary>
+    /// </summary>
     public class SenderServer
     {
         /// <summary>
         /// Client Socket
-        /// <summary>
+        /// </summary>
         private Socket _sendSocked;
+
         public SenderServer(Socket sendSocket)
         {
             _sendSocked = sendSocket;
         }
+
         /// <summary>
         /// Send data as ManagementPacket 
         /// <param name="data"> String to be sent </param>
-        /// <summary>
+        /// </summary>
         public void Send(string data)
         {
             List<string> words = new List<string>(data.Split(' '));
@@ -35,14 +37,14 @@ namespace ms
             {
                 // Create ManagementPacket
                 ManagementPacket packet = new ManagementPacket.Builder()
-                        .SetCommandType(commandType)
-                        .SetCommandData(commandData) 
-                        .Build();
-                    Console.ForegroundColor = ConsoleColor.Blue;
-                    Console.WriteLine($"{packet.ToString()}");
-                    Console.ResetColor();
-                    Thread.Sleep(100);
-                    _sendSocked.Send(packet.ToBytes());
+                    .SetCommandType(commandType)
+                    .SetCommandData(commandData)
+                    .Build();
+                Console.ForegroundColor = ConsoleColor.Blue;
+                Console.WriteLine($"{packet.ToString()}");
+                Console.ResetColor();
+                Thread.Sleep(100);
+                _sendSocked.Send(packet.ToBytes());
             }
             catch (Exception e)
             {

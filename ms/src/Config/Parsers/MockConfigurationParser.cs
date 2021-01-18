@@ -1,3 +1,5 @@
+using ms.Models;
+
 namespace ms.Config.Parsers
 {
     public class MockConfigurationParser : IConfigurationParser

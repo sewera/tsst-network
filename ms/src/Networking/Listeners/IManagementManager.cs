@@ -1,17 +1,18 @@
 using System;
 using ms.Config;
 
-namespace ms
+namespace ms.Networking.Listeners
 {
     interface IManagementManager
     {
         /// <summary>
         /// This method starts the process of listening for incoming connections from clients - network nodes
         /// </summary>
-        void startListening();
+        void StartListening();
+
         /// <summary>
         /// This method is called when new connection popped up and needs to be serviced
-        /// <summary> 
+        /// </summary>
         void AcceptCallback(IAsyncResult ar);
 
         /// <summary>
