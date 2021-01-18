@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Xml.Linq;
+using ms.Models;
 using NLog;
 
 namespace ms.Config.Parsers
