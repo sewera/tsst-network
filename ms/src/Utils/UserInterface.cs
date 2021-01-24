@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using ms.Models;
+using ms.Networking.Controllers;
 
-namespace ms
+namespace ms.Utils
 {
     /// <summary>
     /// Class handling user input (checking its correctness, processing it, sending further) and console output
@@ -11,8 +13,13 @@ namespace ms
         /// <summary>
         /// Represents type of the output shwon on the screen
         /// </summary>
-        public enum Type{
-            Server,Received,Console,Syntax,Help
+        public enum Type
+        {
+            Server,
+            Received,
+            Console,
+            Syntax,
+            Help
         }
 
         /// <summary>
@@ -20,10 +27,10 @@ namespace ms
         /// </summary>
         public static void Start()
         {
-            string input="";
+            string input = "";
             while (true)
             {
-                Console.ForegroundColor=ConsoleColor.Yellow;
+                Console.ForegroundColor = ConsoleColor.Yellow;
                 input = Console.ReadLine();
                 Console.ResetColor();
                 if (input == "clear")
@@ -40,16 +47,17 @@ namespace ms
                 }
                 else
                 {
-                     if (CheckSyntax(input))
-                     {
+                    if (CheckSyntax(input))
+                    {
                         SendMessage(new Message(ProcessCommand(input)));
-                     }
+                    }
                 }
             }
         }
+
         /// <summary>
         /// Send message to ManagementSystem
-        /// <param name="message"> Message to be sent to ManagementManager <param>
+        /// <param name="message"> Message to be sent to ManagementManager </param>
         /// </summary>
         private static void SendMessage(Message message)
         {
@@ -62,13 +70,14 @@ namespace ms
                 WriteLine($"Error finding client!\nThere is no client with alias {message.clientAlias}", Type.Syntax);
             }
         }
+
         /// <summary>
         /// Show output on console
-        /// <param name="output"> String to be shown on the screen <param>
+        /// <param name="output"> String to be shown on the screen </param>
         /// </summary>
         public static void WriteLine(string output, Type type)
         {
-            switch(type)
+            switch (type)
             {
                 case Type.Server:
                 {
@@ -100,9 +109,10 @@ namespace ms
             Console.WriteLine(output);
             Console.ResetColor();
         }
+
         /// <summary>
         /// Check syntax of Management protocol command. Syntax is described in docs/stages/Management_Protocol_Specification.md
-        /// <param name="Input">  String eneterd from console <param>
+        /// <param name="input">  String entered from console </param>
         /// </summary>
         private static bool CheckSyntax(string input)
         {
@@ -110,9 +120,9 @@ namespace ms
 
             // This is the value method returns, it should pass lots of tests.
             // Method could simply return false in every if statement, but this way we can inform user about errors in his command
-            bool result=true;
+            bool result = true;
 
-            
+
             // There is an indexing range issue with inputs containg invisible elements ("")
             words.RemoveAll(item => item == "");
 
@@ -123,16 +133,18 @@ namespace ms
                 WriteLine("Syntax error!\nCommand too short", Type.Syntax);
                 return false;
             }
+
             // First word should be router alias
             if (words[0][0] != 'R')
             {
                 WriteLine("Syntax error!\nFirst param should be network node alias", Type.Syntax);
                 result = false;
             }
+
             // The rest of the first should be all numbers
             for (int i = 1; i < words[0].Length; i++)
             {
-                if(!Char.IsDigit(words[0], i))
+                if (!Char.IsDigit(words[0], i))
                 {
                     WriteLine("Syntax error!\nFirst param should be network node alias", Type.Syntax);
                     result = false;
@@ -147,10 +159,10 @@ namespace ms
             }
 
             // The next four params can only be numbers or dots
-            for (int i=2; i < 6; i++)
+            for (int i = 2; i < 6; i++)
             {
                 int arg;
-                if ((!(int.TryParse(words[i], out arg) && (arg > 0) ) || words[i] =="."))
+                if ((!(int.TryParse(words[i], out arg) && (arg > 0)) || words[i] == "."))
                 {
                     WriteLine("Syntax error!\nLinks and labels are expressed in positive numbers or dots", Type.Syntax);
                     result = false;
@@ -164,7 +176,7 @@ namespace ms
                 if (words[6].Length < 2)
                 {
                     WriteLine("Syntax error!\nLast param is too short", Type.Syntax);
-                     result = false;
+                    result = false;
                 }
 
                 if (words[6][0] != '-')
@@ -172,9 +184,10 @@ namespace ms
                     WriteLine("Syntax error!\nLast param should start with '-'", Type.Syntax);
                     result = false;
                 }
-                for (int i=1; i < words[6].Length; i++)
+
+                for (int i = 1; i < words[6].Length; i++)
                 {
-                    if(!Char.IsDigit(words[6], i))
+                    if (!Char.IsDigit(words[6], i))
                     {
                         WriteLine("Syntax error!\nLast param should end with a number", Type.Syntax);
                         result = false;
@@ -195,6 +208,7 @@ namespace ms
 
             return result;
         }
+
         /// <summary>
         /// Process command to match management protocol
         /// </summary>
@@ -202,13 +216,14 @@ namespace ms
         {
             List<string> words = new List<string>(input.Split(' '));
             words.RemoveAll(item => item == "");
-            input="";
-            for(int i=0; i < words.Count-1; i++)
+            input = "";
+            for (int i = 0; i < words.Count - 1; i++)
             {
-                input+=$"{words[i]} ";
+                input += $"{words[i]} ";
             }
+
             // Last element does not containt a ' ' after him
-            input+=words[words.Count-1];
+            input += words[words.Count - 1];
             // Here input can only be this format e.g. 'R1 add 2 3 4 5 -3' or 'R1 add 2 3 4 5'.
             // No spaces at the end or beginning and only one space between params.
             // TODO use StringBuilder here

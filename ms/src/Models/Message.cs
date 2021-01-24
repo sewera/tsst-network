@@ -1,6 +1,4 @@
-using System;
-
-namespace ms
+namespace ms.Models
 {
     /// <summary>
     /// Class representing a message that can be sent from UserInterface to ManagementManager
@@ -11,10 +9,12 @@ namespace ms
         /// Network Node alias of the client who will receive the message
         /// </summary>
         public string clientAlias;
+
         /// <summary>
         /// Message content
         /// </summary>
-        public string _content="";
+        public string _content = "";
+
         /// <summary>
         /// Class contructor from string
         /// <param name="input"> String from which the message will be created </param>
@@ -29,8 +29,10 @@ namespace ms
             {
                 _content += $"{words[i]} ";
             }
+
             //TODO fix this code
         }
+
         /// <summary>
         /// Class contructor from two strings
         /// <param name="alias"> Network Node alias </param>
@@ -41,10 +43,11 @@ namespace ms
             clientAlias = alias;
             _content = content;
         }
+
         /// <summary>
         /// Outputs message on screen [Temporary method]
         /// </summary>
-        public string show()
+        public string Show()
         {
             return $"{clientAlias} {_content}";
         }
