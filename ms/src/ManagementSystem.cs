@@ -1,5 +1,9 @@
 ﻿using System;
 using System.Threading;
+using ms.Config;
+using ms.Config.Parsers;
+using ms.Networking.Listeners;
+using ms.Utils;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
@@ -9,6 +13,7 @@ namespace ms
     class ManagementSystem
     {
         private static readonly Logger LOG = LogManager.GetCurrentClassLogger();
+
         static void Main(string[] args)
         {
             string filename = "";
@@ -30,11 +35,10 @@ namespace ms
 
             LoggerSetup(logs);
 
-            if(string.IsNullOrEmpty(filename))
-                filename = "resources/ManagementSystem.xml";
+            if (string.IsNullOrEmpty(filename)) filename = "resources/config/ManagementSystem.xml";
 
-            Configuration configuration = new Configuration(filename);
-            configuration.ReadConfigFile();
+            IConfigurationParser configurationParser = new XmlConfigurationParser(filename);
+            Configuration configuration = configurationParser.ParseConfiguration();
 
             try
             {
@@ -47,7 +51,7 @@ namespace ms
 
             IManagementManager mm = new ManagementManager();
             mm.ReadConfig(configuration);
-            mm.startListening();
+            mm.StartListening();
             MessageSender.ReadConfig(configuration);
             new Thread(MessageSender.SendConfigCommands).Start();
             UserInterface.Start();

@@ -1,47 +1,55 @@
 using System.Collections.Generic;
-using System.Linq;
-using System.Xml.Linq;
-using NLog;
+using ms.Models;
 
-namespace ms
+namespace ms.Config
 {
     public class Configuration
     {
-        private static readonly Logger LOG = LogManager.GetCurrentClassLogger();
-        
-        private readonly string _filename;
-        
         /// <summary>
         /// Listener socket port
         /// </summary>
-        public short Port { get; set; }
-        
+        public int Port { get; }
+
         /// <summary>
         /// List of messages to be sent to network nodes in order to config their MPLS-tables
         /// </summary>
-        public List<Message> configMessages = new List<Message>();
+        public List<Message> ConfigMessages;
 
-        public Configuration(string filename)
+        private Configuration(int port, List<Message> configMessages)
         {
-            _filename = filename;
+            Port = port;
+            ConfigMessages = configMessages;
         }
-        
-        public Configuration ReadConfigFile()
+
+        public class Builder
         {
-            Configuration result = new Configuration(_filename);
+            private int _port;
+            private List<Message> _configMessages;
 
-            LOG.Debug($"Reading configuration from {_filename}");
-            XElement xelement = XElement.Load(_filename);	
-
-            Port = short.Parse(xelement.Descendants("listener_port").First().Value);
-
-            foreach (XElement element in xelement.Descendants("message"))
+            public Builder SetPort(int port)
             {
-                LOG.Trace($"Router: {element.FirstAttribute.Value}\tConfig message: {element.Value}");
-                configMessages.Add(new Message(element.FirstAttribute.Value,element.Value));
+                _port = port;
+                return this;
             }
 
-            return result;
+            public Builder SetConfigMessages(List<Message> configMessages)
+            {
+                _configMessages = configMessages;
+                return this;
+            }
+
+            public Builder AddConfigMessage(Message configMessage)
+            {
+                _configMessages ??= new List<Message>();
+                _configMessages.Add(configMessage);
+                return this;
+            }
+
+            public Configuration Build()
+            {
+                _configMessages ??= new List<Message>();
+                return new Configuration(_port, _configMessages);
+            }
         }
     }
 }
