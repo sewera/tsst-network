@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<configuration>
+
+    <cable_cloud_address>127.0.0.1</cable_cloud_address>
+    <cable_cloud_port>3001</cable_cloud_port>
+
+    <connections>
+        
+        <connection>1,12</connection>
+        <connection>11,71</connection>
+        <connection>13,52</connection>
+        <connection>14,22</connection>
+        <connection>2,24</connection>
+        <connection>21,54</connection>
+        <connection>23,32</connection>
+        <connection>3,34</connection>
+        <connection>31,53</connection>
+        <connection>33,62</connection>
+        <connection>4,41</connection>
+        <connection>42,72</connection>
+        <connection>43,61</connection>
+        <connection>44,51</connection>
+
+    </connections>
+
+</configuration>
