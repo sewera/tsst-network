@@ -24,15 +24,15 @@ cc_csproj = Path("CableCloud.csproj")
 cc_config = Path("CableCloud.xml")
 cc_exe = Path("CableCloud.exe")
 
-cn = Path("ClientNetwork")
-cn_csproj = Path("ClientNetwork.csproj")
+cn = Path("ClientNode")
+cn_csproj = Path("ClientNode.csproj")
 cn_configs = [
     Path("ClientNode1.xml"),
     Path("ClientNode2.xml"),
     Path("ClientNode3.xml"),
     Path("ClientNode4.xml"),
 ]
-cn_exe = Path("ClientNetwork.exe")
+cn_exe = Path("ClientNode.exe")
 
 nn = Path("NetworkNode")
 nn_csproj = Path("NetworkNode.csproj")
@@ -94,7 +94,7 @@ else:
         exit(0)
 
     if args.kill:
-        os.system("killall ClientNetwork")
+        os.system("killall ClientNode")
         os.system("killall NetworkNode")
         os.system("killall CableCloud")
         exit(0)

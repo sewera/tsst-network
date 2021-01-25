@@ -1,6 +1,6 @@
-using ClientNetwork.Models;
+using ClientNode.Models;
 
-namespace ClientNetwork.Networking.Delegates
+namespace ClientNode.Networking.Delegates
 {
     public delegate void ReceiveMessage(MplsPacket mplsPacket);
 }

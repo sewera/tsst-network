@@ -1,11 +1,11 @@
 using System.Collections.Generic;
-using ClientNetwork.Config;
-using ClientNetwork.Models;
-using ClientNetwork.Networking;
-using ClientNetwork.Networking.Delegates;
+using ClientNode.Config;
+using ClientNode.Models;
+using ClientNode.Networking;
+using ClientNode.Networking.Delegates;
 using NLog;
 
-namespace ClientNetwork
+namespace ClientNode
 {
     public class ClientNodeManager : IClientNodeManager
     {

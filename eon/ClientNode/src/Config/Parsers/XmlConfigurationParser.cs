@@ -2,7 +2,7 @@ using System.Linq;
 using System.Xml.Linq;
 using NLog;
 
-namespace ClientNetwork.Config.Parsers 
+namespace ClientNode.Config.Parsers 
 {
     internal class XmlConfigurationParser : IConfigurationParser
     {

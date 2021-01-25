@@ -1,4 +1,4 @@
-namespace ClientNetwork.Config.Parsers
+namespace ClientNode.Config.Parsers
 {
     internal interface IConfigurationParser
     {

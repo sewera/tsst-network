@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using ClientNetwork.Config;
-using ClientNetwork.Ui.Parsers.Exceptions;
+using ClientNode.Config;
+using ClientNode.Ui.Parsers.Exceptions;
 using NLog;
 
-namespace ClientNetwork.Ui.Parsers
+namespace ClientNode.Ui.Parsers
 {
     public class CommandParser : ICommandParser
     {

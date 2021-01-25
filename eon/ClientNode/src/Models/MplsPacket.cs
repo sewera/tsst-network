@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using MessagePack;
 
-namespace ClientNetwork.Models
+namespace ClientNode.Models
 {
     [MessagePackObject]
     public class MplsPacket

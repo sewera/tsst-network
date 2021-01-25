@@ -1,7 +1,7 @@
-﻿using ClientNetwork.Models;
-using ClientNetwork.Networking.Delegates;
+﻿using ClientNode.Models;
+using ClientNode.Networking.Delegates;
 
-namespace ClientNetwork.Networking
+namespace ClientNode.Networking
 {
     public interface IClientPort
     {

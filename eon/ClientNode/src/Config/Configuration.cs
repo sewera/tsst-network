@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Net;
 
-namespace ClientNetwork.Config
+namespace ClientNode.Config
 {
     public class Configuration
     {

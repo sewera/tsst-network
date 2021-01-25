@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using ClientNetwork.Networking.Delegates;
+using ClientNode.Networking.Delegates;
 
-namespace ClientNetwork
+namespace ClientNode
 {
     public interface IClientNodeManager
     {

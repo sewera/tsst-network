@@ -1,6 +1,6 @@
 using NLog;
 
-namespace ClientNetwork.Config.Parsers
+namespace ClientNode.Config.Parsers
 {
     internal class MockConfigurationParser : IConfigurationParser
     {
