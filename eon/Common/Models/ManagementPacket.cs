@@ -1,6 +1,6 @@
 using MessagePack;
 
-namespace NetworkNode.Models
+namespace Common.Models
 {
     [MessagePackObject]
     public class ManagementPacket : ISerializablePacket
