@@ -1,4 +1,4 @@
-namespace ClientNetwork.Ui
+namespace ClientNode.Ui
 {
     public interface IUserInterface
     {

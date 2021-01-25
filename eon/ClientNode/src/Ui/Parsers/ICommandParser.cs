@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace ClientNetwork.Ui.Parsers
+namespace ClientNode.Ui.Parsers
 {
     public interface ICommandParser
     {

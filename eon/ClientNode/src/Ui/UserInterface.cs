@@ -1,11 +1,11 @@
 using System;
 using System.Threading;
-using ClientNetwork.Models;
-using ClientNetwork.Ui.Parsers;
-using ClientNetwork.Ui.Parsers.Exceptions;
+using ClientNode.Models;
+using ClientNode.Ui.Parsers;
+using ClientNode.Ui.Parsers.Exceptions;
 using NLog;
 
-namespace ClientNetwork.Ui
+namespace ClientNode.Ui
 {
     public class UserInterface : IUserInterface
     {

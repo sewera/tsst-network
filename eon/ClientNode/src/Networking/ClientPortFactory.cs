@@ -1,6 +1,6 @@
-﻿using ClientNetwork.Config;
+﻿using ClientNode.Config;
 
-namespace ClientNetwork.Networking
+namespace ClientNode.Networking
 {
     public class ClientPortFactory : IClientPortFactory
     {

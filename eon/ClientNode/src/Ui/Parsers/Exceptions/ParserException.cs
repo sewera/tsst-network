@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ClientNetwork.Ui.Parsers.Exceptions
+namespace ClientNode.Ui.Parsers.Exceptions
 {
     public class ParserException : Exception
     {

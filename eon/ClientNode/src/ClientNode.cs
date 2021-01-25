@@ -1,14 +1,14 @@
 using System;
-using ClientNetwork.Config;
-using ClientNetwork.Config.Parsers;
-using ClientNetwork.Networking;
-using ClientNetwork.Ui;
-using ClientNetwork.Ui.Parsers;
+using ClientNode.Config;
+using ClientNode.Config.Parsers;
+using ClientNode.Networking;
+using ClientNode.Ui;
+using ClientNode.Ui.Parsers;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
 
-namespace ClientNetwork
+namespace ClientNode
 {
     class ClientNode
     {

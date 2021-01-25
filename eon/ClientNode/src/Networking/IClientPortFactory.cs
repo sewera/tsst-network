@@ -1,4 +1,4 @@
-﻿namespace ClientNetwork.Networking
+﻿namespace ClientNode.Networking
 {
     public interface IClientPortFactory
     {

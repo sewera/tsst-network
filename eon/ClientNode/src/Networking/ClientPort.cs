@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Net;
 using System.Net.Sockets;
-using ClientNetwork.Config;
-using ClientNetwork.Models;
-using ClientNetwork.Networking.Delegates;
+using ClientNode.Config;
+using ClientNode.Models;
+using ClientNode.Networking.Delegates;
 using MessagePack;
 using NLog;
 
-namespace ClientNetwork.Networking
+namespace ClientNode.Networking
 {
     public class ClientPort : IClientPort
     {
