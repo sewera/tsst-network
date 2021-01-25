@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using MessagePack;
 
-namespace NetworkNode.Models
+namespace Common.Models
 {
     [MessagePackObject]
     public class MplsPacket : ISerializablePacket
@@ -36,6 +36,11 @@ namespace NetworkNode.Models
             DestinationPortAlias = destinationPortAlias;
             MplsLabels = mplsLabels;
             Message = message;
+        }
+
+        public string GetKey()
+        {
+            return SourcePortAlias;
         }
 
         /// <summary>
