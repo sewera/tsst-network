@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using CableCloud.Config;
-using CableCloud.Networking.Client;
 using Common.Models;
 using Common.Networking.Server.Persistent;
 using NLog;
@@ -48,7 +47,7 @@ namespace CableCloud.Networking.Forwarding
                     _clientWorkers[portAlias1].Send(packet);
                 }
             }
-            catch (ArgumentNullException e)
+            catch (ArgumentNullException)
             {
                 LOG.Error("SourcePortAlias in incoming MplsPacket did not match any entries in connection table");
             }
@@ -73,7 +72,7 @@ namespace CableCloud.Networking.Forwarding
                 _connectionTable.RemoveAt(index);
                 _connectionTable.Add(requestedConnection);
             }
-            catch (ArgumentOutOfRangeException e)
+            catch (ArgumentOutOfRangeException)
             {
                 LOG.Warn($"The requested connection: {portAlias1} <-> {portAlias2} could not be found");
             }

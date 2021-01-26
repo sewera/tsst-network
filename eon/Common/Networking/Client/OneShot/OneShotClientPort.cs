@@ -25,7 +25,7 @@ namespace Common.Networking.Client.OneShot
             }
             catch (Exception e)
             {
-                Log.Error("Failed to connect to server");
+                Log.Error(e, "Failed to connect to server");
             }
 
             byte[] packetBytes = packet.ToBytes();
