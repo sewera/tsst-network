@@ -1,9 +1,11 @@
 using System;
 using ClientNode.Config;
 using ClientNode.Config.Parsers;
-using ClientNode.Networking;
 using ClientNode.Ui;
 using ClientNode.Ui.Parsers;
+using Common.Config.Parsers;
+using Common.Models;
+using Common.Networking.Client.Persistent;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
@@ -34,7 +36,7 @@ namespace ClientNode
                 LOG.Warn("Using MockConfigurationParser instead");
             }
 
-            IConfigurationParser configurationParser;
+            IConfigurationParser<Configuration> configurationParser;
             if (string.IsNullOrWhiteSpace(filename))
                 configurationParser = new MockConfigurationParser();
             else
@@ -58,9 +60,10 @@ namespace ClientNode
             config.AddRule(LogLevel.Debug, LogLevel.Fatal, fileTarget);
             LogManager.Configuration = config;
 
-            IClientPortFactory clientPortFactory = new ClientPortFactory(configuration);
             ICommandParser commandParser = new CommandParser(configuration);
-            IClientNodeManager clientNodeManager = new ClientNodeManager(configuration, clientPortFactory);
+            IPersistentClientPort<MplsPacket> clientPort = new PersistentClientPort<MplsPacket>(configuration.ClientPortAlias,
+                configuration.CableCloudAddress, configuration.CableCloudPort);
+            IClientNodeManager clientNodeManager = new ClientNodeManager(configuration, clientPort);
 
             IUserInterface userInterface = new UserInterface(commandParser, clientNodeManager);
 

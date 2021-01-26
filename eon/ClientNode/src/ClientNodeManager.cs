@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using ClientNode.Config;
-using ClientNode.Models;
-using ClientNode.Networking;
-using ClientNode.Networking.Delegates;
+using Common.Models;
+using Common.Networking.Client.Delegates;
+using Common.Networking.Client.Persistent;
 using NLog;
 
 namespace ClientNode
@@ -11,34 +11,33 @@ namespace ClientNode
     {
         private static readonly Logger LOG = LogManager.GetCurrentClassLogger();
 
-        private Configuration _configuration;
-        private IClientPortFactory _clientPortFactory;
-        private IClientPort _clientPort;
+        private readonly Configuration _configuration;
+        private readonly IPersistentClientPort<MplsPacket> _clientPort;
 
-        public ClientNodeManager(Configuration config, IClientPortFactory clientPortFactory)
+        public ClientNodeManager(Configuration configuration, IPersistentClientPort<MplsPacket> clientPort)
         {
-            _configuration = config;
-            _clientPortFactory = clientPortFactory;
+            _configuration = configuration;
+            _clientPort = clientPort;
         }
 
         public void Start()
         {
-            _clientPort = _clientPortFactory.GetPort(_configuration.ClientPortAlias);
-            _clientPort.ConnectToCableCloud();
+            _clientPort.ConnectPermanentlyToServer(new MplsPacket.Builder().SetSourcePortAlias(_configuration.ClientPortAlias).Build());
             _clientPort.StartReceiving();
         }
 
-        public void RegisterReceiveMessageEvent(ReceiveMessage receiveMessage)
+        public void RegisterReceiveMessageEvent(ReceiveMessage<MplsPacket> receiveMessage)
         {
             _clientPort.RegisterReceiveMessageEvent(receiveMessage);
         }
 
         public void Send(string mplsOutLabel, string message, (List<long>, string) labels)
         {
+            (List<long> mplsLabels, string remoteHostAlias) = labels;
             MplsPacket packet = new MplsPacket.Builder()
                 .SetSourcePortAlias(_configuration.ClientPortAlias)
-                .SetDestinationPortAlias(labels.Item2)
-                .SetMplsLabels(labels.Item1)
+                .SetDestinationPortAlias(remoteHostAlias)
+                .SetMplsLabels(mplsLabels)
                 .SetMessage(message)
                 .Build();
 

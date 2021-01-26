@@ -1,6 +1,7 @@
 using System.Collections.Generic;
-using CableCloud.Models;
 using CableCloud.Networking.Client;
+using Common.Models;
+using Common.Networking.Server.Persistent;
 
 namespace CableCloud.Networking.Forwarding
 {
@@ -8,9 +9,9 @@ namespace CableCloud.Networking.Forwarding
     {
         /// <summary>Forward packet (send it to appropriate client)</summary>
         public void ForwardPacket((string, MplsPacket) forwardPacketTuple);
-        public void SetClientPorts(Dictionary<string, IClientWorker> clientWorkers);
+        public void SetClientPorts(Dictionary<string, IWorker<MplsPacket>> clientWorkers);
         public void SetConnectionAlive((string, string, bool) requestedConnection);
 
-        public void OnClientRemoved(object source, ClientRemovedEventArgs eventArgs);
+        public void OnClientRemoved(string key);
     }
 }

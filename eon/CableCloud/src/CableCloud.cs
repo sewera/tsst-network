@@ -1,11 +1,12 @@
 using System;
 using CableCloud.Config;
 using CableCloud.Config.Parsers;
-using CableCloud.Networking.Client;
 using CableCloud.Networking.Forwarding;
-using CableCloud.Networking.Listeners;
 using CableCloud.Ui;
 using CableCloud.Ui.Parsers;
+using Common.Config.Parsers;
+using Common.Models;
+using Common.Networking.Server.Persistent;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
@@ -36,7 +37,7 @@ namespace CableCloud
                 LOG.Warn("Using MockConfigurationParser instead");
             }
 
-            IConfigurationParser configurationParser;
+            IConfigurationParser<Configuration> configurationParser;
             if (string.IsNullOrWhiteSpace(filename))
                 configurationParser = new MockConfigurationParser();
             else
@@ -59,11 +60,11 @@ namespace CableCloud
             config.AddRule(LogLevel.Debug, LogLevel.Fatal, fileTarget);
             LogManager.Configuration = config;
 
-            IClientWorkerFactory clientWorkerFactory = new ClientWorkerFactory();
-            IListener listener = new Listener(configuration, clientWorkerFactory);
+            IWorkerFactory<MplsPacket> clientWorkerFactory = new WorkerFactory<MplsPacket>();
+            IPersistentServerPort<MplsPacket> serverPort = new PersistentServerPort<MplsPacket>(configuration.ListeningAddress, configuration.ListeningPort, clientWorkerFactory);
             IPacketForwarder packetForwarder = new PacketForwarder(configuration);
 
-            ICableCloudManager cableCloudManager = new CableCloudManager(configuration, listener, packetForwarder);
+            ICableCloudManager cableCloudManager = new CableCloudManager(serverPort, packetForwarder);
 
             ICommandParser commandParser = new CommandParser(configuration);
             IUserInterface userInterface = new UserInterface(commandParser, cableCloudManager);

@@ -2,5 +2,5 @@ using Common.Models;
 
 namespace Common.Networking.Client.Delegates
 {
-    public delegate void ReceiveMessage<in TPacket>(TPacket packet) where TPacket: ISerializablePacket;
+    public delegate void ReceiveMessage<TPacket>((string portAlias, TPacket packet) portAliasAndPacketTuple) where TPacket: ISerializablePacket;
 }

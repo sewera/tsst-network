@@ -1,10 +1,9 @@
 using System.Collections.Generic;
 using System.Threading;
+using Common.Models;
+using Common.Networking.Client.Persistent;
 using NLog;
 using NetworkNode.Config;
-using NetworkNode.Models;
-using NetworkNode.Networking;
-using NetworkNode.Networking.Client;
 using NetworkNode.Networking.Forwarding;
 
 namespace NetworkNode
@@ -15,31 +14,24 @@ namespace NetworkNode
         
         private readonly Configuration _configuration;
         private readonly IPacketForwarder _packetForwarder;
-        private readonly IClientPortFactory _clientPortFactory;
-        private readonly IPort<ManagementPacket> _managementPort;
-        private readonly Dictionary<string, IPort<MplsPacket>> _clientPorts = new Dictionary<string, IPort<MplsPacket>>();
+        private readonly IPersistentClientPortFactory<MplsPacket> _clientClientPortFactory;
+        private readonly Dictionary<string, IPersistentClientPort<MplsPacket>> _clientPorts = new Dictionary<string, IPersistentClientPort<MplsPacket>>();
 
         public NetworkNodeManager(Configuration config,
                                   IPacketForwarder packetForwarder,
-                                  IPort<ManagementPacket> managementPort,
-                                  IClientPortFactory clientPortFactory)
+                                  IPersistentClientPortFactory<MplsPacket> clientClientPortFactory)
         {
             _configuration = config;
             _packetForwarder = packetForwarder;
-            _managementPort = managementPort;
-            _clientPortFactory = clientPortFactory;
+            _clientClientPortFactory = clientClientPortFactory;
         }
 
         public void Start()
         {
-            _managementPort.Connect();
-            _managementPort.RegisterReceiveMessageEvent(_packetForwarder.ConfigureFromManagementSystem);
-            _managementPort.StartReceiving();
-
             foreach (string clientPortAlias in _configuration.ClientPortAliases)
             {
-                _clientPorts.Add(clientPortAlias, _clientPortFactory.GetPort(clientPortAlias));
-                _clientPorts[clientPortAlias].Connect();
+                _clientPorts.Add(clientPortAlias, _clientClientPortFactory.GetPort(clientPortAlias));
+                _clientPorts[clientPortAlias].ConnectPermanentlyToServer(new MplsPacket.Builder().SetSourcePortAlias(clientPortAlias).Build());
                 _clientPorts[clientPortAlias].RegisterReceiveMessageEvent(_packetForwarder.ForwardPacket);
                 _clientPorts[clientPortAlias].StartReceiving();
             }

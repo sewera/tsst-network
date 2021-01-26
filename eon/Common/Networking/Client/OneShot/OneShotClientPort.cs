@@ -12,6 +12,7 @@ namespace Common.Networking.Client.OneShot
     {
         public OneShotClientPort(IPAddress serverAddress, int serverPort) : base(serverAddress, serverPort)
         {
+            ClientPortAlias = "";
         }
 
         public override void Send(TRequestPacket packet)
