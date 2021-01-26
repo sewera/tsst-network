@@ -5,6 +5,9 @@ namespace ClientNode.Config
 {
     public class Configuration
     {
+        public IPAddress CallingPartyCallControllerAddress { get; }
+        public int CallingPartyCallControllerPort { get; }
+
         /// <summary>CableCloud address</summary>
         public IPAddress CableCloudAddress { get; }
 
@@ -25,6 +28,8 @@ namespace ClientNode.Config
 
         private Configuration(IPAddress cableCloudAddress,
                               int cableCloudPort,
+                              IPAddress callingPartyCallControllerAddress,
+                              int callingPartyCallControllerPort,
                               IPEndPoint cableCloudEndPoint,
                               string clientAlias,
                               string clientPortAlias,
@@ -32,6 +37,8 @@ namespace ClientNode.Config
         {
             CableCloudAddress = cableCloudAddress;
             CableCloudPort = cableCloudPort;
+            CallingPartyCallControllerAddress = callingPartyCallControllerAddress;
+            CallingPartyCallControllerPort = callingPartyCallControllerPort;
             CableCloudEndPoint = cableCloudEndPoint;
             ClientAlias = clientAlias;
             ClientPortAlias = clientPortAlias;
@@ -42,6 +49,8 @@ namespace ClientNode.Config
         {
             private IPAddress _cableCloudAddress;
             private int _cableCloudPort;
+            private IPAddress _callingPartyCallControllerAddress;
+            private int _callingPartyCallControllerPort;
             private string _clientAlias;
             private string _clientPortAlias = string.Empty;
             private IDictionary<string, long> _mplsLabels;
@@ -58,6 +67,18 @@ namespace ClientNode.Config
                 return this;
             }
             
+            public Builder SetCallingPartyCallControllerAddress(string callingPartyCallControllerAddress)
+            {
+                _callingPartyCallControllerAddress = IPAddress.Parse(callingPartyCallControllerAddress);
+                return this;
+            }
+
+            public Builder SetCallingPartyCallControllerPort(int callingPartyCallControllerPort)
+            {
+                _callingPartyCallControllerPort = callingPartyCallControllerPort;
+                return this;
+            }
+
             public Builder SetClientAlias(string clientAlias)
             {
                 _clientAlias = clientAlias;
@@ -86,10 +107,13 @@ namespace ClientNode.Config
             public Configuration Build()
             {
                 _cableCloudAddress ??= IPAddress.Parse("127.0.0.1");
+                _callingPartyCallControllerAddress ??= IPAddress.Parse("127.0.0.1");
                 _mplsLabels ??= new Dictionary<string, long>();
                 IPEndPoint cableCloudEndPoint = new IPEndPoint(_cableCloudAddress, _cableCloudPort);
                 return new Configuration(_cableCloudAddress,
                     _cableCloudPort,
+                    _callingPartyCallControllerAddress,
+                    _callingPartyCallControllerPort,
                     cableCloudEndPoint,
                     _clientAlias,
                     _clientPortAlias,
