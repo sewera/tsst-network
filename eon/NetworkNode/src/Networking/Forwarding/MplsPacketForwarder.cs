@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Common.Models;
 using Common.Networking.Client.Persistent;
 using NLog;
-using NetworkNode.Config;
 using NetworkNode.Networking.Forwarding.FIB;
 
 namespace NetworkNode.Networking.Forwarding

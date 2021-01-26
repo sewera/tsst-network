@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace CableCloud.Ui.Parsers
+﻿namespace CableCloud.Ui.Parsers
 {
     public interface ICommandParser
     {

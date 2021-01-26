@@ -1,31 +1,27 @@
 using System.Net;
 
-namespace NetworkCallController.Config
+namespace ConnectionController.Config
 {
     public class Configuration
     {
         public IPAddress ServerAddress { get; }
 
-        public int CallCoordinationLocalPort { get; }
-        public int CallTeardownLocalPort { get; }
+        public int PeerCoordinationLocalPort { get; }
         public int ConnectionRequestLocalPort { get; }
 
         private Configuration(IPAddress serverAddress,
-                              int callCoordinationLocalPort,
-                              int callTeardownLocalPort,
+                              int peerCoordinationLocalPort,
                               int connectionRequestLocalPort)
         {
             ServerAddress = serverAddress;
-            CallCoordinationLocalPort = callCoordinationLocalPort;
-            CallTeardownLocalPort = callTeardownLocalPort;
+            PeerCoordinationLocalPort = peerCoordinationLocalPort;
             ConnectionRequestLocalPort = connectionRequestLocalPort;
         }
 
         public class Builder
         {
             private IPAddress _serverAddress;
-            private int _callCoordinationLocalPort;
-            private int _callTeardownLocalPort;
+            private int _peerCoordinationLocalPort;
             private int _connectionRequestLocalPort;
 
             public Builder SetServerAddress(IPAddress serverAddress)
@@ -34,15 +30,9 @@ namespace NetworkCallController.Config
                 return this;
             }
 
-            public Builder SetCallCoordinationLocalPort(int callCoordinationLocalPort)
+            public Builder SetPeerCoordinationLocalPort(int peerCoordinationLocalPort)
             {
-                _callCoordinationLocalPort = callCoordinationLocalPort;
-                return this;
-            }
-
-            public Builder SetCallTeardownLocalPort(int callTeardownLocalPort)
-            {
-                _callTeardownLocalPort = callTeardownLocalPort;
+                _peerCoordinationLocalPort = peerCoordinationLocalPort;
                 return this;
             }
 
@@ -56,8 +46,7 @@ namespace NetworkCallController.Config
             {
                 _serverAddress ??= IPAddress.Parse("127.0.0.1");
                 return new Configuration(_serverAddress,
-                    _callCoordinationLocalPort,
-                    _callTeardownLocalPort,
+                    _peerCoordinationLocalPort,
                     _connectionRequestLocalPort);
             }
         }

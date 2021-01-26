@@ -1,15 +1,15 @@
 ﻿using Common.Config.Parsers;
 using Common.Startup;
-using NetworkCallController.Config;
-using NetworkCallController.Config.Parsers;
+using RoutingController.Config;
+using RoutingController.Config.Parsers;
 
-namespace NetworkCallController
+namespace RoutingController
 {
-    public class NetworkCallController
+    public class RoutingController
     {
         public static void Main(string[] args)
         {
-            DefaultStartup<NetworkCallController> defaultStartup = new DefaultStartup<NetworkCallController>();
+            DefaultStartup<RoutingController> defaultStartup = new DefaultStartup<RoutingController>();
             defaultStartup.InitArgumentParse(args);
             IConfigurationParser<Configuration> configurationParser;
 
@@ -18,11 +18,11 @@ namespace NetworkCallController
             else
                 configurationParser = new MockConfigurationParser();
 
-            defaultStartup.InitLogger(null); // TODO: Set log suffix from configuration
+            defaultStartup.InitLogger(null);
 
             Configuration configuration = configurationParser.ParseConfiguration();
-            IManager networkCallControllerManager = new NetworkCallControllerManager(configuration);
-            networkCallControllerManager.Start();
+            IManager routingControllerManager = new RoutingControllerManager(configuration);
+            routingControllerManager.Start();
         }
     }
 }
