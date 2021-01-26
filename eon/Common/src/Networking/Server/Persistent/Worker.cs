@@ -11,7 +11,7 @@ namespace Common.Networking.Server.Persistent
     {
         private event HandleClientRemoval ClientRemovedEvent;
         private readonly Logger _log = LogManager.GetCurrentClassLogger();
-        private Socket _socket;
+        private readonly Socket _socket;
 
         private const int BufferSize = 4096;
         private byte[] _buffer = new byte[BufferSize];

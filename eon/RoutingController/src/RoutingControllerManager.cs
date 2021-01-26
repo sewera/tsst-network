@@ -10,11 +10,11 @@ namespace RoutingController
     {
         private Configuration _configuration;
 
-        private IOneShotServerPort<GenericPacket, GenericPacket> _routeTableQueryPort;
-        private IOneShotServerPort<GenericPacket, GenericPacket> _localTopologyPort;
-        private IOneShotServerPort<GenericPacket, GenericPacket> _networkTopologyPort;
+        private readonly IOneShotServerPort<GenericPacket, GenericPacket> _routeTableQueryPort;
+        private readonly IOneShotServerPort<GenericPacket, GenericPacket> _localTopologyPort;
+        private readonly IOneShotServerPort<GenericPacket, GenericPacket> _networkTopologyPort;
 
-        private ManualResetEvent _idle = new ManualResetEvent(false);
+        private readonly ManualResetEvent _idle = new ManualResetEvent(false);
 
         public RoutingControllerManager(Configuration configuration)
         {

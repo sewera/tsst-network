@@ -10,11 +10,11 @@ namespace NetworkCallController
     {
         private Configuration _configuration;
 
-        private IOneShotServerPort<GenericPacket, GenericPacket> _callCoordinationPort;
-        private IOneShotServerPort<GenericPacket, GenericPacket> _callTeardownPort;
-        private IOneShotServerPort<GenericPacket, GenericPacket> _connectionRequestPort;
+        private readonly IOneShotServerPort<GenericPacket, GenericPacket> _callCoordinationPort;
+        private readonly IOneShotServerPort<GenericPacket, GenericPacket> _callTeardownPort;
+        private readonly IOneShotServerPort<GenericPacket, GenericPacket> _connectionRequestPort;
 
-        private ManualResetEvent _idle = new ManualResetEvent(false);
+        private readonly ManualResetEvent _idle = new ManualResetEvent(false);
 
         public NetworkCallControllerManager(Configuration configuration)
         {
