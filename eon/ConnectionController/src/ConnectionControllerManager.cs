@@ -10,10 +10,10 @@ namespace ConnectionController
     {
         private Configuration _configuration;
 
-        private IOneShotServerPort<GenericPacket, GenericPacket> _connectionRequestPort;
-        private IOneShotServerPort<GenericPacket, GenericPacket> _peerCoordinationPort;
+        private readonly IOneShotServerPort<GenericPacket, GenericPacket> _connectionRequestPort;
+        private readonly IOneShotServerPort<GenericPacket, GenericPacket> _peerCoordinationPort;
 
-        private ManualResetEvent _idle = new ManualResetEvent(false);
+        private readonly ManualResetEvent _idle = new ManualResetEvent(false);
 
         public ConnectionControllerManager(Configuration configuration)
         {

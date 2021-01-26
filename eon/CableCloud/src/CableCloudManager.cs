@@ -12,7 +12,7 @@ namespace CableCloud
         
         private readonly IPersistentServerPort<MplsPacket> _serverPort;
         private readonly IPacketForwarder _packetForwarder;
-        private Dictionary<string, IWorker<MplsPacket>> _clientWorkers = new Dictionary<string, IWorker<MplsPacket>>();
+        private readonly Dictionary<string, IWorker<MplsPacket>> _clientWorkers = new Dictionary<string, IWorker<MplsPacket>>();
 
         public CableCloudManager(IPersistentServerPort<MplsPacket> serverPort, IPacketForwarder packetForwarder)
         {
