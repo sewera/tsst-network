@@ -1,4 +1,5 @@
 using Common.Models;
+using Common.Networking.Server.Persistent;
 
 namespace Common.Networking.Server.Delegates
 {

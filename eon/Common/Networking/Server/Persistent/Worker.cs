@@ -5,7 +5,7 @@ using Common.Models;
 using Common.Networking.Server.Delegates;
 using NLog;
 
-namespace Common.Networking.Server
+namespace Common.Networking.Server.Persistent
 {
     public class Worker<TPacket> : IWorker<TPacket> where TPacket : ISerializablePacket
     {
@@ -13,7 +13,7 @@ namespace Common.Networking.Server
         private readonly Logger _log = LogManager.GetCurrentClassLogger();
         private Socket _socket;
 
-        private const int BufferSize = 1024;
+        private const int BufferSize = 4096;
         private byte[] _buffer = new byte[BufferSize];
 
         private readonly string _portAlias;

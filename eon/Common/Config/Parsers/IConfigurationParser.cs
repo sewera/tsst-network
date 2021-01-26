@@ -1,7 +1,7 @@
 namespace Common.Config.Parsers
 {
-    public interface IConfigurationParser<C>
+    public interface IConfigurationParser<out TConfiguration>
     {
-        C ParseConfiguration();
+        TConfiguration ParseConfiguration();
     }
 }
