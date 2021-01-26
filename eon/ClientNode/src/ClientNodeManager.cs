@@ -3,6 +3,7 @@ using ClientNode.Config;
 using Common.Models;
 using Common.Networking.Client.Delegates;
 using Common.Networking.Client.Persistent;
+using Common.Networking.Server.OneShot;
 using NLog;
 
 namespace ClientNode
@@ -13,15 +14,21 @@ namespace ClientNode
 
         private readonly Configuration _configuration;
         private readonly IPersistentClientPort<MplsPacket> _clientPort;
+        private readonly IOneShotServerPort<GenericPacket, GenericPacket> _callAcceptPort;
 
         public ClientNodeManager(Configuration configuration, IPersistentClientPort<MplsPacket> clientPort)
         {
             _configuration = configuration;
             _clientPort = clientPort;
+            _callAcceptPort = new OneShotServerPort<GenericPacket, GenericPacket>(
+                configuration.CallingPartyCallControllerAddress,
+                configuration.CallingPartyCallControllerPort);
         }
 
         public void Start()
         {
+            // TODO: Register delegate when callAccept arrives
+            _callAcceptPort.Listen();
             _clientPort.ConnectPermanentlyToServer(new MplsPacket.Builder().SetSourcePortAlias(_configuration.ClientPortAlias).Build());
             _clientPort.StartReceiving();
         }
