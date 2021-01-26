@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using CableCloud.Config;
-using CableCloud.Networking.Client;
 using CableCloud.Networking.Forwarding;
-using CableCloud.Networking.Listeners;
+using Common.Models;
+using Common.Networking.Server.Persistent;
 using NLog;
 
 namespace CableCloud
@@ -11,17 +11,13 @@ namespace CableCloud
     {
         private static readonly Logger LOG = LogManager.GetCurrentClassLogger();
         
-        private Configuration _configuration;
-        private IListener _listener;
-        private IPacketForwarder _packetForwarder;
-        private Dictionary<string, IClientWorker> _clientWorkers = new Dictionary<string, IClientWorker>();
+        private readonly IPersistentServerPort<MplsPacket> _serverPort;
+        private readonly IPacketForwarder _packetForwarder;
+        private Dictionary<string, IWorker<MplsPacket>> _clientWorkers = new Dictionary<string, IWorker<MplsPacket>>();
 
-        public CableCloudManager(Configuration configuration,
-                           IListener listener,
-                           IPacketForwarder packetForwarder)
+        public CableCloudManager(IPersistentServerPort<MplsPacket> serverPort, IPacketForwarder packetForwarder)
         {
-            _configuration = configuration;
-            _listener = listener;
+            _serverPort = serverPort;
             _packetForwarder = packetForwarder;
         }
 
@@ -29,16 +25,16 @@ namespace CableCloud
         {
             LOG.Info("CableCloud started");
             _packetForwarder.SetClientPorts(_clientWorkers);
-            _listener.RegisterWorkerConnectionEvent(RegisterWorker);
-            _listener.Listen();
+            _serverPort.RegisterRegisterConnectionDelegate(RegisterWorker);
+            _serverPort.Listen();
         }
 
-        private void RegisterWorker((string, IClientWorker) worker)
+        private void RegisterWorker((string, IWorker<MplsPacket>) worker)
         {
-            (string portAlias, IClientWorker clientWorker) = worker;
+            (string portAlias, IWorker<MplsPacket> clientWorker) = worker;
             _clientWorkers.Add(portAlias, clientWorker);
-            clientWorker.RegisterReceiveMessageEvent(_packetForwarder.ForwardPacket);
-            clientWorker.RegisterClientRemovedEvent(_packetForwarder.OnClientRemoved);
+            clientWorker.RegisterReceiveMessageDelegate(_packetForwarder.ForwardPacket);
+            clientWorker.RegisterClientRemovedDelegate(_packetForwarder.OnClientRemoved);
         }
 
         public void SetConnectionAlive((string, string, bool) requestedConnection)

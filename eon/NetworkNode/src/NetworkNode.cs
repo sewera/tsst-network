@@ -1,14 +1,13 @@
 using System;
+using Common.Config.Parsers;
+using Common.Models;
+using Common.Networking.Client.Persistent;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
 using NetworkNode.Config;
 using NetworkNode.Config.Parsers;
-using NetworkNode.Models;
-using NetworkNode.Networking;
-using NetworkNode.Networking.Client;
 using NetworkNode.Networking.Forwarding;
-using NetworkNode.Networking.Management;
 
 namespace NetworkNode
 {
@@ -36,7 +35,7 @@ namespace NetworkNode
                 LOG.Warn("Using MockConfigurationParser instead");
             }
 
-            IConfigurationParser configurationParser;
+            IConfigurationParser<Configuration> configurationParser;
             if (string.IsNullOrWhiteSpace(filename))
                 configurationParser = new MockConfigurationParser();
             else
@@ -60,11 +59,10 @@ namespace NetworkNode
             config.AddRule(LogLevel.Debug, LogLevel.Fatal, fileTarget);
             LogManager.Configuration = config;
 
-            IPacketForwarder packetForwarder = new MplsPacketForwarder(configuration);
+            IPacketForwarder packetForwarder = new MplsPacketForwarder();
             //IPacketForwarder packetForwarder = new MockPacketForwarder(configuration);
-            IPort<ManagementPacket> managementPort = new ManagementPort(configuration);
-            IClientPortFactory clientPortFactory = new ClientPortFactory(configuration);
-            INetworkNodeManager networkNodeManager = new NetworkNodeManager(configuration, packetForwarder, managementPort, clientPortFactory);
+            IPersistentClientPortFactory<MplsPacket> clientPortFactory = new PersistentClientPortFactory<MplsPacket>(configuration.CableCloudAddress, configuration.CableCloudPort);
+            INetworkNodeManager networkNodeManager = new NetworkNodeManager(configuration, packetForwarder, clientPortFactory);
 
             try
             {

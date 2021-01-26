@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
+using Common.Models;
+using Common.Networking.Client.Persistent;
 using NLog;
 using NetworkNode.Config;
-using NetworkNode.Models;
 using NetworkNode.Networking.Forwarding.FIB;
 
 namespace NetworkNode.Networking.Forwarding
@@ -11,14 +12,12 @@ namespace NetworkNode.Networking.Forwarding
     {
         private static readonly Logger LOG = LogManager.GetCurrentClassLogger();
 
-        private readonly Configuration _configuration;
-        private Dictionary<string, IPort<MplsPacket>> _clientPorts;
+        private Dictionary<string, IPersistentClientPort<MplsPacket>> _clientPorts;
 
         private ForwardingInformationBase FIB;
 
-        public MplsPacketForwarder(Configuration configuration)
+        public MplsPacketForwarder()
         {
-            _configuration = configuration;
             FIB = new ForwardingInformationBase();
         }
 
@@ -65,7 +64,7 @@ namespace NetworkNode.Networking.Forwarding
             }
         }
 
-        public void SetClientPorts(Dictionary<string, IPort<MplsPacket>> clientPorts)
+        public void SetClientPorts(Dictionary<string, IPersistentClientPort<MplsPacket>> clientPorts)
         {
             _clientPorts = clientPorts;
         }

@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
 using CableCloud.Config;
-using CableCloud.Models;
 using CableCloud.Networking.Client;
+using Common.Models;
+using Common.Networking.Server.Persistent;
 using NLog;
 
 namespace CableCloud.Networking.Forwarding
@@ -12,7 +13,7 @@ namespace CableCloud.Networking.Forwarding
         private static readonly Logger LOG = LogManager.GetCurrentClassLogger();
 
         private List<(string, string, bool)> _connectionTable;
-        private Dictionary<string, IClientWorker> _clientWorkers;
+        private Dictionary<string, IWorker<MplsPacket>> _clientWorkers;
 
         public PacketForwarder(Configuration configuration)
         {
@@ -53,7 +54,7 @@ namespace CableCloud.Networking.Forwarding
             }
         }
 
-        public void SetClientPorts(Dictionary<string, IClientWorker> clientWorkers)
+        public void SetClientPorts(Dictionary<string, IWorker<MplsPacket>> clientWorkers)
         {
             _clientWorkers = clientWorkers;
         }
@@ -82,9 +83,9 @@ namespace CableCloud.Networking.Forwarding
             _clientWorkers.Remove(portAlias);
         }
 
-        public void OnClientRemoved(object source, ClientRemovedEventArgs eventArgs)
+        public void OnClientRemoved(string key)
         {
-            RemoveClientWorker(eventArgs.PortAlias);
+            RemoveClientWorker(key);
         }
     }
 }

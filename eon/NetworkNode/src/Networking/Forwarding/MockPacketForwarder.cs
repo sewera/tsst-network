@@ -1,7 +1,8 @@
 using System.Collections.Generic;
+using Common.Models;
+using Common.Networking.Client.Persistent;
 using NLog;
 using NetworkNode.Config;
-using NetworkNode.Models;
 
 namespace NetworkNode.Networking.Forwarding
 {
@@ -9,12 +10,10 @@ namespace NetworkNode.Networking.Forwarding
     {
         private static readonly Logger LOG = LogManager.GetCurrentClassLogger();
 
-        private readonly Configuration _configuration;
-        private Dictionary<string, IPort<MplsPacket>> _clientPorts;
+        private Dictionary<string, IPersistentClientPort<MplsPacket>> _clientPorts;
 
-        public MockPacketForwarder(Configuration configuration)
+        public MockPacketForwarder()
         {
-            _configuration = configuration;
         }
 
         public void ForwardPacket((string portAlias, MplsPacket packet) forwardPacketTuple)
@@ -38,7 +37,7 @@ namespace NetworkNode.Networking.Forwarding
             LOG.Info($"Received command from MS: {packet}");
         }
 
-        public void SetClientPorts(Dictionary<string, IPort<MplsPacket>> clientPorts)
+        public void SetClientPorts(Dictionary<string, IPersistentClientPort<MplsPacket>> clientPorts)
         {
             _clientPorts = clientPorts;
         }

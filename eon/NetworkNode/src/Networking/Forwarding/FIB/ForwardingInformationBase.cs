@@ -1,6 +1,6 @@
 using System.Collections.Generic;
-using NetworkNode.Models;
 using System;
+using Common.Models;
 
 namespace NetworkNode.Networking.Forwarding.FIB
 {

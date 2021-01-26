@@ -18,6 +18,8 @@ namespace Common.Networking.Client
         protected readonly IPAddress ServerAddress;
         protected readonly int ServerPort;
 
+        protected string ClientPortAlias;
+
         protected readonly Socket ClientSocket;
 
         public event ReceiveMessage<TResponsePacket> MessageReceivedEvent;
@@ -65,7 +67,7 @@ namespace Common.Networking.Client
 
         protected void OnMessageReceivedEvent(TResponsePacket packet)
         {
-            MessageReceivedEvent?.Invoke(packet);
+            MessageReceivedEvent?.Invoke((ClientPortAlias, packet));
         }
 
         protected abstract void ReceiveCallback(IAsyncResult ar);

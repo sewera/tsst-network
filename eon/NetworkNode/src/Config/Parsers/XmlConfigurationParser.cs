@@ -1,10 +1,11 @@
 using System.Linq;
 using System.Xml.Linq;
+using Common.Config.Parsers;
 using NLog;
 
 namespace NetworkNode.Config.Parsers
 {
-    internal class XmlConfigurationParser : IConfigurationParser
+    internal class XmlConfigurationParser : IConfigurationParser<Configuration>
     {
         private static readonly Logger LOG = LogManager.GetCurrentClassLogger();
 

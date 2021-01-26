@@ -1,8 +1,9 @@
+using Common.Config.Parsers;
 using NLog;
 
 namespace ClientNode.Config.Parsers
 {
-    internal class MockConfigurationParser : IConfigurationParser
+    internal class MockConfigurationParser : IConfigurationParser<Configuration>
     {
         private static readonly Logger LOG = LogManager.GetCurrentClassLogger();
 

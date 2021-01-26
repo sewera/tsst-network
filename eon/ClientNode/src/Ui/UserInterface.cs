@@ -1,8 +1,8 @@
 using System;
 using System.Threading;
-using ClientNode.Models;
 using ClientNode.Ui.Parsers;
 using ClientNode.Ui.Parsers.Exceptions;
+using Common.Models;
 using NLog;
 
 namespace ClientNode.Ui
@@ -52,8 +52,9 @@ namespace ClientNode.Ui
             }
         }
 
-        private static void MessageReceived(MplsPacket mplsPacket)
+        private static void MessageReceived((string portAlias, MplsPacket mplsPacket) portAliasAndPacketTuple)
         {
+            (_, MplsPacket mplsPacket) = portAliasAndPacketTuple;
             Console.WriteLine($"Received: {mplsPacket}");
             Console.Write("> ");
         }

@@ -3,7 +3,7 @@ using Common.Networking.Client.Delegates;
 
 namespace Common.Networking.Client
 {
-    public interface IClientPort<in TRequestPacket, out TResponsePacket>
+    public interface IClientPort<in TRequestPacket, TResponsePacket>
         where TRequestPacket : ISerializablePacket
         where TResponsePacket : ISerializablePacket
     {

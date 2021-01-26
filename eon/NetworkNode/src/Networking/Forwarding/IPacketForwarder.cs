@@ -1,5 +1,6 @@
 using System.Collections.Generic;
-using NetworkNode.Models;
+using Common.Models;
+using Common.Networking.Client.Persistent;
 
 namespace NetworkNode.Networking.Forwarding
 {
@@ -7,6 +8,6 @@ namespace NetworkNode.Networking.Forwarding
     {
         public void ForwardPacket((string portAlias, MplsPacket packet) forwardPacketTuple);
         public void ConfigureFromManagementSystem((string portAlias, ManagementPacket packet) managementTuple);
-        public void SetClientPorts(Dictionary<string, IPort<MplsPacket>> clientPorts);
+        public void SetClientPorts(Dictionary<string, IPersistentClientPort<MplsPacket>> clientPorts);
     }
 }

@@ -9,11 +9,9 @@ namespace Common.Networking.Client.Persistent
     public class PersistentClientPort<TPacket> : ClientPort<TPacket, TPacket>, IPersistentClientPort<TPacket>
         where TPacket : ISerializablePacket
     {
-        private string _clientPortAlias;
-
         public PersistentClientPort(string clientPortAlias, IPAddress serverAddress, int serverPort) : base(serverAddress, serverPort)
         {
-            _clientPortAlias = clientPortAlias;
+            ClientPortAlias = clientPortAlias;
         }
 
         public override void Send(TPacket packet)
@@ -29,10 +27,10 @@ namespace Common.Networking.Client.Persistent
                 Log.Info($"Connecting to server on port: {ServerPort}");
                 ClientSocket.Connect(ServerEndPoint);
                 Log.Info("Connected");
-                if (helloPacket.GetKey() != _clientPortAlias)
+                if (helloPacket.GetKey() != ClientPortAlias)
                 {
                     Log.Warn("Provided helloPacket has a different key than it should (helloPacket.GetKey() != _clientPortAlias)");
-                    Log.Warn($"({helloPacket.GetKey()} != {_clientPortAlias})");
+                    Log.Warn($"({helloPacket.GetKey()} != {ClientPortAlias})");
                 }
 
                 ClientSocket.Send(helloPacket.ToBytes());
