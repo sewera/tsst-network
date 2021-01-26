@@ -23,8 +23,8 @@ namespace ConnectionController
 
             Configuration configuration = configurationParser.ParseConfiguration();
             IManager connectionControllerManager = new ConnectionControllerManager(configuration,
-                packet => new GenericPacket.Builder().SetType(GenericPacket.PacketType.Response).Build(),
-                packet => new GenericPacket.Builder().SetType(GenericPacket.PacketType.Response).Build());
+                packet => new GenericPacket.Builder().SetType(GenericPacket.PacketType.Response).SetData(packet.Data).Build(),
+                packet => new GenericPacket.Builder().SetType(GenericPacket.PacketType.Response).SetData(packet.Data).Build());
             // TODO: Those are only mock delegates
             connectionControllerManager.Start();
         }
