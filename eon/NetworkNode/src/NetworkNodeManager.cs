@@ -2,13 +2,14 @@ using System.Collections.Generic;
 using System.Threading;
 using Common.Models;
 using Common.Networking.Client.Persistent;
+using Common.Startup;
 using NLog;
 using NetworkNode.Config;
 using NetworkNode.Networking.Forwarding;
 
 namespace NetworkNode
 {
-    public class NetworkNodeManager : INetworkNodeManager
+    public class NetworkNodeManager : IManager
     {
         private static readonly Logger LOG = LogManager.GetCurrentClassLogger();
         
