@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using ClientNode.Config;
 using Common.Models;
-using Common.Networking.Client.Delegates;
 using Common.Networking.Client.Persistent;
+using Common.Networking.Server.Delegates;
 using Common.Networking.Server.OneShot;
 using NLog;
 
@@ -16,13 +16,16 @@ namespace ClientNode
         private readonly IPersistentClientPort<MplsPacket> _clientPort;
         private readonly IOneShotServerPort<GenericPacket, GenericPacket> _callAcceptPort;
 
-        public ClientNodeManager(Configuration configuration, IPersistentClientPort<MplsPacket> clientPort)
+        public ClientNodeManager(Configuration configuration,
+                                 IPersistentClientPort<MplsPacket> clientPort,
+                                 ReceiveRequest<GenericPacket, GenericPacket> callAcceptDelegate)
         {
             _configuration = configuration;
             _clientPort = clientPort;
             _callAcceptPort = new OneShotServerPort<GenericPacket, GenericPacket>(
                 configuration.CallingPartyCallControllerAddress,
                 configuration.CallingPartyCallControllerPort);
+            _callAcceptPort.RegisterReceiveRequestDelegate(callAcceptDelegate);
         }
 
         public void Start()
@@ -33,7 +36,7 @@ namespace ClientNode
             _clientPort.StartReceiving();
         }
 
-        public void RegisterReceiveMessageEvent(ReceiveMessage<MplsPacket> receiveMessage)
+        public void RegisterReceiveMessageEvent(Common.Networking.Client.Delegates.ReceiveMessage<MplsPacket> receiveMessage)
         {
             _clientPort.RegisterReceiveMessageEvent(receiveMessage);
         }

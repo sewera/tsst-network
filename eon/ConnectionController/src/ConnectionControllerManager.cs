@@ -1,5 +1,6 @@
 using System.Threading;
 using Common.Models;
+using Common.Networking.Server.Delegates;
 using Common.Networking.Server.OneShot;
 using Common.Startup;
 using ConnectionController.Config;
@@ -15,13 +16,17 @@ namespace ConnectionController
 
         private readonly ManualResetEvent _idle = new ManualResetEvent(false);
 
-        public ConnectionControllerManager(Configuration configuration)
+        public ConnectionControllerManager(Configuration configuration,
+                                           ReceiveRequest<GenericPacket, GenericPacket> connectionRequestDelegate,
+                                           ReceiveRequest<GenericPacket, GenericPacket> peerCoordinationDelegate)
         {
             _configuration = configuration;
             _connectionRequestPort = new OneShotServerPort<GenericPacket, GenericPacket>(configuration.ServerAddress,
                 configuration.ConnectionRequestLocalPort);
             _peerCoordinationPort = new OneShotServerPort<GenericPacket, GenericPacket>(configuration.ServerAddress,
                 configuration.PeerCoordinationLocalPort);
+            _connectionRequestPort.RegisterReceiveRequestDelegate(connectionRequestDelegate);
+            _peerCoordinationPort.RegisterReceiveRequestDelegate(peerCoordinationDelegate);
         }
 
         public void Start()

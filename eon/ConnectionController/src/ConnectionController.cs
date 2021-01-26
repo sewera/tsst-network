@@ -1,4 +1,5 @@
 ﻿using Common.Config.Parsers;
+using Common.Models;
 using Common.Startup;
 using ConnectionController.Config;
 using ConnectionController.Config.Parsers;
@@ -21,7 +22,10 @@ namespace ConnectionController
             defaultStartup.InitLogger(null);
 
             Configuration configuration = configurationParser.ParseConfiguration();
-            IManager connectionControllerManager = new ConnectionControllerManager(configuration);
+            IManager connectionControllerManager = new ConnectionControllerManager(configuration,
+                packet => new GenericPacket.Builder().SetType(GenericPacket.PacketType.Response).Build(),
+                packet => new GenericPacket.Builder().SetType(GenericPacket.PacketType.Response).Build());
+            // TODO: Those are only mock delegates
             connectionControllerManager.Start();
         }
     }

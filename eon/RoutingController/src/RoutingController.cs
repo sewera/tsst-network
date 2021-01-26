@@ -1,4 +1,5 @@
 ﻿using Common.Config.Parsers;
+using Common.Models;
 using Common.Startup;
 using RoutingController.Config;
 using RoutingController.Config.Parsers;
@@ -21,7 +22,11 @@ namespace RoutingController
             defaultStartup.InitLogger(null);
 
             Configuration configuration = configurationParser.ParseConfiguration();
-            IManager routingControllerManager = new RoutingControllerManager(configuration);
+            IManager routingControllerManager = new RoutingControllerManager(configuration,
+                packet => new GenericPacket.Builder().SetType(GenericPacket.PacketType.Response).Build(),
+                packet => new GenericPacket.Builder().SetType(GenericPacket.PacketType.Response).Build(),
+                packet => new GenericPacket.Builder().SetType(GenericPacket.PacketType.Response).Build());
+            // TODO: Those are only mock delegates
             routingControllerManager.Start();
         }
     }

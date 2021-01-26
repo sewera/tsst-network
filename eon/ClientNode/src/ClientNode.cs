@@ -30,7 +30,10 @@ namespace ClientNode
             ICommandParser commandParser = new CommandParser(configuration);
             IPersistentClientPort<MplsPacket> clientPort = new PersistentClientPort<MplsPacket>(configuration.ClientPortAlias,
                 configuration.CableCloudAddress, configuration.CableCloudPort);
-            IClientNodeManager clientNodeManager = new ClientNodeManager(configuration, clientPort);
+            IClientNodeManager clientNodeManager = new ClientNodeManager(configuration,
+                clientPort,
+                packet => new GenericPacket.Builder().SetType(GenericPacket.PacketType.Response).Build());
+            // TODO: This is only a mock delegate
 
             IUserInterface userInterface = new UserInterface(commandParser, clientNodeManager);
 
