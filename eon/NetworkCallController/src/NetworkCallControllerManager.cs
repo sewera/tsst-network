@@ -20,11 +20,11 @@ namespace NetworkCallController
         {
             _configuration = configuration;
             _callCoordinationPort = new OneShotServerPort<GenericPacket, GenericPacket>(configuration.ServerAddress,
-                configuration.CallCoordinationPort);
+                configuration.CallCoordinationLocalPort);
             _callTeardownPort = new OneShotServerPort<GenericPacket, GenericPacket>(configuration.ServerAddress,
-                configuration.CallTeardownPort);
+                configuration.CallTeardownLocalPort);
             _connectionRequestPort = new OneShotServerPort<GenericPacket, GenericPacket>(configuration.ServerAddress,
-                configuration.ConnectionRequestPort);
+                configuration.ConnectionRequestLocalPort);
         }
 
         public void Start()

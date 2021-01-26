@@ -1,4 +1,3 @@
-using System;
 using ClientNode.Config;
 using ClientNode.Config.Parsers;
 using ClientNode.Ui;
@@ -8,16 +7,11 @@ using Common.Models;
 using Common.Networking.Client.Persistent;
 using Common.Startup;
 using Common.Ui;
-using NLog;
-using NLog.Config;
-using NLog.Targets;
 
 namespace ClientNode
 {
-    class ClientNode
+    public class ClientNode
     {
-        private static readonly Logger LOG = LogManager.GetCurrentClassLogger();
-
         public static void Main(string[] args)
         {
             DefaultStartup<ClientNode> defaultStartup = new DefaultStartup<ClientNode>();

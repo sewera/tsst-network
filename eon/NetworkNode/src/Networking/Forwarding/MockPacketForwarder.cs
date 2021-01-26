@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using Common.Models;
 using Common.Networking.Client.Persistent;
 using NLog;
-using NetworkNode.Config;
 
 namespace NetworkNode.Networking.Forwarding
 {

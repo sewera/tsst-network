@@ -1,4 +1,3 @@
-using System;
 using CableCloud.Config;
 using CableCloud.Config.Parsers;
 using CableCloud.Networking.Forwarding;
@@ -9,16 +8,11 @@ using Common.Models;
 using Common.Networking.Server.Persistent;
 using Common.Startup;
 using Common.Ui;
-using NLog;
-using NLog.Config;
-using NLog.Targets;
 
 namespace CableCloud
 {
     public class CableCloud
     {
-        private static readonly Logger LOG = LogManager.GetCurrentClassLogger();
-
         public static void Main(string[] args)
         {
             DefaultStartup<CableCloud> defaultStartup = new DefaultStartup<CableCloud>();
@@ -43,14 +37,7 @@ namespace CableCloud
             ICommandParser commandParser = new CommandParser(configuration);
             IUserInterface userInterface = new UserInterface(commandParser, cableCloudManager);
 
-            try
-            {
-                Console.Title = "CC";
-            }
-            catch (Exception)
-            {
-                LOG.Trace("Could not set the title");
-            }
+            defaultStartup.SetTitle("CC");
 
             userInterface.Start();
         }
