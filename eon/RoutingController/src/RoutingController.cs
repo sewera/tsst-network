@@ -23,9 +23,9 @@ namespace RoutingController
 
             Configuration configuration = configurationParser.ParseConfiguration();
             IManager routingControllerManager = new RoutingControllerManager(configuration,
-                packet => new GenericPacket.Builder().SetType(GenericPacket.PacketType.Response).Build(),
-                packet => new GenericPacket.Builder().SetType(GenericPacket.PacketType.Response).Build(),
-                packet => new GenericPacket.Builder().SetType(GenericPacket.PacketType.Response).Build());
+                packet => new GenericPacket.Builder().SetType(GenericPacket.PacketType.Response).SetData(packet.Data).Build(),
+                packet => new GenericPacket.Builder().SetType(GenericPacket.PacketType.Response).SetData(packet.Data).Build(),
+                packet => new GenericPacket.Builder().SetType(GenericPacket.PacketType.Response).SetData(packet.Data).Build());
             // TODO: Those are only mock delegates
             routingControllerManager.Start();
         }

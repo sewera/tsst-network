@@ -32,7 +32,7 @@ namespace ClientNode
                 configuration.CableCloudAddress, configuration.CableCloudPort);
             IClientNodeManager clientNodeManager = new ClientNodeManager(configuration,
                 clientPort,
-                packet => new GenericPacket.Builder().SetType(GenericPacket.PacketType.Response).Build());
+                packet => new GenericPacket.Builder().SetType(GenericPacket.PacketType.Response).SetData(packet.Data).Build());
             // TODO: This is only a mock delegate
 
             IUserInterface userInterface = new UserInterface(commandParser, clientNodeManager);
