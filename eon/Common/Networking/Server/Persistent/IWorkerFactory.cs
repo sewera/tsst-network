@@ -1,7 +1,7 @@
 using System.Net.Sockets;
 using Common.Models;
 
-namespace Common.Networking.Server
+namespace Common.Networking.Server.Persistent
 {
     public interface IWorkerFactory<TPacket> where TPacket: ISerializablePacket
     {

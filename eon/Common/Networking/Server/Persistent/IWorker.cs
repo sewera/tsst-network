@@ -1,7 +1,7 @@
 using Common.Models;
 using Common.Networking.Server.Delegates;
 
-namespace Common.Networking.Server
+namespace Common.Networking.Server.Persistent
 {
     public interface IWorker<TPacket> where TPacket: ISerializablePacket
     {
