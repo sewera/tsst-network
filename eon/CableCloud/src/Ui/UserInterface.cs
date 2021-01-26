@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using CableCloud.Ui.Parsers;
 using CableCloud.Ui.Parsers.Exceptions;
+using Common.Ui;
 using NLog;
 
 namespace CableCloud.Ui

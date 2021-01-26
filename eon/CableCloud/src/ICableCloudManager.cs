@@ -1,8 +1,9 @@
+using Common.Startup;
+
 namespace CableCloud
 {
-    public interface ICableCloudManager
+    public interface ICableCloudManager : IManager
     {
-        public void Start();
         public void SetConnectionAlive((string, string, bool) requestedConnection);
     }
 }
