@@ -38,12 +38,12 @@ namespace CableCloud.Networking.Forwarding
 
                 if (portAlias1 == portAlias)
                 {
-                    LOG.Debug($"Sending {packet} to {portAlias2}");
+                    LOG.Trace($"Sending {packet} to {portAlias2}");
                     _clientWorkers[portAlias2].Send(packet);
                 }
                 else
                 {
-                    LOG.Debug($"Sending {packet} to {portAlias1}");
+                    LOG.Trace($"Sending {packet} to {portAlias1}");
                     _clientWorkers[portAlias1].Send(packet);
                 }
             }
