@@ -19,9 +19,9 @@ namespace Common.Networking.Client.OneShot
         {
             try
             {
-                Log.Info($"Connecting to server on port: {ServerPort}");
+                Log.Debug($"Connecting to server on port: {ServerPort}");
                 ClientSocket.Connect(ServerEndPoint);
-                Log.Info("Connected");
+                Log.Debug("Connected");
             }
             catch (Exception e)
             {
@@ -47,7 +47,7 @@ namespace Common.Networking.Client.OneShot
                 if (bytesRead > 0)
                 {
                     TResponsePacket packet = ISerializablePacket.FromBytes<TResponsePacket>(buffer);
-                    Log.Info($"Received: {packet}");
+                    Log.Debug($"Received: {packet}");
                     OnMessageReceivedEvent(packet);
                 }
             }

@@ -12,7 +12,7 @@ namespace CableCloud.Networking.Forwarding
         private static readonly Logger LOG = LogManager.GetCurrentClassLogger();
 
         private List<(string, string, bool)> _connectionTable;
-        private Dictionary<string, IWorker<MplsPacket>> _clientWorkers;
+        private IDictionary<string, IWorker<MplsPacket>> _clientWorkers;
 
         public PacketForwarder(Configuration configuration)
         {
@@ -38,12 +38,12 @@ namespace CableCloud.Networking.Forwarding
 
                 if (portAlias1 == portAlias)
                 {
-                    LOG.Debug($"Sending {packet} to {portAlias2}");
+                    LOG.Trace($"Sending {packet} to {portAlias2}");
                     _clientWorkers[portAlias2].Send(packet);
                 }
                 else
                 {
-                    LOG.Debug($"Sending {packet} to {portAlias1}");
+                    LOG.Trace($"Sending {packet} to {portAlias1}");
                     _clientWorkers[portAlias1].Send(packet);
                 }
             }
@@ -53,7 +53,7 @@ namespace CableCloud.Networking.Forwarding
             }
         }
 
-        public void SetClientPorts(Dictionary<string, IWorker<MplsPacket>> clientWorkers)
+        public void SetClientPorts(IDictionary<string, IWorker<MplsPacket>> clientWorkers)
         {
             _clientWorkers = clientWorkers;
         }
