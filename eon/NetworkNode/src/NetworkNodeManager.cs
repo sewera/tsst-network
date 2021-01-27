@@ -3,9 +3,9 @@ using System.Threading;
 using Common.Models;
 using Common.Networking.Client.Persistent;
 using Common.Startup;
-using NLog;
 using NetworkNode.Config;
 using NetworkNode.Networking.Forwarding;
+using NLog;
 
 namespace NetworkNode
 {

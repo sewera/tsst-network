@@ -11,10 +11,6 @@ namespace NetworkNode.Networking.Forwarding
 
         private Dictionary<string, IPersistentClientPort<MplsPacket>> _clientPorts;
 
-        public MockPacketForwarder()
-        {
-        }
-
         public void ForwardPacket((string portAlias, MplsPacket packet) forwardPacketTuple)
         {
             (string portAlias, MplsPacket packet) = forwardPacketTuple;

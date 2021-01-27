@@ -11,23 +11,23 @@ namespace NetworkCallController
     {
         private Configuration _configuration;
 
-        private readonly IOneShotServerPort<GenericPacket, GenericPacket> _callCoordinationPort;
-        private readonly IOneShotServerPort<GenericPacket, GenericPacket> _callTeardownPort;
-        private readonly IOneShotServerPort<GenericPacket, GenericPacket> _connectionRequestPort;
+        private readonly IOneShotServerPort<GenericDataPacket, GenericDataPacket> _callCoordinationPort;
+        private readonly IOneShotServerPort<GenericDataPacket, GenericDataPacket> _callTeardownPort;
+        private readonly IOneShotServerPort<GenericDataPacket, GenericDataPacket> _connectionRequestPort;
 
         private readonly ManualResetEvent _idle = new ManualResetEvent(false);
 
         public NetworkCallControllerManager(Configuration configuration,
-                                            ReceiveRequest<GenericPacket, GenericPacket> callCoordinationPortDelegate,
-                                            ReceiveRequest<GenericPacket, GenericPacket> callTeardownPortDelegate,
-                                            ReceiveRequest<GenericPacket, GenericPacket> connectionRequestPortDelegate)
+                                            ReceiveRequest<GenericDataPacket, GenericDataPacket> callCoordinationPortDelegate,
+                                            ReceiveRequest<GenericDataPacket, GenericDataPacket> callTeardownPortDelegate,
+                                            ReceiveRequest<GenericDataPacket, GenericDataPacket> connectionRequestPortDelegate)
         {
             _configuration = configuration;
-            _callCoordinationPort = new OneShotServerPort<GenericPacket, GenericPacket>(configuration.ServerAddress,
+            _callCoordinationPort = new OneShotServerPort<GenericDataPacket, GenericDataPacket>(configuration.ServerAddress,
                 configuration.CallCoordinationLocalPort);
-            _callTeardownPort = new OneShotServerPort<GenericPacket, GenericPacket>(configuration.ServerAddress,
+            _callTeardownPort = new OneShotServerPort<GenericDataPacket, GenericDataPacket>(configuration.ServerAddress,
                 configuration.CallTeardownLocalPort);
-            _connectionRequestPort = new OneShotServerPort<GenericPacket, GenericPacket>(configuration.ServerAddress,
+            _connectionRequestPort = new OneShotServerPort<GenericDataPacket, GenericDataPacket>(configuration.ServerAddress,
                 configuration.ConnectionRequestLocalPort);
             _callCoordinationPort.RegisterReceiveRequestDelegate(callCoordinationPortDelegate);
             _callTeardownPort.RegisterReceiveRequestDelegate(callTeardownPortDelegate);
