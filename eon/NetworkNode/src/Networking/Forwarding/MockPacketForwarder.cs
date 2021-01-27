@@ -22,14 +22,14 @@ namespace NetworkNode.Networking.Forwarding
 
             packet.MplsLabels = new List<long> {200, 300};
             const string destinationLocalPortAlias = "12";
-            LOG.Debug($"Sending packet {packet} via {destinationLocalPortAlias}");
+            LOG.Trace($"Sending packet {packet} via {destinationLocalPortAlias}");
             _clientPorts[destinationLocalPortAlias].Send(packet);
         }
 
         public void ConfigureFromManagementSystem((string portAlias, ManagementPacket packet) managementTuple)
         {
             (string portAlias, ManagementPacket packet) = managementTuple;
-            LOG.Info($"Received command from MS: {packet}");
+            LOG.Debug($"Received command from MS: {packet}");
         }
 
         public void SetClientPorts(Dictionary<string, IPersistentClientPort<MplsPacket>> clientPorts)

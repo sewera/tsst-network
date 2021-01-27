@@ -32,11 +32,11 @@ namespace Common.Networking.Server.OneShot
             {
                 Socket handler = listener.EndAccept(ar);
 
-                Log.Debug("Connection accepted");
-                Log.Debug("Waiting for a packet...");
+                Log.Trace("Connection accepted");
+                Log.Trace("Waiting for a packet...");
                 handler.Receive(_buffer);
                 TRequestPacket receivedRequestPacket = ISerializablePacket.FromBytes<TRequestPacket>(_buffer);
-                Log.Info($"Received: {receivedRequestPacket}");
+                Log.Debug($"Received: {receivedRequestPacket}");
                 TResponsePacket responsePacket = OnRequestReceivedEvent(receivedRequestPacket);
                 handler.Send(responsePacket.ToBytes());
                 handler.Shutdown(SocketShutdown.Both);
