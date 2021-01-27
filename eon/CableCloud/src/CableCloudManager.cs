@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using CableCloud.Networking.Forwarding;
 using Common.Models;
@@ -12,7 +13,7 @@ namespace CableCloud
         
         private readonly IPersistentServerPort<MplsPacket> _serverPort;
         private readonly IPacketForwarder _packetForwarder;
-        private readonly Dictionary<string, IWorker<MplsPacket>> _clientWorkers = new Dictionary<string, IWorker<MplsPacket>>();
+        private readonly ConcurrentDictionary<string, IWorker<MplsPacket>> _clientWorkers = new ConcurrentDictionary<string, IWorker<MplsPacket>>();
 
         public CableCloudManager(IPersistentServerPort<MplsPacket> serverPort, IPacketForwarder packetForwarder)
         {
@@ -31,7 +32,7 @@ namespace CableCloud
         private void RegisterWorker((string, IWorker<MplsPacket>) worker)
         {
             (string portAlias, IWorker<MplsPacket> clientWorker) = worker;
-            _clientWorkers.Add(portAlias, clientWorker);
+            _clientWorkers[portAlias] = clientWorker;
             clientWorker.RegisterReceiveMessageDelegate(_packetForwarder.ForwardPacket);
             clientWorker.RegisterClientRemovedDelegate(_packetForwarder.OnClientRemoved);
         }
