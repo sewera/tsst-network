@@ -4,14 +4,14 @@ using NUnit.Framework;
 namespace Common.test.Utils
 {
     [TestFixture]
-    public class PortMatcherTest
+    public class CheckersTest
     {
         [Test]
         public void PortMatchesTest_ReturnTrue()
         {
             const string pattern = "3xx";
             string[] ports = {"321", "384", "300"};
-            foreach (string port in ports) Assert.IsTrue(ICheckers.PortMatches(pattern, port));
+            foreach (string port in ports) Assert.IsTrue(Checkers.PortMatches(pattern, port));
         }
 
         [Test]
@@ -19,7 +19,7 @@ namespace Common.test.Utils
         {
             const string pattern = "3xx";
             string[] ports = {"123", "231", "3a1", "3121", "31"};
-            foreach (string port in ports) Assert.IsFalse(ICheckers.PortMatches(pattern, port));
+            foreach (string port in ports) Assert.IsFalse(Checkers.PortMatches(pattern, port));
         }
 
         [Test]
@@ -36,7 +36,7 @@ namespace Common.test.Utils
 
             foreach (((int, int) slot1, (int, int) slot2) in slotPairs)
             {
-                Assert.IsTrue(ICheckers.SlotsOverlap(slot1, slot2));
+                Assert.IsTrue(Checkers.SlotsOverlap(slot1, slot2));
             }
         }
 
@@ -52,7 +52,7 @@ namespace Common.test.Utils
 
             foreach (((int, int) slot1, (int, int) slot2) in slotPairs)
             {
-                Assert.IsFalse(ICheckers.SlotsOverlap(slot1, slot2));
+                Assert.IsFalse(Checkers.SlotsOverlap(slot1, slot2));
             }
         }
     }

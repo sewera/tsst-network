@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 
 namespace Common.Utils
 {
-    public interface ICheckers
+    public class Checkers
     {
         public static bool PortMatches(string pattern, string port)
         {
