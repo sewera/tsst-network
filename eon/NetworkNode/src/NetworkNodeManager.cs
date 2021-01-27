@@ -6,6 +6,7 @@ using Common.Networking.Server.OneShot;
 using Common.Startup;
 using NetworkNode.Config;
 using NetworkNode.Networking.Forwarding;
+using NetworkNode.Networking.LRM;
 using NLog;
 
 namespace NetworkNode
@@ -19,8 +20,7 @@ namespace NetworkNode
         private readonly IPersistentClientPortFactory<MplsPacket> _clientClientPortFactory;
         private readonly Dictionary<string, IPersistentClientPort<MplsPacket>> _clientPorts = new Dictionary<string, IPersistentClientPort<MplsPacket>>();
 
-        private readonly Dictionary<string, IOneShotServerPort<RequestPacket, ResponsePacket>> _lrmPorts =
-            new Dictionary<string, IOneShotServerPort<RequestPacket, ResponsePacket>>();
+        private readonly Dictionary<string, LinkResourceManager> _lrmPorts = new Dictionary<string, LinkResourceManager>();
 
         public NetworkNodeManager(Configuration configuration,
                                   IPacketForwarder packetForwarder,
@@ -35,10 +35,23 @@ namespace NetworkNode
         {
             foreach (string clientPortAlias in _configuration.LocalPortAliases)
             {
+                Configuration.LrmConfiguration lrmConfiguration = _configuration.Lrms[clientPortAlias];
+                _lrmPorts.Add(clientPortAlias,
+                    new LinkResourceManager(clientPortAlias,
+                        lrmConfiguration.RemotePortAlias,
+                        lrmConfiguration.ServerAddress,
+                        lrmConfiguration.LrmLinkConnectionRequestLocalPort,
+                        lrmConfiguration.LrmLinkConnectionRequestRemoteAddress,
+                        lrmConfiguration.LrmLinkConnectionRequestRemotePort,
+                        lrmConfiguration.RcLocalTopologyRemoteAddress,
+                        lrmConfiguration.RcLocalTopologyRemotePort));
+
                 _clientPorts.Add(clientPortAlias, _clientClientPortFactory.GetPort(clientPortAlias));
                 _clientPorts[clientPortAlias].ConnectPermanentlyToServer(new MplsPacket.Builder().SetSourcePortAlias(clientPortAlias).Build());
                 _clientPorts[clientPortAlias].RegisterReceiveMessageEvent(_packetForwarder.ForwardPacket);
                 _clientPorts[clientPortAlias].StartReceiving();
+
+                _lrmPorts[clientPortAlias].Listen();
             }
 
             _packetForwarder.SetClientPorts(_clientPorts);
