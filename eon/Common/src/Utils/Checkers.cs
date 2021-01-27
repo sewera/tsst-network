@@ -16,7 +16,7 @@ namespace Common.Utils
             (int lower1, int upper1) = slots1;
             (int lower2, int upper2) = slots2;
 
-            throw new NotImplementedException();
+            return !((lower2 > upper1) && (upper2 > upper1) || (lower1 > upper1) && (upper1 > upper2));
         }
     }
 }
