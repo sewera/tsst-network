@@ -30,13 +30,13 @@ namespace Common.Networking.Server.Persistent
             {
                 Socket handler = listener.EndAccept(ar);
 
-                Log.Debug("Connection accepted");
+                Log.Trace("Connection accepted");
                 // Create the state object.
-                Log.Debug("Waiting for Hello packet...");
+                Log.Trace("Waiting for Hello packet...");
                 // FIXME: Add error handling when client doesn't send a hello packet
                 handler.Receive(_buffer);
                 TPacket receivedPacket = ISerializablePacket.FromBytes<TPacket>(_buffer);
-                Log.Info($"Received: {receivedPacket}");
+                Log.Debug($"Received: {receivedPacket}");
                 Log.Trace("Adding Connection");
                 string portAlias = receivedPacket.GetKey();
                 ConnectionRegisteredEvent?.Invoke((portAlias, _clientWorkerFactory.GetClientWorker(portAlias, handler)));
