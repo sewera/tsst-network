@@ -11,19 +11,19 @@ namespace ConnectionController
     {
         private Configuration _configuration;
 
-        private readonly IOneShotServerPort<GenericPacket, GenericPacket> _connectionRequestPort;
-        private readonly IOneShotServerPort<GenericPacket, GenericPacket> _peerCoordinationPort;
+        private readonly IOneShotServerPort<GenericDataPacket, GenericDataPacket> _connectionRequestPort;
+        private readonly IOneShotServerPort<GenericDataPacket, GenericDataPacket> _peerCoordinationPort;
 
         private readonly ManualResetEvent _idle = new ManualResetEvent(false);
 
         public ConnectionControllerManager(Configuration configuration,
-                                           ReceiveRequest<GenericPacket, GenericPacket> connectionRequestDelegate,
-                                           ReceiveRequest<GenericPacket, GenericPacket> peerCoordinationDelegate)
+                                           ReceiveRequest<GenericDataPacket, GenericDataPacket> connectionRequestDelegate,
+                                           ReceiveRequest<GenericDataPacket, GenericDataPacket> peerCoordinationDelegate)
         {
             _configuration = configuration;
-            _connectionRequestPort = new OneShotServerPort<GenericPacket, GenericPacket>(configuration.ServerAddress,
+            _connectionRequestPort = new OneShotServerPort<GenericDataPacket, GenericDataPacket>(configuration.ServerAddress,
                 configuration.ConnectionRequestLocalPort);
-            _peerCoordinationPort = new OneShotServerPort<GenericPacket, GenericPacket>(configuration.ServerAddress,
+            _peerCoordinationPort = new OneShotServerPort<GenericDataPacket, GenericDataPacket>(configuration.ServerAddress,
                 configuration.PeerCoordinationLocalPort);
             _connectionRequestPort.RegisterReceiveRequestDelegate(connectionRequestDelegate);
             _peerCoordinationPort.RegisterReceiveRequestDelegate(peerCoordinationDelegate);

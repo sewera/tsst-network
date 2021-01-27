@@ -1,5 +1,6 @@
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
+using System.Runtime.Serialization;
 using Common.Models;
 
 namespace NetworkNode.Networking.Forwarding.FIB
@@ -92,7 +93,7 @@ namespace NetworkNode.Networking.Forwarding.FIB
                         // If the tunnel terminates here, it means that MplsPacket has at least one label remaining
                         (resultPort, resultPacket) = Commutate((inPort.ToString(), inPacket));
                     }
-                    else if (isNextLabel == true)
+                    else if (isNextLabel)
                     {
                         resultPort = outLink.ToString();
                         // Remember that inPacket has its label popped
@@ -130,13 +131,13 @@ namespace NetworkNode.Networking.Forwarding.FIB
         }
     }
 
-    public class NoForwardingInformationFound : System.Exception
+    public class NoForwardingInformationFound : Exception
     {
         public NoForwardingInformationFound() { }
         public NoForwardingInformationFound(string message) : base(message) { }
-        public NoForwardingInformationFound(string message, System.Exception inner) : base(message, inner) { }
+        public NoForwardingInformationFound(string message, Exception inner) : base(message, inner) { }
         protected NoForwardingInformationFound(
-            System.Runtime.Serialization.SerializationInfo info,
-            System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
+            SerializationInfo info,
+            StreamingContext context) : base(info, context) { }
     }
 }

@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 
-
 namespace NetworkNode.Networking.Forwarding.FIB
 {
     /// <summary>
@@ -8,12 +7,12 @@ namespace NetworkNode.Networking.Forwarding.FIB
     /// </summary>
     class FibRow
     {
-        private int _inLink = 0;
-        private int _inLabel = 0;
-        private int _outLink = 0;
-        private int _outLabel = 0;
-        private bool _isNextLabel = false;
-        private int _nextLabel = 0;
+        private int _inLink;
+        private int _inLabel;
+        private int _outLink;
+        private int _outLabel;
+        private bool _isNextLabel;
+        private int _nextLabel;
 
         /// <summary>
         /// Class constructor from strig
