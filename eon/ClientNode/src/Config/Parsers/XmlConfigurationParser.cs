@@ -20,7 +20,7 @@ namespace ClientNode.Config.Parsers
         {
             Configuration.Builder configurationBuilder = new Configuration.Builder();
 
-            LOG.Debug($"Reading configuration from {_filename}");
+            LOG.Trace($"Reading configuration from {_filename}");
             XElement xelement = XElement.Load(_filename);	
 
             configurationBuilder.SetCableCloudAddress(xelement.Descendants("cable_cloud_address").First().Value);

@@ -30,19 +30,19 @@ namespace NetworkNode.Networking.Forwarding
             }
             try
             {
-                LOG.Info($"Received packet {forwardPacketTuple.packet} on port {forwardPacketTuple.portAlias}");
+                LOG.Debug($"Received packet {forwardPacketTuple.packet} on port {forwardPacketTuple.portAlias}");
                 (string outPort, MplsPacket outPacket) = FIB.Commutate(forwardPacketTuple);
                 for (int i = 0; i < outPacket.MplsLabels.Count; i++)
                 {
                     outPacket.MplsLabels[i] = Math.Abs(outPacket.MplsLabels[i]);
                 }
-                LOG.Info($"Forwarding packet {outPacket} to port {outPort}");
+                LOG.Debug($"Forwarding packet {outPacket} to port {outPort}");
                 _clientPorts[outPort].Send(outPacket);
-                LOG.Info($"Forwarded packet {outPacket} on port {outPort}");
+                LOG.Debug($"Forwarded packet {outPacket} on port {outPort}");
             }
             catch(Exception e)
             {
-                LOG.Info(e.Message);
+                LOG.Debug(e.Message);
             }
         }
 
