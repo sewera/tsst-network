@@ -12,7 +12,7 @@ namespace CableCloud.Networking.Forwarding
         private static readonly Logger LOG = LogManager.GetCurrentClassLogger();
 
         private List<(string, string, bool)> _connectionTable;
-        private Dictionary<string, IWorker<MplsPacket>> _clientWorkers;
+        private IDictionary<string, IWorker<MplsPacket>> _clientWorkers;
 
         public PacketForwarder(Configuration configuration)
         {
@@ -53,7 +53,7 @@ namespace CableCloud.Networking.Forwarding
             }
         }
 
-        public void SetClientPorts(Dictionary<string, IWorker<MplsPacket>> clientWorkers)
+        public void SetClientPorts(IDictionary<string, IWorker<MplsPacket>> clientWorkers)
         {
             _clientWorkers = clientWorkers;
         }
