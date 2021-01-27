@@ -55,7 +55,11 @@ namespace NetworkNode
             }
 
             _packetForwarder.SetClientPorts(_clientPorts);
-            
+
+            Thread.Sleep(1000);
+
+            _lrmPorts["11"].SendPacket(new RequestPacket.Builder().Build());
+
             ManualResetEvent allDone = new ManualResetEvent(false);
             allDone.WaitOne();
         }

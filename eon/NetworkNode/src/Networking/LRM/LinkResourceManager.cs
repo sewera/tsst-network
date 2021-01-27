@@ -29,6 +29,8 @@ namespace NetworkNode.Networking.LRM
 
             _lrmPort = new OneShotServerPort<RequestPacket, ResponsePacket>(serverAddress, lrmLinkConnectionRequestLocalPort);
 
+            _lrmPort.RegisterReceiveRequestDelegate(OnReceiveRequest);
+
             _lrmConnectionRequestClient = new ApiClient<RequestPacket, ResponsePacket>(lrmLinkConnectionRequestRemoteAddress, lrmLinkConnectionRequestRemotePort);
             _rcLocalTopologyClient = new ApiClient<RequestPacket, ResponsePacket>(rcLocalTopologyRemoteAddress, rcLocalTopologyRemotePort);
         }
@@ -36,6 +38,16 @@ namespace NetworkNode.Networking.LRM
         public void Listen()
         {
             _lrmPort.Listen();
+        }
+
+        /// <summary>
+        /// Only for test purposes
+        /// </summary>
+        /// <param name="requestPacket">Test packet</param>
+        public void SendPacket(RequestPacket requestPacket)
+        {
+            LOG.Warn("Using test method SendPacket which should not be used manually");
+            _lrmConnectionRequestClient.Get(requestPacket);
         }
 
         private ResponsePacket OnReceiveRequest(RequestPacket requestPacket)
