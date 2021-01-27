@@ -59,6 +59,10 @@ namespace Common.Models
                    $" gateway: {Gateway}, slots: {Slots}, dstZone: {DstZone}, slotsArray: [{string.Join(", ", SlotsArray)}], end: {End}]";
         }
 
+        public override byte[] ToBytes()
+        {
+            return MessagePackSerializer.Serialize(this);
+        }
 
         public enum ResponseType
         {

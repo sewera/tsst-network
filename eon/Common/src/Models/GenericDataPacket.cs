@@ -52,5 +52,10 @@ namespace Common.Models
                 return new GenericDataPacket(_type, _data);
             }
         }
+
+        public override byte[] ToBytes()
+        {
+            return MessagePackSerializer.Serialize(this);
+        }
     }
 }

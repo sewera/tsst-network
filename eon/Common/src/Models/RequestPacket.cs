@@ -7,8 +7,6 @@ namespace Common.Models
     [MessagePackObject]
     public class RequestPacket : GenericPacket
     {
-        private static readonly Logger LOG = LogManager.GetCurrentClassLogger();
-
         [Key(1)] public int Id;
 
         [Key(2)] public (int, int) Slots;
@@ -63,6 +61,11 @@ namespace Common.Models
             return $"[{PacketTypeToString(Type)}, id: {Id}, slots: {Slots}, slotsArray: [{string.Join(", ", SlotsArray)}],\n" +
                    $" shouldAllocate: {ShouldAllocate}, srcName: {SrcName}, dstName: {DstName},\n" +
                    $" srcPort: {SrcPort}, dstPort: {DstPort}, who: {WhoRequestsToString(WhoRequests)}, end: {End}]";
+        }
+
+        public override byte[] ToBytes()
+        {
+            return MessagePackSerializer.Serialize(this);
         }
 
         public class Builder
