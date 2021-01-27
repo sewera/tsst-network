@@ -26,8 +26,6 @@ namespace NetworkNode.Config.Parsers
             configurationBuilder.SetRouterAlias(xelement.Descendants("router_alias").First().Value);
             configurationBuilder.SetCableCloudAddress(xelement.Descendants("cable_cloud_address").First().Value);
             configurationBuilder.SetCableCloudPort(int.Parse(xelement.Descendants("cable_cloud_port").First().Value));
-            configurationBuilder.SetManagementSystemAddress(xelement.Descendants("management_system_address").First().Value);
-            configurationBuilder.SetManagementSystemPort(int.Parse(xelement.Descendants("management_system_port").First().Value));
 
             foreach (XElement element in xelement.Descendants("port_alias"))
             {

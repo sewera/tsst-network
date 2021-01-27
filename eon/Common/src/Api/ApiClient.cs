@@ -15,22 +15,26 @@ namespace Common.Api
         where TRequestPacket : ISerializablePacket
         where TResponsePacket : ISerializablePacket
     {
-        private readonly IClientPort<TRequestPacket, TResponsePacket> _clientPort;
+        private readonly IPAddress _serverAddress;
+        private readonly int _serverPort;
         private readonly ManualResetEvent _receiveDone = new ManualResetEvent(false);
         private TResponsePacket _responsePacket;
 
         public ApiClient(IPAddress serverAddress, int serverPort)
         {
-            _clientPort = new OneShotClientPort<TRequestPacket, TResponsePacket>(serverAddress, serverPort);
-
-            _clientPort.RegisterReceiveMessageEvent(OnMessageReceived);
+            _serverAddress = serverAddress;
+            _serverPort = serverPort;
         }
 
         public TResponsePacket Get(TRequestPacket requestPacket)
         {
-            _clientPort.Send(requestPacket);
+            OneShotClientPort<TRequestPacket, TResponsePacket> clientPort = new OneShotClientPort<TRequestPacket, TResponsePacket>(_serverAddress, _serverPort);
+
+            clientPort.RegisterReceiveMessageEvent(OnMessageReceived);
+            clientPort.Send(requestPacket);
             _receiveDone.WaitOne();
             _receiveDone.Reset();
+            clientPort.ShutdownAndClose();
             return _responsePacket;
         }
 
