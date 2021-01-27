@@ -8,7 +8,7 @@ namespace CableCloud.Networking.Forwarding
     {
         /// <summary>Forward packet (send it to appropriate client)</summary>
         public void ForwardPacket((string, MplsPacket) forwardPacketTuple);
-        public void SetClientPorts(Dictionary<string, IWorker<MplsPacket>> clientWorkers);
+        public void SetClientPorts(IDictionary<string, IWorker<MplsPacket>> clientWorkers);
         public void SetConnectionAlive((string, string, bool) requestedConnection);
 
         public void OnClientRemoved(string key);
