@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Net;
 
@@ -7,54 +8,123 @@ namespace NetworkNode.Config
     {
         public string RouterAlias { get; }
 
-        /// <summary>CableCloud address</summary>
         public IPAddress CableCloudAddress { get; }
-
-        /// <summary>CableCloud port to connect to</summary>
         public int CableCloudPort { get; }
 
-        /// <summary>IPEndPoint combining CableCloudAddress and CableCloudPort</summary>
-        public IPEndPoint CableCloudEndPoint { get; }
+        public Dictionary<string, LrmConfiguration> Lrms { get; }
 
-        /// <summary>CableCloud address</summary>
-        public IPAddress ManagementSystemAddress { get; }
-
-        /// <summary>CableCloud port to connect to</summary>
-        public int ManagementSystemPort { get; }
-
-        /// <summary>IPEndPoint combining CableCloudAddress and CableCloudPort</summary>
-        public IPEndPoint ManagementSystemEndPoint { get; }
-
-        /// <summary>Alias representation host client node port</summary>
-        public List<string> ClientPortAliases { get; }
+        public List<string> LocalPortAliases { get; }
 
         private Configuration(string routerAlias,
                               IPAddress cableCloudAddress,
                               int cableCloudPort,
-                              IPEndPoint cableCloudEndPoint,
-                              IPAddress managementSystemAddress,
-                              int managementSystemPort,
-                              IPEndPoint managementSystemEndPoint,
-                              List<string> clientPortAliases)
+                              Dictionary<string, LrmConfiguration> lrms,
+                              List<string> localPortAliases)
         {
             RouterAlias = routerAlias;
             CableCloudAddress = cableCloudAddress;
             CableCloudPort = cableCloudPort;
-            CableCloudEndPoint = cableCloudEndPoint;
-            ManagementSystemAddress = managementSystemAddress;
-            ManagementSystemPort = managementSystemPort;
-            ManagementSystemEndPoint = managementSystemEndPoint;
-            ClientPortAliases = clientPortAliases;
+            Lrms = lrms;
+            LocalPortAliases = localPortAliases;
+        }
+
+        public class LrmConfiguration
+        {
+            public string RemotePortAlias;
+
+            public IPAddress ServerAddress;
+            public int LrmLinkConnectionRequestLocalPort;
+
+            public IPAddress LrmLinkConnectionRequestRemoteAddress;
+            public int LrmLinkConnectionRequestRemotePort;
+
+            public IPAddress RcLocalTopologyRemoteAddress;
+            public int RcLocalTopologyRemotePort;
+
+            public class LrmBuilder
+            {
+                private string _remotePortAlias = string.Empty;
+
+                private IPAddress _serverAddress;
+                private int _lrmLinkConnectionRequestLocalPort;
+
+                private IPAddress _lrmLinkConnectionRequestRemoteAddress;
+                private int _lrmLinkConnectionRequestRemotePort;
+
+                private IPAddress _rcLocalTopologyRemoteAddress;
+                private int _rcLocalTopologyRemotePort;
+
+                public LrmBuilder SetRemotePortAlias(string remotePortAlias)
+                {
+                    _remotePortAlias = remotePortAlias;
+                    return this;
+                }
+
+                public LrmBuilder SetServerAddress(IPAddress serverAddress)
+                {
+                    _serverAddress = serverAddress;
+                    return this;
+                }
+
+                public LrmBuilder SetLrmLinkConnectionRequestLocalPort(int lrmLinkConnectionRequestLocalPort)
+                {
+                    _lrmLinkConnectionRequestLocalPort = lrmLinkConnectionRequestLocalPort;
+                    return this;
+                }
+
+                public LrmBuilder SetLrmLinkConnectionRequestRemoteAddress(IPAddress lrmLinkConnectionRequestRemoteAddress)
+                {
+                    _lrmLinkConnectionRequestRemoteAddress = lrmLinkConnectionRequestRemoteAddress;
+                    return this;
+                }
+
+                public LrmBuilder SetLrmLinkConnectionRequestRemotePort(int lrmLinkConnectionRequestRemotePort)
+                {
+                    _lrmLinkConnectionRequestRemotePort = lrmLinkConnectionRequestRemotePort;
+                    return this;
+                }
+
+                public LrmBuilder SetRcLocalTopologyRemoteAddress(IPAddress rcLocalTopologyRemoteAddress)
+                {
+                    _rcLocalTopologyRemoteAddress = rcLocalTopologyRemoteAddress;
+                    return this;
+                }
+
+                public LrmBuilder SetRcLocalTopologyRemotePort(int rcLocalTopologyRemotePort)
+                {
+                    _rcLocalTopologyRemotePort = rcLocalTopologyRemotePort;
+                    return this;
+                }
+
+                public LrmConfiguration Build()
+                {
+                    _serverAddress ??= IPAddress.Parse("127.0.0.1");
+                    _lrmLinkConnectionRequestRemoteAddress ??= IPAddress.Parse("127.0.0.1");
+                    _rcLocalTopologyRemoteAddress ??= IPAddress.Parse("127.0.0.1");
+                    return new LrmConfiguration
+                    {
+                        RemotePortAlias = _remotePortAlias,
+                        ServerAddress = _serverAddress,
+                        LrmLinkConnectionRequestLocalPort = _lrmLinkConnectionRequestLocalPort,
+                        LrmLinkConnectionRequestRemoteAddress = _lrmLinkConnectionRequestRemoteAddress,
+                        LrmLinkConnectionRequestRemotePort = _lrmLinkConnectionRequestRemotePort,
+                        RcLocalTopologyRemoteAddress = _rcLocalTopologyRemoteAddress,
+                        RcLocalTopologyRemotePort = _rcLocalTopologyRemotePort
+                    };
+                }
+            }
         }
 
         public class Builder
         {
             private string _routerAlias;
+
             private IPAddress _cableCloudAddress;
             private int _cableCloudPort;
-            private IPAddress _managementSystemAddress;
-            private int _managementSystemPort;
-            private List<string> _clientPortAliases;
+
+            private Dictionary<string, LrmConfiguration> _lrms;
+
+            private List<string> _localPortAliases;
 
             public Builder SetRouterAlias(string routerAlias)
             {
@@ -74,48 +144,43 @@ namespace NetworkNode.Config
                 return this;
             }
 
-            public Builder SetManagementSystemAddress(string managementSystemAddress)
+            public Builder SetLrms(Dictionary<string, LrmConfiguration> lrms)
             {
-                _managementSystemAddress = IPAddress.Parse(managementSystemAddress);
+                _lrms = lrms;
                 return this;
             }
 
-            public Builder SetManagementSystemPort(int managementSystemPort)
+            public Builder AddLrm((string, LrmConfiguration) portAliasAndLrm)
             {
-                _managementSystemPort = managementSystemPort;
+                _lrms ??= new Dictionary<string, LrmConfiguration>();
+                (string key, LrmConfiguration lrm) = portAliasAndLrm;
+                _lrms.Add(key, lrm);
                 return this;
             }
 
-            public Builder SetClientPortAliases(List<string> clientPortAliases)
+            public Builder SetLocalPortAliases(List<string> localPortAliases)
             {
-                _clientPortAliases = clientPortAliases;
+                _localPortAliases = localPortAliases;
                 return this;
             }
 
             public Builder AddPortAlias(string clientPortAlias)
             {
-                _clientPortAliases ??= new List<string>();
-                _clientPortAliases.Add(clientPortAlias);
+                _localPortAliases ??= new List<string>();
+                _localPortAliases.Add(clientPortAlias);
                 return this;
             }
 
             public Configuration Build()
             {
                 _cableCloudAddress ??= IPAddress.Parse("127.0.0.1");
-                _managementSystemAddress ??= IPAddress.Parse("127.0.0.1");
-                _clientPortAliases ??= new List<string>();
-                IPEndPoint cableCloudEndPoint = new IPEndPoint(_cableCloudAddress,
-                    _cableCloudPort);
-                IPEndPoint managementSystemEndPoint = new IPEndPoint(_managementSystemAddress,
-                    _managementSystemPort);
+                _localPortAliases ??= new List<string>();
+                _lrms ??= new Dictionary<string, LrmConfiguration>();
                 return new Configuration(_routerAlias,
                     _cableCloudAddress,
                     _cableCloudPort,
-                    cableCloudEndPoint,
-                    _managementSystemAddress,
-                    _managementSystemPort,
-                    managementSystemEndPoint,
-                    _clientPortAliases);
+                    _lrms,
+                    _localPortAliases);
             }
         }
     }

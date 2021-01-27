@@ -32,6 +32,12 @@ namespace Common.Networking.Client.OneShot
             ClientSocket.BeginSend(packetBytes, 0, packetBytes.Length, SocketFlags.None, SendCallback, ClientSocket);
         }
 
+        public void ShutdownAndClose()
+        {
+            ClientSocket.Shutdown(SocketShutdown.Both);
+            ClientSocket.Close();
+        }
+
         protected override void ReceiveCallback(IAsyncResult ar)
         {
             try
