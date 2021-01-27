@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -50,15 +51,22 @@ namespace NetworkNode.Networking.LRM
             _lrmConnectionRequestClient.Get(requestPacket);
         }
 
+        public void SendLocalTopologyPacket()
+        {
+            //TODO 
+        }
+
         private ResponsePacket OnReceiveRequest(RequestPacket requestPacket)
         {
+            GenericPacket.PacketType type = requestPacket.Type;
             (int, int) slots = requestPacket.Slots;
             bool shouldAllocate = requestPacket.ShouldAllocate;
             RequestPacket.Who whoRequests = requestPacket.WhoRequests;
+            
+            LOG.Info($"LRM::LinkConnectionRequest_{GenericPacket.PacketTypeToString(type)}(slots ={slots}, {(shouldAllocate ? "allocate" : "release")})");
 
             foreach ((int, int) s in _slotsArray.Where(s => Checkers.SlotsOverlap(s, slots)))
             {
-                // TODO: What then?
             }
 
             if (whoRequests == RequestPacket.Who.Lrm)

@@ -150,11 +150,10 @@ namespace NetworkNode.Config
                 return this;
             }
 
-            public Builder AddLrm((string, LrmConfiguration) portAliasAndLrm)
+            public Builder AddLrm(string key, LrmConfiguration lrmConfiguration)
             {
                 _lrms ??= new Dictionary<string, LrmConfiguration>();
-                (string key, LrmConfiguration lrm) = portAliasAndLrm;
-                _lrms.Add(key, lrm);
+                _lrms.Add(key, lrmConfiguration);
                 return this;
             }
 
