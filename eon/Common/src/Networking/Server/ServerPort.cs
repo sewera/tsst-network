@@ -33,7 +33,7 @@ namespace Common.Networking.Server
                 listener.Bind(_listeningEndPoint);
                 listener.Listen(100);
                 // Start an asynchronous socket to listen for connections.
-                Log.Info($"Waiting for a connection on port {_listeningPort}");
+                Log.Debug($"Waiting for a connection on port {_listeningPort}");
                 listener.BeginAccept(AcceptCallback, listener);
             }
             catch (Exception e)

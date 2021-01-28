@@ -24,9 +24,9 @@ namespace Common.Networking.Client.Persistent
         {
             try
             {
-                Log.Info($"Connecting to server on port: {ServerPort}");
+                Log.Debug($"Connecting to server on port: {ServerPort}");
                 ClientSocket.Connect(ServerEndPoint);
-                Log.Info("Connected");
+                Log.Debug("Connected");
                 if (helloPacket.GetKey() != ClientPortAlias)
                 {
                     Log.Warn("Provided helloPacket has a different key than it should (helloPacket.GetKey() != _clientPortAlias)");
@@ -34,7 +34,7 @@ namespace Common.Networking.Client.Persistent
                 }
 
                 ClientSocket.Send(helloPacket.ToBytes());
-                Log.Info($"Sent hello packet to server: {helloPacket}");
+                Log.Debug($"Sent hello packet to server: {helloPacket}");
             }
             catch (Exception e)
             {
@@ -52,7 +52,7 @@ namespace Common.Networking.Client.Persistent
                 if (bytesRead > 0)
                 {
                     TPacket packet = ISerializablePacket.FromBytes<TPacket>(buffer);
-                    Log.Info($"Received: {packet}");
+                    Log.Debug($"Received: {packet}");
                     OnMessageReceivedEvent(packet);
                 }
             }

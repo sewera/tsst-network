@@ -20,7 +20,7 @@ namespace NetworkNode.Config.Parsers
         {
             Configuration.Builder configurationBuilder = new Configuration.Builder();
             
-            LOG.Debug($"Reading configuration from {_filename}");
+            LOG.Trace($"Reading configuration from {_filename}");
             XElement xelement = XElement.Load(_filename);
 
             configurationBuilder.SetRouterAlias(xelement.Descendants("router_alias").First().Value);
