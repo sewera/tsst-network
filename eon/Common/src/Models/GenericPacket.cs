@@ -36,9 +36,6 @@ namespace Common.Models
             };
         }
 
-        public virtual byte[] ToBytes()
-        {
-            return MessagePackSerializer.Serialize(this);
-        }
+        public abstract byte[] ToBytes();
     }
 }

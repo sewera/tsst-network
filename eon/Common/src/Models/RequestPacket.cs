@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using MessagePack;
 using NLog;
 
@@ -6,23 +7,29 @@ namespace Common.Models
     [MessagePackObject]
     public class RequestPacket : GenericPacket
     {
-        private static readonly Logger LOG = LogManager.GetCurrentClassLogger();
-
         [Key(1)] public int Id;
 
-        [Key(2)] public int SlotsNumber;
+        [Key(2)] public (int, int) Slots;
 
-        [Key(3)] public string SrcName;
+        [Key(3)] public List<(int, int)> SlotsArray;
 
-        [Key(4)] public string DstName;
+        [Key(4)] public bool ShouldAllocate;
 
-        [Key(5)] public string SrcPort;
+        [Key(5)] public string SrcName;
 
-        [Key(6)] public string DstPort;
+        [Key(6)] public string DstName;
 
-        [Key(7)] public Who WhoRequests;
+        [Key(7)] public string SrcPort;
 
-        [Key(8)] public string End;
+        [Key(8)] public string DstPort;
+
+        [Key(9)] public Who WhoRequests;
+
+        [Key(10)] public string End;
+        
+        [Key(11)] public string Port1;
+        
+        [Key(12)] public string Port2;
 
         /// <summary>
         /// Constructor only for MessagePack deserialization
@@ -31,40 +38,58 @@ namespace Common.Models
         public RequestPacket(){}
 
         protected RequestPacket(int id,
-                                int slotsNumber,
+                                (int, int) slots,
+                                List<(int, int)> slotsArray,
+                                bool shouldAllocate,
                                 string srcName,
                                 string dstName,
                                 string srcPort,
                                 string dstPort,
                                 Who whoRequests,
-                                string end) : base(PacketType.Request)
+                                string end,
+                                string port1,
+                                string port2) : base(PacketType.Request)
         {
             Id = id;
-            SlotsNumber = slotsNumber;
+            Slots = slots;
+            SlotsArray = slotsArray;
+            ShouldAllocate = shouldAllocate;
             SrcName = srcName;
             DstName = dstName;
             SrcPort = srcPort;
             DstPort = dstPort;
             WhoRequests = whoRequests;
             End = end;
+            Port1 = port1;
+            Port2 = port2;
         }
 
         public override string ToString()
         {
-            return $"[{PacketTypeToString(Type)}, id: {Id}, slotsNumber: {SlotsNumber}, srcName: {SrcName}, dstName: {DstName},\n" +
+            return $"[{PacketTypeToString(Type)}, id: {Id}, slots: {Slots}, slotsArray: [{string.Join(", ", SlotsArray)}],\n" +
+                   $" shouldAllocate: {ShouldAllocate}, srcName: {SrcName}, dstName: {DstName},\n" +
                    $" srcPort: {SrcPort}, dstPort: {DstPort}, who: {WhoRequestsToString(WhoRequests)}, end: {End}]";
+        }
+
+        public override byte[] ToBytes()
+        {
+            return MessagePackSerializer.Serialize(this);
         }
 
         public class Builder
         {
             private int _id;
-            private int _slotsNumber;
+            private (int, int) _slots;
+            private List<(int, int)> _slotsArray;
+            private bool _shouldAllocate;
             private string _srcName = string.Empty;
             private string _dstName = string.Empty;
             private string _srcPort = string.Empty;
             private string _dstPort = string.Empty;
             private Who _whoRequests = Who.NotSet;
             private string _end = string.Empty;
+            private string _port1 = string.Empty;
+            private string _port2 = string.Empty;
 
             public Builder SetId(int id)
             {
@@ -72,9 +97,28 @@ namespace Common.Models
                 return this;
             }
 
-            public Builder SetSlotsNumber(int slotsNumber)
+            public Builder SetSlots((int, int) slots)
             {
-                _slotsNumber = slotsNumber;
+                _slots = slots;
+                return this;
+            }
+
+            public Builder SetSlotsArray(List<(int, int)> slotsArray)
+            {
+                _slotsArray = slotsArray;
+                return this;
+            }
+
+            public Builder AddSlotsToSlotsArray((int, int) slots)
+            {
+                _slotsArray ??= new List<(int, int)>();
+                _slotsArray.Add(slots);
+                return this;
+            }
+
+            public Builder SetShouldAllocate(bool shouldAllocate)
+            {
+                _shouldAllocate = shouldAllocate;
                 return this;
             }
 
@@ -113,10 +157,35 @@ namespace Common.Models
                 _end = end;
                 return this;
             }
+            
+            public Builder SetPort1(string port1)
+            {
+                _port1 = port1;
+                return this;
+            }
+            
+            public Builder SetPort2(string port2)
+            {
+                _port2 = port2;
+                return this;
+            }
 
             public RequestPacket Build()
             {
-                return new RequestPacket(_id, _slotsNumber, _srcName, _dstName, _srcPort, _dstPort, _whoRequests, _end);
+                _slotsArray ??= new List<(int, int)>();
+                return new RequestPacket(_id,
+                    _slots,
+                    _slotsArray,
+                    _shouldAllocate,
+                    _srcName,
+                    _dstName,
+                    _srcPort,
+                    _dstPort,
+                    _whoRequests,
+                    _end,
+                    _port1,
+                    _port2
+                    );
             }
         }
 
