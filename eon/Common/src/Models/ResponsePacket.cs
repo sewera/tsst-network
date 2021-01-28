@@ -24,6 +24,8 @@ namespace Common.Models
 
         [Key(7)] public List<int> SlotsArray;
 
+        [Key(8)] public string End;
+
         /// <summary>
         /// Constructor only for MessagePack deserialization
         /// </summary>
@@ -38,7 +40,8 @@ namespace Common.Models
                                  string gateway,
                                  (int, int) slots,
                                  string dstZone,
-                                 List<int> slotsArray) : base(PacketType.Response)
+                                 List<int> slotsArray,
+                                 string end) : base(PacketType.Response)
         {
             Res = res;
             Id = id;
@@ -47,14 +50,19 @@ namespace Common.Models
             Slots = slots;
             DstZone = dstZone;
             SlotsArray = slotsArray;
+            End = end;
         }
 
         public override string ToString()
         {
             return $"[{PacketTypeToString(Type)}, {ResponseTypeToString(Res)}, id: {Id}, nextZonePort: {NextZonePort},\n" +
-                   $" gateway: {Gateway}, slots: {Slots}, dstZone: {DstZone}, slotsArray: [{string.Join(", ", SlotsArray)}]]";
+                   $" gateway: {Gateway}, slots: {Slots}, dstZone: {DstZone}, slotsArray: [{string.Join(", ", SlotsArray)}], end: {End}]";
         }
 
+        public override byte[] ToBytes()
+        {
+            return MessagePackSerializer.Serialize(this);
+        }
 
         public enum ResponseType
         {
@@ -76,11 +84,12 @@ namespace Common.Models
         {
             private ResponseType _res = ResponseType.Ok;
             private int _id;
-            private string _nextZonePort;
-            private string _gateway;
+            private string _nextZonePort = string.Empty;
+            private string _gateway = string.Empty;
             private (int, int) _slots;
-            private string _dstZone;
+            private string _dstZone = string.Empty;
             private List<int> _slotsArray;
+            private string _end = string.Empty;
 
             public Builder SetRes(ResponseType res)
             {
@@ -131,10 +140,23 @@ namespace Common.Models
                 return this;
             }
 
+            public Builder SetEnd(string end)
+            {
+                _end = end;
+                return this;
+            }
+
             public ResponsePacket Build()
             {
                 _slotsArray ??= new List<int>();
-                return new ResponsePacket(_res, _id, _nextZonePort, _gateway, _slots, _dstZone, _slotsArray);
+                return new ResponsePacket(_res,
+                    _id,
+                    _nextZonePort,
+                    _gateway,
+                    _slots,
+                    _dstZone,
+                    _slotsArray,
+                    _end);
             }
         }
     }
