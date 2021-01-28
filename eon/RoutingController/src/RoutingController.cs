@@ -15,7 +15,7 @@ namespace RoutingController
             IConfigurationParser<Configuration> configurationParser;
 
             if (defaultStartup.ChooseXmlParser())
-                configurationParser = new MockConfigurationParser(); // TODO: Change for XmlConfigurationParser
+                configurationParser = new XmlConfigurationParser(defaultStartup.Filename); 
             else
                 configurationParser = new MockConfigurationParser();
 
