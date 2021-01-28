@@ -21,12 +21,12 @@ namespace ClientNode
             _nccCallTeardownClient = new ApiClient<RequestPacket, ResponsePacket>(nccCallTeardownRemoteAddress, nccCallTeardownRemotePort);
         }
 
-        public ResponsePacket AskForConnection(string srcName, string dstName, (int, int) slots)
+        public ResponsePacket AskForConnection(string srcName, string dstName, int slotsNumber)
         {
             ResponsePacket nccConnectionRequestResponse = _nccConnectionRequestClient.Get(new RequestPacket.Builder()
                 .SetSrcName(srcName)
                 .SetDstName(dstName)
-                .SetSlots(slots)
+                .SetSlotsNumber(slotsNumber)
                 .Build());
 
             ResponsePacket.ResponseType res = nccConnectionRequestResponse.Res;

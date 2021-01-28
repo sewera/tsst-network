@@ -53,8 +53,8 @@ namespace ClientNode.Ui
 
                         try
                         {
-                            (string mplsOutLabel, (int slots_lower, int slots_upper)) = _commandParser.ParseCpccCommand(input);
-                            ResponsePacket responsePacket = _cpccState.AskForConnection(_localName, mplsOutLabel, (slots_lower, slots_upper));
+                            (string mplsOutLabel, int slotsNumber) = _commandParser.ParseCpccCommand(input);
+                            ResponsePacket responsePacket = _cpccState.AskForConnection(_localName, mplsOutLabel, slotsNumber);
                             if (responsePacket.Res == ResponsePacket.ResponseType.Ok)
                             {
                                 LOG.Info($"Successfully connected with id: {responsePacket.Id}");

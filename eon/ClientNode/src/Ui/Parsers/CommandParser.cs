@@ -17,18 +17,17 @@ namespace ClientNode.Ui.Parsers
             _configuration = configuration;
         }
 
-        public (string, (int, int)) ParseCpccCommand(string command)
+        public (string, int) ParseCpccCommand(string command)
         {
             if (string.IsNullOrWhiteSpace(command))
                 throw new ParserException("Command cannot be empty");
             try
             {
-                string[] parts = command.Split(' ', 3);
-                if (string.IsNullOrEmpty(parts[0]) || string.IsNullOrEmpty(parts[1]) || string.IsNullOrEmpty(parts[2]))
+                string[] parts = command.Split(' ', 2);
+                if (string.IsNullOrEmpty(parts[0]) || string.IsNullOrEmpty(parts[1]))
                     throw new ParserException("Command parts cannot be neither null nor empty");
-                int slots_lower = int.Parse(parts[1]);
-                int slots_upper = int.Parse(parts[2]);
-                return (parts[0], (slots_lower, slots_upper));
+                int slotsNumber = int.Parse(parts[1]);
+                return (parts[0], slotsNumber);
             }
             catch (Exception)
             {
