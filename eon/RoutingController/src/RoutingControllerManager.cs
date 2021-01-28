@@ -11,23 +11,23 @@ namespace RoutingController
     {
         private Configuration _configuration;
 
-        private readonly IOneShotServerPort<GenericDataPacket, GenericDataPacket> _routeTableQueryPort;
-        private readonly IOneShotServerPort<GenericDataPacket, GenericDataPacket> _localTopologyPort;
-        private readonly IOneShotServerPort<GenericDataPacket, GenericDataPacket> _networkTopologyPort;
+        private readonly IOneShotServerPort<RequestPacket, ResponsePacket> _routeTableQueryPort;
+        private readonly IOneShotServerPort<RequestPacket, ResponsePacket> _localTopologyPort;
+        private readonly IOneShotServerPort<RequestPacket, ResponsePacket> _networkTopologyPort;
 
         private readonly ManualResetEvent _idle = new ManualResetEvent(false);
 
         public RoutingControllerManager(Configuration configuration,
-                                        ReceiveRequest<GenericDataPacket, GenericDataPacket> routeTableQueryDelegate,
-                                        ReceiveRequest<GenericDataPacket, GenericDataPacket> localTopologyDelegate,
-                                        ReceiveRequest<GenericDataPacket, GenericDataPacket> networkTopologyDelegate)
+                                        ReceiveRequest<RequestPacket, ResponsePacket> routeTableQueryDelegate,
+                                        ReceiveRequest<RequestPacket, ResponsePacket> localTopologyDelegate,
+                                        ReceiveRequest<RequestPacket, ResponsePacket> networkTopologyDelegate)
         {
             _configuration = configuration;
-            _routeTableQueryPort = new OneShotServerPort<GenericDataPacket, GenericDataPacket>(configuration.ServerAddress,
+            _routeTableQueryPort = new OneShotServerPort<RequestPacket, ResponsePacket>(configuration.ServerAddress,
                 configuration.RouteTableQueryLocalPort);
-            _localTopologyPort = new OneShotServerPort<GenericDataPacket, GenericDataPacket>(configuration.ServerAddress,
+            _localTopologyPort = new OneShotServerPort<RequestPacket, ResponsePacket>(configuration.ServerAddress,
                 configuration.LocalTopologyLocalPort);
-            _networkTopologyPort = new OneShotServerPort<GenericDataPacket, GenericDataPacket>(configuration.ServerAddress,
+            _networkTopologyPort = new OneShotServerPort<RequestPacket, ResponsePacket>(configuration.ServerAddress,
                 configuration.NetworkTopologyLocalPort);
             _routeTableQueryPort.RegisterReceiveRequestDelegate(routeTableQueryDelegate);
             _localTopologyPort.RegisterReceiveRequestDelegate(localTopologyDelegate);
