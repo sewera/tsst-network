@@ -26,7 +26,7 @@ namespace NetworkCallController
             _callCoordinationPort = new OneShotServerPort<GenericDataPacket, GenericDataPacket>(configuration.ServerAddress,
                 configuration.CallCoordinationLocalPort);
             _callTeardownPort = new OneShotServerPort<GenericDataPacket, GenericDataPacket>(configuration.ServerAddress,
-                configuration.CallTeardownLocalPort);
+                configuration.CallTeardownLocalPort); 
             _connectionRequestPort = new OneShotServerPort<GenericDataPacket, GenericDataPacket>(configuration.ServerAddress,
                 configuration.ConnectionRequestLocalPort);
             _callCoordinationPort.RegisterReceiveRequestDelegate(callCoordinationPortDelegate);

@@ -3,6 +3,7 @@ using Common.Models;
 using Common.Startup;
 using NetworkCallController.Config;
 using NetworkCallController.Config.Parsers;
+using NetworkNode.Config.Parsers;
 
 namespace NetworkCallController
 {
@@ -15,7 +16,7 @@ namespace NetworkCallController
             IConfigurationParser<Configuration> configurationParser;
 
             if (defaultStartup.ChooseXmlParser())
-                configurationParser = new MockConfigurationParser(); // TODO: Change for XmlConfigurationParser
+                configurationParser = new XmlConfigurationParser(defaultStartup.Filename); // TODO: Change for XmlConfigurationParser
             else
                 configurationParser = new MockConfigurationParser();
 
