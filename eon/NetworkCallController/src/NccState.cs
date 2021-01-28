@@ -85,6 +85,8 @@ namespace NetworkCallController
                     .SetRes(ResponseType.NoClient)
                     .Build();
             }
+            LOG.Info($"Directory found port: {dstPort} for client: {dstName}");
+            LOG.Info($"Call Admission Control ended succesfully");
             // </ C A L L   A D M I S S I O N   C O N T R O L >
 
             //TODO [ASON] Ask dstClient if he wants to connect with srcClient
@@ -106,10 +108,10 @@ namespace NetworkCallController
 
             if (outsideDomain)
             {
-                // Inter domain connection only
+                // Inter domain connections only
 
                 // Ask second domain NCC 
-                //Send NCC::CallCoordination(srcName, dstName, sl)
+                // Send NCC::CallCoordination(srcName, dstName, sl)
                 LOG.Info("Send NCC::CallCoordination_req" +
                          $"(srcName = {newConnection.SrcName}, dstName = {newConnection.DstName}, sl = {newConnection.SlotsNumber}");
                 ResponsePacket nccCallCoordinationResponse = _nccCallCoordinationClient.Get(new RequestPacket.Builder()
@@ -118,12 +120,12 @@ namespace NetworkCallController
                     .SetSlotsNumber(newConnection.SlotsNumber)
                     .Build());
                 res = nccCallCoordinationResponse.Res;
-                LOG.Info($"Received NCC::CallCoordination_res(res={res})");
+                LOG.Info($"Received NCC::CallCoordination_res(res = {res})");
                 // If second domain NCC refused the call we should also refuse it
                 if (res != ResponseType.Ok)
                 {
                     LOG.Info($"Second domain refused the call");
-                    LOG.Info($"Send NCC::ConnectionRequest_res(res={ResponseTypeToString(ResponseType.AuthProblem)})");
+                    LOG.Info($"Send NCC::ConnectionRequest_res(res = {ResponseTypeToString(ResponseType.AuthProblem)})");
                     return new Builder()
                         .SetRes(ResponseType.Refused)
                         .Build();
@@ -148,7 +150,7 @@ namespace NetworkCallController
                 case ResponseType.Ok:
                 {
                     // Send NCC::ConnectionRequest_res(res=OK, id = newConnection.Id)
-                    LOG.Info($"Send NCC::ConnectionRequest_res(res=OK, id = {newConnection.Id})");
+                    LOG.Info($"Send NCC::ConnectionRequest_res(res = OK, id = {newConnection.Id})");
                     return new Builder()
                         .SetRes(ResponseType.Ok)
                         .SetId(newConnection.Id)
@@ -157,7 +159,7 @@ namespace NetworkCallController
                 default:
                 {
                     // Send NCC::ConnectionRequest_res(res=Network problem)
-                    LOG.Info("Send NCC::ConnectionRequest_res(res=Network Problem)");
+                    LOG.Info("Send NCC::ConnectionRequest_res(res = Network Problem)");
                     return new Builder()
                         .SetRes(ResponseType.NetworkProblem)
                         .Build();
