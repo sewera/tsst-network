@@ -66,7 +66,7 @@ namespace Common.Models
 
         public override string ToString()
         {
-            return $"[{PacketTypeToString(Type)}, id: {Id}, slots: {Slots}, slotsArray: [{string.Join(", ", SlotsArray)}],\n" +
+            return $"[Request, id: {Id}, slots: {Slots}, slotsArray: [{string.Join(", ", SlotsArray)}],\n" +
                    $" shouldAllocate: {ShouldAllocate}, srcName: {SrcName}, dstName: {DstName},\n" +
                    $" srcPort: {SrcPort}, dstPort: {DstPort}, who: {WhoRequestsToString(WhoRequests)}, end: {End}]";
         }

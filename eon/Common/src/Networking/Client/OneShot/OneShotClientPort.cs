@@ -32,6 +32,12 @@ namespace Common.Networking.Client.OneShot
             ClientSocket.BeginSend(packetBytes, 0, packetBytes.Length, SocketFlags.None, SendCallback, ClientSocket);
         }
 
+        protected override void SendCallback(IAsyncResult ar)
+        {
+            base.SendCallback(ar);
+            StartReceiving();
+        }
+
         public void ShutdownAndClose()
         {
             ClientSocket.Shutdown(SocketShutdown.Both);
@@ -40,6 +46,7 @@ namespace Common.Networking.Client.OneShot
 
         protected override void ReceiveCallback(IAsyncResult ar)
         {
+            Log.Trace("ReceiveCallback");
             try
             {
                 byte[] buffer = (byte[]) ar.AsyncState;
