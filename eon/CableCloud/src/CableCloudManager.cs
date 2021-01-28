@@ -23,7 +23,7 @@ namespace CableCloud
 
         public void Start()
         {
-            LOG.Info("CableCloud started");
+            LOG.Debug("CableCloud started");
             _packetForwarder.SetClientPorts(_clientWorkers);
             _serverPort.RegisterRegisterConnectionDelegate(RegisterWorker);
             _serverPort.Listen();

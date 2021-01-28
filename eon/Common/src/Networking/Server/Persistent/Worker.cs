@@ -26,7 +26,7 @@ namespace Common.Networking.Server.Persistent
             _socket = socket;
             // FIXME: Catch connection reset exception to avoid program crashes after client crashes
             _socket.BeginReceive(_buffer, 0, BufferSize, 0, ReadCallback, _buffer);
-            _log.Debug("Created ClientWorker for client socket: " +
+            _log.Trace("Created ClientWorker for client socket: " +
                       $"{((IPEndPoint) _socket.RemoteEndPoint).Address}" +
                       $":{((IPEndPoint) _socket.RemoteEndPoint).Port}");
         }
@@ -48,7 +48,7 @@ namespace Common.Networking.Server.Persistent
                     if (bytesRead > 0)
                     {
                         TPacket packet = ISerializablePacket.FromBytes<TPacket>(_buffer);
-                        _log.Debug($"Received: {packet}");
+                        _log.Trace($"Received: {packet}");
 
                         OnMessageReceived(packet);
 
@@ -96,7 +96,7 @@ namespace Common.Networking.Server.Persistent
                 if (handler != null)
                 {
                     int bytesSent = handler.EndSend(ar);
-                    _log.Debug($"Sent {bytesSent} bytes to client");
+                    _log.Trace($"Sent {bytesSent} bytes to client");
                     handler.BeginReceive(_buffer, 0, BufferSize, 0, ReadCallback, _buffer);
                 }
                 else
@@ -136,7 +136,7 @@ namespace Common.Networking.Server.Persistent
             {
                 _socket.Disconnect(true);
                 ClientRemovedEvent?.Invoke(_portAlias);
-                _log.Info($"Client: {_portAlias} disconnected");
+                _log.Debug($"Client: {_portAlias} disconnected");
             }
             catch (Exception e)
             {
