@@ -37,14 +37,12 @@ namespace NetworkNode.Config.Parsers
             foreach (XElement element in xelement.Descendants("client_port"))
             {
                 LOG.Trace($"NCC: ClientName: {element.FirstAttribute.Value} ClientPortAlias: {element.Value}");
-                Console.WriteLine($"{element.FirstAttribute.Value} {element.Value}");
                 configurationBuilder.AddClientPortAlias(element.FirstAttribute.Value, element.Value);
             }
             
             foreach (XElement element in xelement.Descendants("port_domain"))
             {
                 LOG.Trace($"NCC: PortTemplate: {element.FirstAttribute.Value} Domain: {element.Value}");
-                Console.WriteLine($"{element.FirstAttribute.Value} {element.Value}");
                 configurationBuilder.AddPortDomain(element.FirstAttribute.Value, element.Value);
             }
             

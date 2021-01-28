@@ -52,8 +52,7 @@ namespace NetworkCallController
             string dstName = requestPacket.DstName;
             int slotsNumber = requestPacket.SlotsNumber;
 
-            LOG.Info($"Received NCC::ConnectionRequest_{GenericPacket.PacketTypeToString(type)}" +
-                     $"(srcName = {srcName}, dstName = {dstName},slotsNumber = {slotsNumber}");
+            LOG.Info($"Received NCC::ConnectionRequest_req" + $"(srcName = {srcName}, dstName = {dstName},slotsNumber = {slotsNumber}");
             // < C A L L   A D M I S S I O N   C O N T R O L >
             LOG.Info("Call Admission Control");
             // P O L I C Y
@@ -121,8 +120,9 @@ namespace NetworkCallController
                 res = nccCallCoordinationResponse.Res;
                 LOG.Info($"Received NCC::CallCoordination_res(res={res})");
                 // If second domain NCC refused the call we should also refuse it
-                if (res == ResponseType.Refused)
+                if (res != ResponseType.Ok)
                 {
+                    LOG.Info($"Second domain refused the call");
                     LOG.Info($"Send NCC::ConnectionRequest_res(res={ResponseTypeToString(ResponseType.AuthProblem)})");
                     return new Builder()
                         .SetRes(ResponseType.Refused)
@@ -167,11 +167,57 @@ namespace NetworkCallController
 
         public ResponsePacket OnCallCoordinationReceived(RequestPacket requestPacket)
         {
-            return new Builder().Build();
+            // Get ConnectionRequest_req packet params
+            GenericPacket.PacketType type = requestPacket.Type;
+            string srcName = requestPacket.SrcName;
+            string dstName = requestPacket.DstName;
+            int slotsNumber = requestPacket.SlotsNumber;
+            
+            LOG.Info($"Received NCC::CallCoordination_req" + $"(srcName = {srcName}, dstName = {dstName},slotsNumber = {slotsNumber}");
+            
+            // < C A L L   A D M I S S I O N   C O N T R O L >
+            LOG.Info("Call Admission Control");
+            // P O L I C Y
+            // Randomize chance of rejecting ConnectionRequest_req by Policy component
+            int chanceToRejectRequestInPolicy = _rnd.Next(0, 100);
+            if (chanceToRejectRequestInPolicy > 5)
+                LOG.Info("ConnectionRequest meets conditions of Policy component");
+            else
+                return new Builder()
+                    .SetRes(ResponseType.AuthProblem)
+                    .Build();
+            
+            // D I R E C T O R Y 
+            // Find srcName and dstName ports in clientPortAliases dictionary
+            string srcPort = null;
+            string dstPort = null;
+            foreach (string clientPortName in _clientPortAliases.Keys)
+            {
+                if (clientPortName == srcName)
+                    srcPort = _clientPortAliases[clientPortName];
+                if (clientPortName == dstName)
+                    dstPort = _clientPortAliases[clientPortName];
+            }
+
+            // If Directory couldn't find dstPort send NCC::ConnectionRequest_res(res=No client);
+            if (dstPort == null)
+            {
+                LOG.Info($"Directory could not find port for user {dstName}");
+                LOG.Info($"NCC::ConnectionRequest_res(res = {ResponseTypeToString(ResponseType.NoClient)})");
+                return new Builder()
+                    .SetRes(ResponseType.NoClient)
+                    .Build();
+            }
+            // </ C A L L   A D M I S S I O N   C O N T R O L >
+            // If Call passed CAC response with OK
+            return new Builder()
+                .SetRes(ResponseType.Ok)
+                .Build();
         }
 
         public ResponsePacket OnCallTeardownReceived(RequestPacket requestPacket)
         {
+            //TODO Simply pass the information to domain CC
             return new Builder().Build();
         }
 
