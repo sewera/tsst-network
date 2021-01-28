@@ -34,7 +34,7 @@ namespace Common.Networking.Client
 
         public abstract void Send(TRequestPacket packet);
 
-        protected void SendCallback(IAsyncResult ar)
+        protected virtual void SendCallback(IAsyncResult ar)
         {
             try
             {

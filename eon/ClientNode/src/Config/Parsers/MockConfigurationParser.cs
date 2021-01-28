@@ -10,8 +10,11 @@ namespace ClientNode.Config.Parsers
         public Configuration ParseConfiguration()
         {
             return new Configuration.Builder()
+                .SetClientAlias("H0_Test")
                 .SetCableCloudAddress("127.0.0.1")
                 .SetCableCloudPort(3001)
+                .SetNccConnectionRequestRemotePort(11811)
+                .SetNccCallTeardownRemotePort(11813)
                 .SetClientPortAlias("TestClient")
                 .AddMplsLabel("H1",101)
                 .AddMplsLabel("H2",102)

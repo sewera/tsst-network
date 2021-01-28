@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<configuration>
+
+    <rc_route_table_query_local_port>13931</rc_route_table_query_local_port>
+    <rc_local_topology_local_port>13932</rc_local_topology_local_port>
+    <rc_network_topology_local_port>13933</rc_network_topology_local_port>
+
+    <route_table>
+        <row>
+            <src>31x</src>
+            <dst>321</dst>
+            <gateway>314</gateway>
+        </row>
+
+        <row>
+            <src>32x</src>
+            <dst>321</dst>
+            <gateway>321</gateway>
+        </row>
+
+        <row>
+            <src>31x</src>
+            <dst>322</dst>
+            <gateway>314</gateway>
+        </row>
+
+        <row>
+            <src>32x</src>
+            <dst>322</dst>
+            <gateway>322</gateway>
+        </row>
+
+        <row>
+            <src>31x</src>
+            <dst>323</dst>
+            <gateway>314</gateway>
+        </row>
+
+        <row>
+            <src>32x</src>
+            <dst>323</dst>
+            <gateway>323</gateway>
+        </row>
+
+        <row>
+            <src>31x</src>
+            <dst>313</dst>
+            <gateway>313</gateway>
+        </row>
+
+        <row>
+            <src>32x</src>
+            <dst>313</dst>
+            <gateway>324</gateway>
+        </row>
+
+        <row>
+            <src>31x</src>
+            <dst>315</dst>
+            <gateway>315</gateway>
+        </row>
+
+        <row>
+            <src>32x</src>
+            <dst>315</dst>
+            <gateway>324</gateway>
+        </row>
+
+        <row>
+            <src>31x</src>
+            <dst>xxx</dst>
+            <gateway>311,312</gateway>
+        </row>
+
+        <row>
+            <src>32x</src>
+            <dst>xxx</dst>
+            <gateway>324</gateway>
+        </row>
+    </route_table>
+
+</configuration>

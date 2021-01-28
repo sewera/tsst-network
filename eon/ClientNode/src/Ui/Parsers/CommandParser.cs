@@ -17,6 +17,24 @@ namespace ClientNode.Ui.Parsers
             _configuration = configuration;
         }
 
+        public (string, int) ParseCpccCommand(string command)
+        {
+            if (string.IsNullOrWhiteSpace(command))
+                throw new ParserException("Command cannot be empty");
+            try
+            {
+                string[] parts = command.Split(' ', 2);
+                if (string.IsNullOrEmpty(parts[0]) || string.IsNullOrEmpty(parts[1]))
+                    throw new ParserException("Command parts cannot be neither null nor empty");
+                int slotsNumber = int.Parse(parts[1]);
+                return (parts[0], slotsNumber);
+            }
+            catch (Exception)
+            {
+                throw new ParserException("Wrong command");
+            }
+        }
+
         public (string, string) ParseCommand(string command)
         {
             if (string.IsNullOrWhiteSpace(command))
