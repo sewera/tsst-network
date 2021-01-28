@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<configuration>
+
+    <router_alias>R31</router_alias>
+    <server_address>127.0.0.1</server_address>
+    <cable_cloud_address>127.0.0.1</cable_cloud_address>
+    <cable_cloud_port>3001</cable_cloud_port>
+
+    <port_aliases>
+
+        <port_alias>311</port_alias>
+        <port_alias>312</port_alias>
+        <port_alias>313</port_alias>
+        <port_alias>314</port_alias>
+        <port_alias>315</port_alias>
+
+    </port_aliases>
+
+    <link_resource_managers>
+
+        <lrm>
+            <local_port>311</local_port>
+            <remote_port>021</remote_port>
+            <rc_local_topology_remote_port>13822</rc_local_topology_remote_port>
+            <lrm_link_connection_request_local_port>15311</lrm_link_connection_request_local_port>
+            <lrm_link_connection_request_remote_port>15021</lrm_link_connection_request_remote_port>
+        </lrm>
+        <lrm>
+            <local_port>312</local_port>
+            <remote_port>012</remote_port>
+            <rc_local_topology_remote_port>13822</rc_local_topology_remote_port>
+            <lrm_link_connection_request_local_port>15312</lrm_link_connection_request_local_port>
+            <lrm_link_connection_request_remote_port>15012</lrm_link_connection_request_remote_port>
+        </lrm>
+        <lrm>
+            <local_port>313</local_port>
+            <remote_port>3139</remote_port>
+            <rc_local_topology_remote_port>13932</rc_local_topology_remote_port>
+            <lrm_link_connection_request_local_port>15313</lrm_link_connection_request_local_port>
+            <lrm_link_connection_request_remote_port>0</lrm_link_connection_request_remote_port>
+        </lrm>
+        <lrm>
+            <local_port>314</local_port>
+            <remote_port>324</remote_port>
+            <rc_local_topology_remote_port>13932</rc_local_topology_remote_port>
+            <lrm_link_connection_request_local_port>15314</lrm_link_connection_request_local_port>
+            <lrm_link_connection_request_remote_port>15324</lrm_link_connection_request_remote_port>
+        </lrm>
+        <lrm>
+            <local_port>315</local_port>
+            <remote_port>3159</remote_port>
+            <rc_local_topology_remote_port>13932</rc_local_topology_remote_port>
+            <lrm_link_connection_request_local_port>15315</lrm_link_connection_request_local_port>
+            <lrm_link_connection_request_remote_port>0</lrm_link_connection_request_remote_port>
+        </lrm>
+
+    </link_resource_managers>
+
+
+</configuration>

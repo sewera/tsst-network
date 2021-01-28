@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<configuration>
+
+    <router_alias>R12</router_alias>
+    <server_address>127.0.0.1</server_address>
+    <cable_cloud_address>127.0.0.1</cable_cloud_address>
+    <cable_cloud_port>3001</cable_cloud_port>
+
+    <port_aliases>
+
+        <port_alias>121</port_alias>
+        <port_alias>122</port_alias>
+        <port_alias>123</port_alias>
+
+    </port_aliases>
+
+    <link_resource_managers>
+
+        <lrm>
+            <local_port>121</local_port>
+            <remote_port>134</remote_port>
+            <rc_local_topology_remote_port>13912</rc_local_topology_remote_port>
+            <lrm_link_connection_request_local_port>15121</lrm_link_connection_request_local_port>
+            <lrm_link_connection_request_remote_port>15134</lrm_link_connection_request_remote_port>
+        </lrm>
+        <lrm>
+            <local_port>122</local_port>
+            <remote_port>143</remote_port>
+            <rc_local_topology_remote_port>13912</rc_local_topology_remote_port>
+            <lrm_link_connection_request_local_port>15122</lrm_link_connection_request_local_port>
+            <lrm_link_connection_request_remote_port>15143</lrm_link_connection_request_remote_port>
+        </lrm>
+        <lrm>
+            <local_port>123</local_port>
+            <remote_port>113</remote_port>
+            <rc_local_topology_remote_port>13912</rc_local_topology_remote_port>
+            <lrm_link_connection_request_local_port>15123</lrm_link_connection_request_local_port>
+            <lrm_link_connection_request_remote_port>15113</lrm_link_connection_request_remote_port>
+        </lrm>
+
+    </link_resource_managers>
+
+
+</configuration>
