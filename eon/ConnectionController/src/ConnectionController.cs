@@ -1,8 +1,6 @@
-﻿using System;
-using Common.Config.Parsers;
+﻿using Common.Config.Parsers;
 using Common.Models;
 using Common.Startup;
-using Common.test.Utils;
 using ConnectionController.Config;
 using ConnectionController.Config.Parsers;
 
@@ -17,7 +15,7 @@ namespace ConnectionController
             IConfigurationParser<Configuration> configurationParser;
 
             if (defaultStartup.ChooseXmlParser())
-                configurationParser = new MockConfigurationParser(); // TODO: Change for XmlConfigurationParser
+                configurationParser = new XmlConfigurationParser(defaultStartup.Filename); 
             else
                 configurationParser = new MockConfigurationParser();
 

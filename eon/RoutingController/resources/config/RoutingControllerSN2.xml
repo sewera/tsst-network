@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<configuration>
+
+    <rc_route_table_query_local_port>13921</rc_route_table_query_local_port>
+    <rc_local_topology_local_port>13922</rc_local_topology_local_port>
+    <rc_network_topology_local_port>13923</rc_network_topology_local_port>
+
+    <route_table>
+        <row>
+            <src>21x</src>
+            <dst>221</dst>
+            <gateway>213</gateway>
+        </row>
+
+        <row>
+            <src>22x</src>
+            <dst>221</dst>
+            <gateway>221</gateway>
+        </row>
+
+        <row>
+            <src>23x</src>
+            <dst>221</dst>
+            <gateway>233</gateway>
+        </row>
+
+        <row>
+            <src>21x</src>
+            <dst>231</dst>
+            <gateway>214</gateway>
+        </row>
+
+        <row>
+            <src>22x</src>
+            <dst>231</dst>
+            <gateway>222</gateway>
+        </row>
+
+        <row>
+            <src>23x</src>
+            <dst>231</dst>
+            <gateway>231</gateway>
+        </row>
+
+        <row>
+            <src>21x</src>
+            <dst>xxx</dst>
+            <gateway>211,212</gateway>
+        </row>
+
+        <row>
+            <src>22x</src>
+            <dst>xxx</dst>
+            <gateway>223</gateway>
+        </row>
+
+        <row>
+            <src>23x</src>
+            <dst>xxx</dst>
+            <gateway>232</gateway>
+        </row>
+    </route_table>
+
+</configuration>
