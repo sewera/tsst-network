@@ -32,12 +32,20 @@ namespace NetworkNode.Config.Parsers
             configurationBuilder.SetCallTeardownLocalPort(int.Parse(xelement.Descendants("ncc_call_teardown_local_port").First().Value));
             configurationBuilder.SetConnectionRequestRemotePort(int.Parse(xelement.Descendants("cc_connection_request_remote_port").First().Value));
             configurationBuilder.SetCallCoordinationRemotePort(int.Parse(xelement.Descendants("ncc_call_coordination_remote_port").First().Value));
+            configurationBuilder.SetDomain(xelement.Descendants("domain").First().Value);
 
             foreach (XElement element in xelement.Descendants("client_port"))
             {
                 LOG.Trace($"NCC: ClientName: {element.FirstAttribute.Value} ClientPortAlias: {element.Value}");
                 Console.WriteLine($"{element.FirstAttribute.Value} {element.Value}");
                 configurationBuilder.AddClientPortAlias(element.FirstAttribute.Value, element.Value);
+            }
+            
+            foreach (XElement element in xelement.Descendants("port_domain"))
+            {
+                LOG.Trace($"NCC: PortTemplate: {element.FirstAttribute.Value} Domain: {element.Value}");
+                Console.WriteLine($"{element.FirstAttribute.Value} {element.Value}");
+                configurationBuilder.AddPortDomain(element.FirstAttribute.Value, element.Value);
             }
             
             return configurationBuilder.Build();
