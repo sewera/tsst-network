@@ -30,5 +30,13 @@
 
     </cc_peer_coordination_remote_ports>
 
+    <lrm_remote_ports>
+
+        <lrm_remote_port port="115">15115</lrm_remote_port>
+        <lrm_remote_port port="114">15114</lrm_remote_port>
+        <lrm_remote_port port="113">15113</lrm_remote_port>
+
+    </lrm_remote_ports>
+
 
 </configuration>

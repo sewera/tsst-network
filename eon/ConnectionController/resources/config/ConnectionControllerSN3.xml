@@ -33,4 +33,11 @@
 
     </cc_peer_coordination_remote_ports>
 
+    <lrm_remote_ports>
+
+        <lrm_remote_port port="311">15311</lrm_remote_port>
+        <lrm_remote_port port="312">15312</lrm_remote_port>
+
+    </lrm_remote_ports>
+
 </configuration>
