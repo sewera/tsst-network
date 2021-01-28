@@ -18,6 +18,8 @@ namespace ConnectionController.Config
         public Dictionary<string, int> CcConnectionRequestRemotePorts { get; }
         
         public Dictionary<string, int> CcPeerCoordinationRemotePorts { get; }
+        
+        public Dictionary<string, int> LrmRemotePorts { get; }
 
         private Configuration(IPAddress serverAddress,
                               string connectionControllerType,
@@ -26,7 +28,8 @@ namespace ConnectionController.Config
                               int connectionRequestLocalPort,
                               Dictionary<string, string> ccNames,
                               Dictionary<string,int> ccConnectionRequestRemotePorts,
-                              Dictionary<string, int> ccPeerCoordinationRemotePorts)
+                              Dictionary<string, int> ccPeerCoordinationRemotePorts,
+                              Dictionary<string, int> lrmRemotePorts)
         {
             ServerAddress = serverAddress;
             ConnectionControllerType = connectionControllerType;
@@ -36,6 +39,7 @@ namespace ConnectionController.Config
             CcNames = ccNames;
             CcConnectionRequestRemotePorts = ccConnectionRequestRemotePorts;
             CcPeerCoordinationRemotePorts = ccPeerCoordinationRemotePorts;
+            LrmRemotePorts = lrmRemotePorts;
         }
 
         public class Builder
@@ -48,6 +52,7 @@ namespace ConnectionController.Config
             private Dictionary<string, string> _ccNames;
             private Dictionary<string, int> _ccConnectionRequestRemotePorts;
             private Dictionary<string, int> _ccPeerCoordinationRemotePorts;
+            private Dictionary<string, int> _lrmRemotePorts;
 
             public Builder SetServerAddress(IPAddress serverAddress)
             {
@@ -117,6 +122,19 @@ namespace ConnectionController.Config
                 _ccPeerCoordinationRemotePorts = ccPeerCoordinationRemotePorts;
                 return this;
             }
+            
+            public Builder AddLrmRemotePort(string portAlias, int port)
+            {
+                _lrmRemotePorts ??= new Dictionary<string, int>();
+                _lrmRemotePorts.Add(portAlias, port);
+                return this;
+            }
+
+            public Builder SetLrmRemotePorts(Dictionary<string, int> lrmRemotePorts)
+            {
+                _lrmRemotePorts = lrmRemotePorts;
+                return this;
+            }
 
             public Configuration Build()
             {
@@ -132,7 +150,8 @@ namespace ConnectionController.Config
                     _connectionRequestLocalPort,
                     _ccNames,
                     _ccConnectionRequestRemotePorts,
-                    _ccPeerCoordinationRemotePorts);
+                    _ccPeerCoordinationRemotePorts,
+                    _lrmRemotePorts);
             }
         }
     }

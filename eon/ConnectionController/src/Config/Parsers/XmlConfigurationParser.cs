@@ -45,6 +45,12 @@ namespace ConnectionController.Config.Parsers
                        LOG.Trace($"CC: CcName: {element.FirstAttribute.Value} CcPeerCoordinationRemotePort: {element.Value}");
                        configurationBuilder.AddCcPeerCoordinationRemotePort(element.FirstAttribute.Value, int.Parse(element.Value));
                    }
+                   
+                   foreach (XElement element in xelement.Descendants("lrm_remote_port"))
+                   {
+                       LOG.Trace($"CC: LrmRemotePortAlias: {element.FirstAttribute.Value} Port: {element.Value}");
+                       configurationBuilder.AddLrmRemotePort(element.FirstAttribute.Value, int.Parse(element.Value));
+                   }
 
                    break;
                
@@ -71,6 +77,12 @@ namespace ConnectionController.Config.Parsers
                    {
                        LOG.Trace($"CC: CcName: {element.FirstAttribute.Value} CcPeerCoordinationRemotePort: {element.Value}");
                        configurationBuilder.AddCcPeerCoordinationRemotePort(element.FirstAttribute.Value, int.Parse(element.Value));
+                   }
+                   
+                   foreach (XElement element in xelement.Descendants("lrm_remote_port"))
+                   {
+                       LOG.Trace($"CC: LrmRemotePortAlias: {element.FirstAttribute.Value} Port: {element.Value}");
+                       configurationBuilder.AddLrmRemotePort(element.FirstAttribute.Value, int.Parse(element.Value));
                    }
 
                    break;
