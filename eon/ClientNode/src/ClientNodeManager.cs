@@ -14,15 +14,15 @@ namespace ClientNode
 
         private readonly Configuration _configuration;
         private readonly IPersistentClientPort<MplsPacket> _clientPort;
-        private readonly IOneShotServerPort<GenericDataPacket, GenericDataPacket> _callAcceptPort;
+        private readonly IOneShotServerPort<RequestPacket, ResponsePacket> _callAcceptPort;
 
         public ClientNodeManager(Configuration configuration,
                                  IPersistentClientPort<MplsPacket> clientPort,
-                                 ReceiveRequest<GenericDataPacket, GenericDataPacket> callAcceptDelegate)
+                                 ReceiveRequest<RequestPacket, ResponsePacket> callAcceptDelegate)
         {
             _configuration = configuration;
             _clientPort = clientPort;
-            _callAcceptPort = new OneShotServerPort<GenericDataPacket, GenericDataPacket>(
+            _callAcceptPort = new OneShotServerPort<RequestPacket, ResponsePacket>(
                 configuration.CallingPartyCallControllerAddress,
                 configuration.CallingPartyCallControllerPort);
             _callAcceptPort.RegisterReceiveRequestDelegate(callAcceptDelegate);
