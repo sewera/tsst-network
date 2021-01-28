@@ -14,6 +14,9 @@
     <ncc_call_coordination_remote_port>41812</ncc_call_coordination_remote_port>
     <!--Localhost Ip address -->
     <server_address>127.0.0.1</server_address>
+
+    <!--Domain -->
+    <server_address>S2</server_address>
     
     <!--Dict client port by client name -->
     <client_ports>
@@ -29,5 +32,14 @@
             <client_port name="Fafacki">323</client_port>
         
     </client_ports>
+
+    <client_domain_by_port>
+
+        <client_domain port="1xx">S1</client_domain>
+        <client_domain port="2xx">S1</client_domain>
+        <client_domain port="0xx">S1</client_domain>
+        <client_domain port="3xx">S2</client_domain>
+
+    </client_domain_by_port>
 
 </configuration>

@@ -23,8 +23,10 @@ namespace NetworkCallController
             defaultStartup.InitLogger(null); // TODO: Set log suffix from configuration
             
             Configuration configuration = configurationParser.ParseConfiguration();
-            
+
             ConnectionRequest connectionRequest = new ConnectionRequest(configuration.ClientPortAliases,
+                configuration.PortDomains,
+                configuration.Domain,
                 configuration.ServerAddress,
                 configuration.ConnectionRequestRemotePort);
 
@@ -32,7 +34,7 @@ namespace NetworkCallController
                 packet => new ResponsePacket.Builder().Build(),
                 packet => new ResponsePacket.Builder().Build(),
                 connectionRequest.OnConnectionRequestReceived);
-            // TODO: Those are only mock delegates, make proper ones
+            // TODO: Those are only mock delegates, make proper ones: 2 left
 
             networkCallControllerManager.Start();
         }

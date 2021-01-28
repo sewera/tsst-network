@@ -16,6 +16,8 @@ namespace NetworkCallController
         private readonly Configuration _configuration;
 
         private readonly Dictionary<string, string> _clientPortAliases;
+        private readonly Dictionary<string, string> _portDomains;
+        private readonly string _domain;
         private readonly IOneShotServerPort<RequestPacket, ResponsePacket> _callCoordinationPort;
         private readonly IOneShotServerPort<RequestPacket, ResponsePacket> _callTeardownPort;
         private readonly IOneShotServerPort<RequestPacket, ResponsePacket> _connectionRequestPort;
@@ -29,6 +31,8 @@ namespace NetworkCallController
         {
             _configuration = configuration;
             _clientPortAliases = _configuration.ClientPortAliases;
+            _portDomains = _configuration.PortDomains;
+            _domain = _configuration.Domain;
             _callCoordinationPort = new OneShotServerPort<RequestPacket, ResponsePacket>(_configuration.ServerAddress,
                 _configuration.CallCoordinationLocalPort);
             _callTeardownPort = new OneShotServerPort<RequestPacket, ResponsePacket>(_configuration.ServerAddress,

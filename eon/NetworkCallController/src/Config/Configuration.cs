@@ -11,8 +11,9 @@ namespace NetworkCallController.Config
         public int CallTeardownLocalPort { get; }
         public int ConnectionRequestRemotePort { get; }
         public int CallCoordinationRemotePort { get; }
-        
+        public string Domain { get; }
         public Dictionary<string, string> ClientPortAliases { get; }
+        public Dictionary<string, string> PortDomains { get; }
 
         private Configuration(IPAddress serverAddress,
                               int callCoordinationLocalPort,
@@ -20,7 +21,9 @@ namespace NetworkCallController.Config
                               int connectionRequestLocalPort,
                               int connectionRequestRemotePort,
                               int callCoordinationRemotePort,
-                              Dictionary<string, string> clientPortAliases)
+                              string domain,
+                              Dictionary<string, string> clientPortAliases,
+                              Dictionary<string, string> portDomains)
         {
             ServerAddress = serverAddress;
             CallCoordinationLocalPort = callCoordinationLocalPort;
@@ -28,7 +31,9 @@ namespace NetworkCallController.Config
             ConnectionRequestLocalPort = connectionRequestLocalPort;
             ConnectionRequestRemotePort = connectionRequestRemotePort;
             CallCoordinationRemotePort = callCoordinationRemotePort;
+            Domain = domain;
             ClientPortAliases = clientPortAliases;
+            PortDomains = portDomains;
         }
 
         public class Builder
@@ -39,7 +44,9 @@ namespace NetworkCallController.Config
             private int _callTeardownLocalPort;
             private int _connectionRequestRemotePort;
             private int _callCoordinationRemotePort;
+            private string _domain;
             private Dictionary<string, string> _clientPortAliases;
+            private Dictionary<string, string> _portDomains;
             public Builder SetServerAddress(IPAddress serverAddress)
             {
                 _serverAddress = serverAddress;
@@ -81,11 +88,24 @@ namespace NetworkCallController.Config
                 _clientPortAliases = clientPortAliases;
                 return this;
             }
+
+            public Builder SetDomain(string domain)
+            {
+                _domain = domain;
+                return this;
+            }
             
             public Builder AddClientPortAlias(string clientName, string clientPortAlias)
             {
                 _clientPortAliases ??= new Dictionary<string, string>();
                 _clientPortAliases.Add(clientName, clientPortAlias);
+                return this;
+            }
+            
+            public Builder AddPortDomain(string port, string domain)
+            {
+                _portDomains ??= new Dictionary<string, string>();
+                _portDomains.Add(port, domain);
                 return this;
             }
 
@@ -98,7 +118,9 @@ namespace NetworkCallController.Config
                     _connectionRequestLocalPort,
                     _connectionRequestRemotePort,
                     _callCoordinationRemotePort,
-                    _clientPortAliases);
+                    _domain,
+                    _clientPortAliases,
+                    _portDomains);
             }
         }
     }
