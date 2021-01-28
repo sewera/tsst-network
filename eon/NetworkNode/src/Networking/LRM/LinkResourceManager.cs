@@ -51,9 +51,15 @@ namespace NetworkNode.Networking.LRM
             _lrmConnectionRequestClient.Get(requestPacket);
         }
 
-        public void SendLocalTopologyPacket()
+        public void SendLocalTopologyPacketAfterWakeUp()
         {
-            //TODO 
+            LOG.Info($"Send RC::LocalTopology_req(port1 = {_localPortAlias}, port2 = {_remotePortAlias}, slotsArray = {_slotsArray})");
+            ResponsePacket localTopology = _rcLocalTopologyClient.Get(new RequestPacket.Builder()
+                .SetPort1(_localPortAlias)
+                .SetPort2(_remotePortAlias)
+                .SetSlotsArray(_slotsArray)
+                .Build());
+            LOG.Info($"Received RC::LocalTopology_req(res = {ResponsePacket.ResponseTypeToString(localTopology.Res)}");
         }
 
         private ResponsePacket OnReceiveRequest(RequestPacket requestPacket)

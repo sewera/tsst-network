@@ -52,7 +52,7 @@ namespace NetworkNode
                 _clientPorts[clientPortAlias].StartReceiving();
 
                 _lrmPorts[clientPortAlias].Listen();
-                _lrmPorts[clientPortAlias].SendLocalTopologyPacket();
+                _lrmPorts[clientPortAlias].SendLocalTopologyPacketAfterWakeUp();
             }
 
             _packetForwarder.SetClientPorts(_clientPorts);
