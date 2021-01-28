@@ -6,9 +6,9 @@
     <!--Local port of own ConnectionRequest listener-->
     <cc_connection_request_listener_local_port>12811</cc_connection_request_listener_local_port>
     <!--Local port of own PeerCoordination listener-->
-    <cc_connection_request_listener_local_port>12812</cc_connection_request_listener_local_port>
+    <cc_peer_coordination_listener_local_port>12812</cc_peer_coordination_listener_local_port>
     <!--Remote port of second domain CC PeerCoordination listener-->
-    <cc_peer_coordination_remote_port>13822</cc_peer_coordination_remote_port>
+    <cc_peer_coordination_remote_port>12822</cc_peer_coordination_remote_port>
     <!--Localhost ip-->
     <server_address>127.0.0.1</server_address>
 
@@ -24,9 +24,9 @@
     <!--With this dict CC knows remote port of CC:ConnectionRequest listener of its subnetwork CCs-->
     <cc_connection_request_remote_ports>
         
-            <connection_request_remote_port cc_name="CC_SN0">12901</connection_request_remote_port>
-            <connection_request_remote_port cc_name="CC_SN1">12911</connection_request_remote_port>
-            <connection_request_remote_port cc_name="CC_SN2">12921</connection_request_remote_port>
+            <cc_connection_request_remote_port cc_name="CC_SN0">12901</cc_connection_request_remote_port>
+            <cc_connection_request_remote_port cc_name="CC_SN1">12911</cc_connection_request_remote_port>
+            <cc_connection_request_remote_port cc_name="CC_SN2">12921</cc_connection_request_remote_port>
 
     </cc_connection_request_remote_ports>
 
