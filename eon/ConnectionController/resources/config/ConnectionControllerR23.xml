@@ -28,5 +28,11 @@
 
     </cc_peer_coordination_remote_ports>
 
+    <lrm_remote_ports>
+
+        <lrm_remote_port port="232">15232</lrm_remote_port>
+        <lrm_remote_port port="233">15233</lrm_remote_port>
+
+    </lrm_remote_ports>
 
 </configuration>
