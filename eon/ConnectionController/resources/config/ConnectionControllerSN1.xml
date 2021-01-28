@@ -38,4 +38,11 @@
 
     </cc_peer_coordination_remote_ports>
 
+    <lrm_remote_ports>
+
+        <lrm_remote_port port="111">15111</lrm_remote_port>
+        <lrm_remote_port port="112">15112</lrm_remote_port>
+
+    </lrm_remote_ports>
+    
 </configuration>
