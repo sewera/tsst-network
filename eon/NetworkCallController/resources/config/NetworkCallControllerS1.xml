@@ -15,7 +15,7 @@
     <server_address>127.0.0.1</server_address>
     
     <!--Domain -->
-    <server_address>S1</server_address>
+    <domain>S1</domain>
 
     <client_ports>
 

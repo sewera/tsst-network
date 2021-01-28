@@ -16,7 +16,7 @@
     <server_address>127.0.0.1</server_address>
 
     <!--Domain -->
-    <server_address>S2</server_address>
+    <domain>S2</domain>
     
     <!--Dict client port by client name -->
     <client_ports>
