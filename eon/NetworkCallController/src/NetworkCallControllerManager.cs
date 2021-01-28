@@ -1,34 +1,40 @@
+using System.Collections.Generic;
 using System.Threading;
 using Common.Models;
 using Common.Networking.Server.Delegates;
 using Common.Networking.Server.OneShot;
 using Common.Startup;
 using NetworkCallController.Config;
+using NLog;
 
 namespace NetworkCallController
 {
     public class NetworkCallControllerManager : IManager
     {
-        private Configuration _configuration;
+        private static readonly Logger LOG = LogManager.GetCurrentClassLogger();
 
-        private readonly IOneShotServerPort<GenericDataPacket, GenericDataPacket> _callCoordinationPort;
-        private readonly IOneShotServerPort<GenericDataPacket, GenericDataPacket> _callTeardownPort;
-        private readonly IOneShotServerPort<GenericDataPacket, GenericDataPacket> _connectionRequestPort;
+        private readonly Configuration _configuration;
+
+        private readonly Dictionary<string, string> _clientPortAliases;
+        private readonly IOneShotServerPort<RequestPacket, ResponsePacket> _callCoordinationPort;
+        private readonly IOneShotServerPort<RequestPacket, ResponsePacket> _callTeardownPort;
+        private readonly IOneShotServerPort<RequestPacket, ResponsePacket> _connectionRequestPort;
 
         private readonly ManualResetEvent _idle = new ManualResetEvent(false);
 
         public NetworkCallControllerManager(Configuration configuration,
-                                            ReceiveRequest<GenericDataPacket, GenericDataPacket> callCoordinationPortDelegate,
-                                            ReceiveRequest<GenericDataPacket, GenericDataPacket> callTeardownPortDelegate,
-                                            ReceiveRequest<GenericDataPacket, GenericDataPacket> connectionRequestPortDelegate)
+                                            ReceiveRequest<RequestPacket, ResponsePacket> callCoordinationPortDelegate,
+                                            ReceiveRequest<RequestPacket, ResponsePacket> callTeardownPortDelegate,
+                                            ReceiveRequest<RequestPacket, ResponsePacket> connectionRequestPortDelegate)
         {
             _configuration = configuration;
-            _callCoordinationPort = new OneShotServerPort<GenericDataPacket, GenericDataPacket>(configuration.ServerAddress,
-                configuration.CallCoordinationLocalPort);
-            _callTeardownPort = new OneShotServerPort<GenericDataPacket, GenericDataPacket>(configuration.ServerAddress,
-                configuration.CallTeardownLocalPort); 
-            _connectionRequestPort = new OneShotServerPort<GenericDataPacket, GenericDataPacket>(configuration.ServerAddress,
-                configuration.ConnectionRequestLocalPort);
+            _clientPortAliases = _configuration.ClientPortAliases;
+            _callCoordinationPort = new OneShotServerPort<RequestPacket, ResponsePacket>(_configuration.ServerAddress,
+                _configuration.CallCoordinationLocalPort);
+            _callTeardownPort = new OneShotServerPort<RequestPacket, ResponsePacket>(_configuration.ServerAddress,
+                _configuration.CallTeardownLocalPort); 
+            _connectionRequestPort = new OneShotServerPort<RequestPacket, ResponsePacket>(_configuration.ServerAddress,
+                _configuration.ConnectionRequestLocalPort);
             _callCoordinationPort.RegisterReceiveRequestDelegate(callCoordinationPortDelegate);
             _callTeardownPort.RegisterReceiveRequestDelegate(callTeardownPortDelegate);
             _connectionRequestPort.RegisterReceiveRequestDelegate(connectionRequestPortDelegate);

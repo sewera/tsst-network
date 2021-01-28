@@ -16,17 +16,22 @@ namespace NetworkCallController
             IConfigurationParser<Configuration> configurationParser;
 
             if (defaultStartup.ChooseXmlParser())
-                configurationParser = new XmlConfigurationParser(defaultStartup.Filename); // TODO: Change for XmlConfigurationParser
+                configurationParser = new XmlConfigurationParser(defaultStartup.Filename);
             else
                 configurationParser = new MockConfigurationParser();
 
             defaultStartup.InitLogger(null); // TODO: Set log suffix from configuration
-
+            
             Configuration configuration = configurationParser.ParseConfiguration();
+            
+            ConnectionRequest connectionRequest = new ConnectionRequest(configuration.ClientPortAliases,
+                configuration.ServerAddress,
+                configuration.ConnectionRequestRemotePort);
+
             IManager networkCallControllerManager = new NetworkCallControllerManager(configuration,
-                packet => new GenericDataPacket.Builder().SetType(GenericPacket.PacketType.Response).SetData(packet.Data).Build(),
-                packet => new GenericDataPacket.Builder().SetType(GenericPacket.PacketType.Response).SetData(packet.Data).Build(),
-                packet => new GenericDataPacket.Builder().SetType(GenericPacket.PacketType.Response).SetData(packet.Data).Build());
+                packet => new ResponsePacket.Builder().Build(),
+                packet => new ResponsePacket.Builder().Build(),
+                connectionRequest.OnConnectionRequestReceived);
             // TODO: Those are only mock delegates, make proper ones
 
             networkCallControllerManager.Start();
