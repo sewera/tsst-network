@@ -6,7 +6,7 @@
     <!--Local port of own ConnectionRequest listener-->
     <cc_connection_request_listener_local_port>12011</cc_connection_request_listener_local_port>
     <!--Local port of own CallCoordination listener-->
-    <cc_call_coordination_listener_local_port>12012</cc_call_coordination_listener_local_port>
+    <cc_peer_coordination_listener_local_port>12012</cc_peer_coordination_listener_local_port>
     <!--Localhost Ip-->
     <server_address>127.0.0.1</server_address>
 
