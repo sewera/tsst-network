@@ -1,8 +1,9 @@
+using System;
 using System.Net;
 using System.Threading;
 using Common.Models;
-using Common.Networking.Client;
 using Common.Networking.Client.OneShot;
+using NLog;
 
 namespace Common.Api
 {
@@ -15,6 +16,7 @@ namespace Common.Api
         where TRequestPacket : ISerializablePacket
         where TResponsePacket : ISerializablePacket
     {
+        private readonly Logger _log = LogManager.GetCurrentClassLogger();
         private readonly IPAddress _serverAddress;
         private readonly int _serverPort;
         private readonly ManualResetEvent _receiveDone = new ManualResetEvent(false);
@@ -28,14 +30,33 @@ namespace Common.Api
 
         public TResponsePacket Get(TRequestPacket requestPacket)
         {
-            OneShotClientPort<TRequestPacket, TResponsePacket> clientPort = new OneShotClientPort<TRequestPacket, TResponsePacket>(_serverAddress, _serverPort);
+            const int n = 10;
+            for (int i = 1; i <= n; i++)
+            {
+                try
+                {
+                    OneShotClientPort<TRequestPacket, TResponsePacket> clientPort =
+                        new OneShotClientPort<TRequestPacket, TResponsePacket>(_serverAddress, _serverPort);
 
-            clientPort.RegisterReceiveMessageEvent(OnMessageReceived);
-            clientPort.Send(requestPacket);
-            _receiveDone.WaitOne();
-            _receiveDone.Reset();
-            clientPort.ShutdownAndClose();
-            return _responsePacket;
+                    clientPort.RegisterReceiveMessageEvent(OnMessageReceived);
+                    clientPort.Send(requestPacket);
+                    _receiveDone.WaitOne();
+                    _receiveDone.Reset();
+                    clientPort.ShutdownAndClose();
+                    return _responsePacket;
+                }
+                catch (Exception)
+                {
+                    if (i < 5)
+                        _log.Debug($"Could not connect to the server on port: {_serverPort}. ({i} out of {n})");
+                    else
+                        _log.Warn($"Could not connect to the server on port: {_serverPort}. ({i} out of {n})");
+                    _log.Trace($"Sending packet: {requestPacket}");
+                    Thread.Sleep(1000);
+                }
+            }
+
+            throw new Exception($"Could not connect to the server on port: {_serverPort} after {n} retries");
         }
 
         private void OnMessageReceived((string, TResponsePacket) responseTuple)
