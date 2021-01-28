@@ -55,7 +55,7 @@ namespace Common.Models
 
         public override string ToString()
         {
-            return $"[{PacketTypeToString(Type)}, {ResponseTypeToString(Res)}, id: {Id}, nextZonePort: {NextZonePort},\n" +
+            return $"[Response, {ResponseTypeToString(Res)}, id: {Id}, nextZonePort: {NextZonePort},\n" +
                    $" gateway: {Gateway}, slots: {Slots}, dstZone: {DstZone}, slotsArray: [{string.Join(", ", SlotsArray)}], end: {End}]";
         }
 
