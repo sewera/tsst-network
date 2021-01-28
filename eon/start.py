@@ -42,18 +42,18 @@ ClientNode_exe = Path("ClientNode.exe")
 NetworkNode = Path("NetworkNode")
 NetworkNode_csproj = Path("NetworkNode.csproj")
 NetworkNode_configs = [
-    Path("NetworkNodeR01.xml"),
-    Path("NetworkNodeR02.xml"),
-    Path("NetworkNodeR03.xml"),
-    Path("NetworkNodeR11.xml"),
-    Path("NetworkNodeR12.xml"),
-    Path("NetworkNodeR13.xml"),
-    Path("NetworkNodeR14.xml"),
-    Path("NetworkNodeR21.xml"),
-    Path("NetworkNodeR22.xml"),
-    Path("NetworkNodeR23.xml"),
-    Path("NetworkNodeR31.xml"),
-    Path("NetworkNodeR32.xml"),
+    Path("NetworkNode01.xml"),
+    Path("NetworkNode02.xml"),
+    Path("NetworkNode03.xml"),
+    Path("NetworkNode11.xml"),
+    Path("NetworkNode12.xml"),
+    Path("NetworkNode13.xml"),
+    Path("NetworkNode14.xml"),
+    Path("NetworkNode21.xml"),
+    Path("NetworkNode22.xml"),
+    Path("NetworkNode23.xml"),
+    Path("NetworkNode31.xml"),
+    Path("NetworkNode32.xml"),
 ]
 NetworkNode_exe = Path("NetworkNode.exe")
 
