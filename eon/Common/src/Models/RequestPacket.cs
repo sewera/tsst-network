@@ -9,27 +9,29 @@ namespace Common.Models
     {
         [Key(1)] public int Id;
 
-        [Key(2)] public (int, int) Slots;
+        [Key(2)] public int SlotsNumber;
 
-        [Key(3)] public List<(int, int)> SlotsArray;
+        [Key(3)] public (int, int) Slots;
 
-        [Key(4)] public bool ShouldAllocate;
+        [Key(4)] public List<(int, int)> SlotsArray;
 
-        [Key(5)] public string SrcName;
+        [Key(5)] public bool ShouldAllocate;
 
-        [Key(6)] public string DstName;
+        [Key(6)] public string SrcName;
 
-        [Key(7)] public string SrcPort;
+        [Key(7)] public string DstName;
 
-        [Key(8)] public string DstPort;
+        [Key(8)] public string SrcPort;
 
-        [Key(9)] public Who WhoRequests;
+        [Key(9)] public string DstPort;
 
-        [Key(10)] public string End;
+        [Key(10)] public Who WhoRequests;
+
+        [Key(11)] public string End;
         
-        [Key(11)] public string Port1;
+        [Key(12)] public string Port1;
         
-        [Key(12)] public string Port2;
+        [Key(13)] public string Port2;
 
         /// <summary>
         /// Constructor only for MessagePack deserialization
@@ -38,6 +40,7 @@ namespace Common.Models
         public RequestPacket(){}
 
         protected RequestPacket(int id,
+                                int slotsNumber,
                                 (int, int) slots,
                                 List<(int, int)> slotsArray,
                                 bool shouldAllocate,
@@ -51,6 +54,7 @@ namespace Common.Models
                                 string port2) : base(PacketType.Request)
         {
             Id = id;
+            SlotsNumber = slotsNumber;
             Slots = slots;
             SlotsArray = slotsArray;
             ShouldAllocate = shouldAllocate;
@@ -79,6 +83,7 @@ namespace Common.Models
         public class Builder
         {
             private int _id;
+            private int _slotsNumber;
             private (int, int) _slots;
             private List<(int, int)> _slotsArray;
             private bool _shouldAllocate;
@@ -94,6 +99,12 @@ namespace Common.Models
             public Builder SetId(int id)
             {
                 _id = id;
+                return this;
+            }
+
+            public Builder SetSlotsNumber(int slotsNumber)
+            {
+                _slotsNumber = slotsNumber;
                 return this;
             }
 
@@ -174,6 +185,7 @@ namespace Common.Models
             {
                 _slotsArray ??= new List<(int, int)>();
                 return new RequestPacket(_id,
+                    _slotsNumber,
                     _slots,
                     _slotsArray,
                     _shouldAllocate,
