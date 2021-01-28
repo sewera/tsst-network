@@ -3,6 +3,7 @@ using Common.Models;
 using Common.Startup;
 using NetworkCallController.Config;
 using NetworkCallController.Config.Parsers;
+using NetworkNode.Config.Parsers;
 
 namespace NetworkCallController
 {
@@ -15,18 +16,26 @@ namespace NetworkCallController
             IConfigurationParser<Configuration> configurationParser;
 
             if (defaultStartup.ChooseXmlParser())
-                configurationParser = new MockConfigurationParser(); // TODO: Change for XmlConfigurationParser
+                configurationParser = new XmlConfigurationParser(defaultStartup.Filename);
             else
                 configurationParser = new MockConfigurationParser();
 
             defaultStartup.InitLogger(null); // TODO: Set log suffix from configuration
-
+            
             Configuration configuration = configurationParser.ParseConfiguration();
+
+            NccState nccState = new NccState(configuration.ClientPortAliases,
+                configuration.PortDomains,
+                configuration.Domain,
+                configuration.ServerAddress,
+                configuration.ConnectionRequestRemotePort,
+                configuration.CallCoordinationRemotePort);
+
             IManager networkCallControllerManager = new NetworkCallControllerManager(configuration,
-                packet => new GenericDataPacket.Builder().SetType(GenericPacket.PacketType.Response).SetData(packet.Data).Build(),
-                packet => new GenericDataPacket.Builder().SetType(GenericPacket.PacketType.Response).SetData(packet.Data).Build(),
-                packet => new GenericDataPacket.Builder().SetType(GenericPacket.PacketType.Response).SetData(packet.Data).Build());
-            // TODO: Those are only mock delegates, make proper ones
+                nccState.OnCallCoordinationReceived,
+                nccState.OnCallTeardownReceived,
+                nccState.OnConnectionRequestReceived);
+            // TODO: Those are only empty delegates, make proper ones: 2 left
 
             networkCallControllerManager.Start();
         }

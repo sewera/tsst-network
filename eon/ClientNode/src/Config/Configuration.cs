@@ -8,6 +8,12 @@ namespace ClientNode.Config
         public IPAddress CallingPartyCallControllerAddress { get; }
         public int CallingPartyCallControllerPort { get; }
 
+        public IPAddress NccConnectionRequestRemoteAddress { get; }
+        public int NccConnectionRequestRemotePort { get; }
+
+        public IPAddress NccCallTeardownRemoteAddress { get; }
+        public int NccCallTeardownRemotePort { get; }
+
         /// <summary>CableCloud address</summary>
         public IPAddress CableCloudAddress { get; }
 
@@ -33,7 +39,11 @@ namespace ClientNode.Config
                               IPEndPoint cableCloudEndPoint,
                               string clientAlias,
                               string clientPortAlias,
-                              IDictionary<string, long> mplsLabels)
+                              IDictionary<string, long> mplsLabels,
+                              IPAddress nccConnectionRequestRemoteAddress,
+                              int nccConnectionRequestRemotePort,
+                              IPAddress nccCallTeardownRemoteAddress,
+                              int nccCallTeardownRemotePort)
         {
             CableCloudAddress = cableCloudAddress;
             CableCloudPort = cableCloudPort;
@@ -43,6 +53,10 @@ namespace ClientNode.Config
             ClientAlias = clientAlias;
             ClientPortAlias = clientPortAlias;
             MplsLabels = mplsLabels;
+            NccConnectionRequestRemoteAddress = nccConnectionRequestRemoteAddress;
+            NccConnectionRequestRemotePort = nccConnectionRequestRemotePort;
+            NccCallTeardownRemoteAddress = nccCallTeardownRemoteAddress;
+            NccCallTeardownRemotePort = nccCallTeardownRemotePort;
         }
 
         public class Builder
@@ -54,6 +68,11 @@ namespace ClientNode.Config
             private string _clientAlias;
             private string _clientPortAlias = string.Empty;
             private IDictionary<string, long> _mplsLabels;
+            private IPAddress _nccConnectionRequestRemoteAddress;
+            private int _nccConnectionRequestRemotePort;
+            private IPAddress _nccCallTeardownRemoteAddress;
+            private int _nccCallTeardownRemotePort;
+
 
             public Builder SetCableCloudAddress(string cableCloudAddress)
             {
@@ -104,10 +123,36 @@ namespace ClientNode.Config
                 return this;
             }
 
+            public Builder SetNccConnectionRequestRemoteAddress(IPAddress nccConnectionRequestRemoteAddress)
+            {
+                _nccConnectionRequestRemoteAddress = nccConnectionRequestRemoteAddress;
+                return this;
+            }
+
+            public Builder SetNccConnectionRequestRemotePort(int nccConnectionRequestRemotePort)
+            {
+                _nccConnectionRequestRemotePort = nccConnectionRequestRemotePort;
+                return this;
+            }
+
+            public Builder SetNccCallTeardownRemoteAddress(IPAddress nccCallTeardownRemoteAddress)
+            {
+                _nccCallTeardownRemoteAddress = nccCallTeardownRemoteAddress;
+                return this;
+            }
+
+            public Builder SetNccCallTeardownRemotePort(int nccCallTeardownRemotePort)
+            {
+                _nccCallTeardownRemotePort = nccCallTeardownRemotePort;
+                return this;
+            }
+
             public Configuration Build()
             {
                 _cableCloudAddress ??= IPAddress.Parse("127.0.0.1");
                 _callingPartyCallControllerAddress ??= IPAddress.Parse("127.0.0.1");
+                _nccConnectionRequestRemoteAddress ??= IPAddress.Parse("127.0.0.1");
+                _nccCallTeardownRemoteAddress ??= IPAddress.Parse("127.0.0.1");
                 _mplsLabels ??= new Dictionary<string, long>();
                 IPEndPoint cableCloudEndPoint = new IPEndPoint(_cableCloudAddress, _cableCloudPort);
                 return new Configuration(_cableCloudAddress,
@@ -117,7 +162,11 @@ namespace ClientNode.Config
                     cableCloudEndPoint,
                     _clientAlias,
                     _clientPortAlias,
-                    _mplsLabels);
+                    _mplsLabels,
+                    _nccConnectionRequestRemoteAddress,
+                    _nccConnectionRequestRemotePort,
+                    _nccCallTeardownRemoteAddress,
+                    _nccCallTeardownRemotePort);
             }
         }
     }
