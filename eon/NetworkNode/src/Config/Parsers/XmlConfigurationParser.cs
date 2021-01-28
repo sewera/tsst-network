@@ -19,7 +19,7 @@ namespace NetworkNode.Config.Parsers
         public Configuration ParseConfiguration()
         {
             Configuration.Builder configurationBuilder = new Configuration.Builder();
-            
+
             LOG.Trace($"Reading configuration from {_filename}");
             XElement xelement = XElement.Load(_filename);
 
@@ -31,6 +31,22 @@ namespace NetworkNode.Config.Parsers
             {
                 LOG.Trace($"Router {xelement.Descendants("router_alias").First().Value} port alias: {element.Value}");
                 configurationBuilder.AddPortAlias(element.Value);
+            }
+            
+            foreach (XElement element in xelement.Descendants("lrm"))
+            {
+                Configuration.LrmConfiguration.LrmBuilder configurationLrmBuilder =
+                    new Configuration.LrmConfiguration.LrmBuilder();
+                configurationLrmBuilder.SetRemotePortAlias(element.Descendants("remote_port").First().Value);
+                configurationLrmBuilder.SetLrmLinkConnectionRequestLocalPort(int.Parse(element
+                    .Descendants("lrm_link_connection_request_local_port").First().Value));
+                configurationLrmBuilder.SetLrmLinkConnectionRequestRemotePort(int.Parse(element
+                    .Descendants("lrm_link_connection_request_remote_port").First().Value));
+                configurationLrmBuilder.SetRcLocalTopologyRemotePort(int.Parse(element
+                    .Descendants("rc_local_topology_remote_port").First().Value));
+                
+                LOG.Trace($"LRM {element.Descendants("local_port").First().Value}");
+                configurationBuilder.AddLrm(element.Descendants("local_port").First().Value, configurationLrmBuilder.Build());
             }
             
             return configurationBuilder.Build();
