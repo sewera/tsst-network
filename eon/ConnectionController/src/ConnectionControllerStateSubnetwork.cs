@@ -2,9 +2,9 @@
 
 namespace ConnectionController
 {
-    public class ConnectionContollerStateSubnetwork : IConnectionControllerState
+    public class ConnectionControllerStateSubnetwork : IConnectionControllerState
     {
-        public ConnectionContollerStateSubnetwork()
+        public ConnectionControllerStateSubnetwork()
         {
             
         }
