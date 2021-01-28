@@ -67,7 +67,10 @@ namespace Common.Models
         public enum ResponseType
         {
             Ok,
-            Refused
+            Refused,
+            AuthProblem,
+            NoClient,
+            NetworkProblem
         }
 
         public static string ResponseTypeToString(ResponseType res)
@@ -76,6 +79,9 @@ namespace Common.Models
             {
                 ResponseType.Ok => "OK",
                 ResponseType.Refused => "Refused",
+                ResponseType.AuthProblem => "AuthProblem",
+                ResponseType.NoClient => "NoClient",
+                ResponseType.NetworkProblem => "NetworkProblem",
                 _ => "Other"
             };
         }
