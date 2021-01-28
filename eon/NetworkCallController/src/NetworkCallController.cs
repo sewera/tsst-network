@@ -24,17 +24,18 @@ namespace NetworkCallController
             
             Configuration configuration = configurationParser.ParseConfiguration();
 
-            ConnectionRequest connectionRequest = new ConnectionRequest(configuration.ClientPortAliases,
+            NccState nccState = new NccState(configuration.ClientPortAliases,
                 configuration.PortDomains,
                 configuration.Domain,
                 configuration.ServerAddress,
-                configuration.ConnectionRequestRemotePort);
+                configuration.ConnectionRequestRemotePort,
+                configuration.CallCoordinationRemotePort);
 
             IManager networkCallControllerManager = new NetworkCallControllerManager(configuration,
-                packet => new ResponsePacket.Builder().Build(),
-                packet => new ResponsePacket.Builder().Build(),
-                connectionRequest.OnConnectionRequestReceived);
-            // TODO: Those are only mock delegates, make proper ones: 2 left
+                nccState.OnCallCoordinationReceived,
+                nccState.OnCallTeardownReceived,
+                nccState.OnConnectionRequestReceived);
+            // TODO: Those are only empty delegates, make proper ones: 2 left
 
             networkCallControllerManager.Start();
         }
