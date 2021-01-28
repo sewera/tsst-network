@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<configuration>
+    <!--Type of Connection Controller-->
+    <cc_type>node</cc_type>
+    <!--Local port of own ConnectionRequest listener-->
+    <cc_connection_request_listener_local_port>12111</cc_connection_request_listener_local_port>
+    <!--Local port of own CallCoordination listener-->
+    <cc_peer_coordination_listener_local_port>12112</cc_peer_coordination_listener_local_port>
+    <!--Localhost Ip-->
+    <server_address>127.0.0.1</server_address>
+
+    <!--With this dict subnetwork CC knows it's peer node CCs names by `end` from LRM::LinkConnectionRequest-->
+    <cc_names>
+
+        <cc_name port="11x">CC_R11</cc_name>
+        <cc_name port="12x">CC_R12</cc_name>
+        <cc_name port="13x">CC_R13</cc_name>
+        <cc_name port="14x">CC_R14</cc_name>
+
+    </cc_names>
+
+    <!--With this dict subnetwork CC knows it's peer node CCs local ports of CC:PeerCoordination listeners by CC name-->
+    <cc_peer_coordination_remote_ports>
+
+        <cc_peer_coordination_remote_port cc_name="CC_R11">12112</cc_peer_coordination_remote_port>
+        <cc_peer_coordination_remote_port cc_name="CC_R12">12122</cc_peer_coordination_remote_port>
+        <cc_peer_coordination_remote_port cc_name="CC_R13">12132</cc_peer_coordination_remote_port>
+        <cc_peer_coordination_remote_port cc_name="CC_R14">12142</cc_peer_coordination_remote_port>
+
+    </cc_peer_coordination_remote_ports>
+
+
+</configuration>
