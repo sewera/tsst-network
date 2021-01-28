@@ -27,15 +27,19 @@ namespace ClientNode
 
             defaultStartup.InitLogger(configuration.ClientAlias);
 
+            CpccState cpccState = new CpccState(configuration.NccConnectionRequestRemoteAddress,
+                configuration.NccConnectionRequestRemotePort,
+                configuration.NccCallTeardownRemoteAddress,
+                configuration.NccCallTeardownRemotePort);
+
             ICommandParser commandParser = new CommandParser(configuration);
             IPersistentClientPort<MplsPacket> clientPort = new PersistentClientPort<MplsPacket>(configuration.ClientPortAlias,
                 configuration.CableCloudAddress, configuration.CableCloudPort);
             IClientNodeManager clientNodeManager = new ClientNodeManager(configuration,
                 clientPort,
-                packet => new GenericDataPacket.Builder().SetType(GenericPacket.PacketType.Response).SetData(packet.Data).Build());
-            // TODO: This is only a mock delegate
+                cpccState.OnCallAccept);
 
-            IUserInterface userInterface = new UserInterface(commandParser, clientNodeManager);
+            IUserInterface userInterface = new UserInterface(commandParser, clientNodeManager, cpccState, configuration.ClientAlias);
 
             defaultStartup.SetTitle(configuration.ClientAlias);
 

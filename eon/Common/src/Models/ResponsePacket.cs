@@ -55,7 +55,7 @@ namespace Common.Models
 
         public override string ToString()
         {
-            return $"[{PacketTypeToString(Type)}, {ResponseTypeToString(Res)}, id: {Id}, nextZonePort: {NextZonePort},\n" +
+            return $"[Response, {ResponseTypeToString(Res)}, id: {Id}, nextZonePort: {NextZonePort},\n" +
                    $" gateway: {Gateway}, slots: {Slots}, dstZone: {DstZone}, slotsArray: [{string.Join(", ", SlotsArray)}], end: {End}]";
         }
 
@@ -67,7 +67,10 @@ namespace Common.Models
         public enum ResponseType
         {
             Ok,
-            Refused
+            Refused,
+            AuthProblem,
+            NoClient,
+            NetworkProblem
         }
 
         public static string ResponseTypeToString(ResponseType res)
@@ -76,6 +79,9 @@ namespace Common.Models
             {
                 ResponseType.Ok => "OK",
                 ResponseType.Refused => "Refused",
+                ResponseType.AuthProblem => "AuthProblem",
+                ResponseType.NoClient => "NoClient",
+                ResponseType.NetworkProblem => "NetworkProblem",
                 _ => "Other"
             };
         }
