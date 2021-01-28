@@ -20,10 +20,10 @@
     </cc_names>
 
     <!--With this dict CC knows remote port of CC:ConnectionRequest listener of its subnetwork CCs-->
-    <connection_request_remote_ports>
+    <cc_connection_request_remote_ports>
 
         <connection_request_remote_port cc_name="CC_SN3">12931</connection_request_remote_port>
 
-    </connection_request_remote_ports>
+    </cc_connection_request_remote_ports>
 
 </configuration>
