@@ -18,8 +18,8 @@ namespace NetworkNode.Networking.LRM
         private IApiClient<RequestPacket, ResponsePacket> _lrmConnectionRequestClient;
         private IApiClient<RequestPacket, ResponsePacket> _rcLocalTopologyClient;
 
-        private string _localPortAlias;
-        private string _remotePortAlias;
+        private readonly string _localPortAlias;
+        private readonly string _remotePortAlias;
 
         private List<(int, int)> _slotsArray = new List<(int, int)>();
 
@@ -58,42 +58,60 @@ namespace NetworkNode.Networking.LRM
 
         private ResponsePacket OnReceiveRequest(RequestPacket requestPacket)
         {
+            // Get LRM::LinkConnectionRequest_req packet params
             GenericPacket.PacketType type = requestPacket.Type;
             (int, int) slots = requestPacket.Slots;
             bool shouldAllocate = requestPacket.ShouldAllocate;
             RequestPacket.Who whoRequests = requestPacket.WhoRequests;
             
-            LOG.Info($"LRM::LinkConnectionRequest_{GenericPacket.PacketTypeToString(type)}(slots ={slots}, {(shouldAllocate ? "allocate" : "release")})");
-
-            foreach ((int, int) s in _slotsArray.Where(s => Checkers.SlotsOverlap(s, slots)))
+            LOG.Info($"Received LRM::LinkConnectionRequest_{GenericPacket.PacketTypeToString(type)}(slots = {slots}, {(shouldAllocate ? "allocate" : "release")})");
+            
+            // Check if requested slots are free to use
+            foreach ((int, int) s in _slotsArray)
             {
+                if (Checkers.SlotsOverlap(s, slots))
+                {
+                    // If not, response with LRM::LinkConnectionRequest_res(res = REFUSED)
+                    LOG.Info($"LRM::LinkConnectionRequest_{GenericPacket.PacketTypeToString(GenericPacket.PacketType.Response)}" +
+                             $"(res = {ResponsePacket.ResponseTypeToString(ResponsePacket.ResponseType.Refused)})");
+                    
+                    return new ResponsePacket.Builder()
+                        .SetRes(ResponsePacket.ResponseType.Refused)
+                        .Build();
+                }
             }
-
-            if (whoRequests == RequestPacket.Who.Lrm)
-                return new ResponsePacket.Builder()
-                    .SetRes(ResponsePacket.ResponseType.Ok)
-                    .SetEnd("?") // TODO: Which end?
-                    .Build();
-
+            
+            // Allocate
+            _slotsArray.Add(slots);
+            
+            // Do LocalTopology to RC server
+            LOG.Info($"Send RC::LocalTopology_req(port1 = {_localPortAlias}, port2 = {_remotePortAlias}, slotsArray = {_slotsArray})");
             ResponsePacket localTopology = _rcLocalTopologyClient.Get(new RequestPacket.Builder()
-                .SetSrcPort(_localPortAlias)
-                .SetDstPort(_remotePortAlias)
+                .SetPort1(_localPortAlias)
+                .SetPort2(_remotePortAlias)
                 .SetSlotsArray(_slotsArray)
                 .Build());
 
-            if (localTopology.Res == ResponsePacket.ResponseType.Ok)
+            LOG.Info($"Received RC::LocalTopology_req(res = {ResponsePacket.ResponseTypeToString(localTopology.Res)}");
+            
+            // If allocation is requested by CC inform second LRM about it
+            if (whoRequests == RequestPacket.Who.Cc)
             {
-                LOG.Info("RC responded OK");
-            }
-
-            ResponsePacket linkConnectionRequestResponse = _lrmConnectionRequestClient.Get(new RequestPacket.Builder()
+                LOG.Info($"Send LRM::LinkConnectionRequest_req(slots={slots}, allocate = true, who = LRM)");
+                ResponsePacket linkConnectionRequest = _lrmConnectionRequestClient.Get(new RequestPacket.Builder()
                     .SetSlots(slots)
-                    .SetShouldAllocate(shouldAllocate)
+                    .SetShouldAllocate(true)
+                    .SetWhoRequests(RequestPacket.Who.Lrm)
                     .Build());
-
+                LOG.Info($"LRM::LinkConnectionRequest_{ResponsePacket.ResponseTypeToString(linkConnectionRequest.Res)}(res = {ResponsePacket.ResponseTypeToString(localTopology.Res)}");
+            }
+           
+            // Send response packet
+            LOG.Info($"LRM::LinkConnectionRequest_{GenericPacket.PacketTypeToString(GenericPacket.PacketType.Response)}" +
+                     $"(res = {ResponsePacket.ResponseTypeToString(ResponsePacket.ResponseType.Ok)})");
             return new ResponsePacket.Builder()
                 .SetRes(ResponsePacket.ResponseType.Ok)
-                .SetEnd("?") // TODO: Which end?
+                .SetEnd(_remotePortAlias)
                 .Build();
         }
     }

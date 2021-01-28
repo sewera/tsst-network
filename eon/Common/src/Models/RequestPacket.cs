@@ -26,6 +26,10 @@ namespace Common.Models
         [Key(9)] public Who WhoRequests;
 
         [Key(10)] public string End;
+        
+        [Key(11)] public string Port1;
+        
+        [Key(12)] public string Port2;
 
         /// <summary>
         /// Constructor only for MessagePack deserialization
@@ -42,7 +46,9 @@ namespace Common.Models
                                 string srcPort,
                                 string dstPort,
                                 Who whoRequests,
-                                string end) : base(PacketType.Request)
+                                string end,
+                                string port1,
+                                string port2) : base(PacketType.Request)
         {
             Id = id;
             Slots = slots;
@@ -54,6 +60,8 @@ namespace Common.Models
             DstPort = dstPort;
             WhoRequests = whoRequests;
             End = end;
+            Port1 = port1;
+            Port2 = port2;
         }
 
         public override string ToString()
@@ -80,6 +88,8 @@ namespace Common.Models
             private string _dstPort = string.Empty;
             private Who _whoRequests = Who.NotSet;
             private string _end = string.Empty;
+            private string _port1 = string.Empty;
+            private string _port2 = string.Empty;
 
             public Builder SetId(int id)
             {
@@ -147,6 +157,18 @@ namespace Common.Models
                 _end = end;
                 return this;
             }
+            
+            public Builder SetPort1(string port1)
+            {
+                _port1 = port1;
+                return this;
+            }
+            
+            public Builder SetPort2(string port2)
+            {
+                _port2 = port2;
+                return this;
+            }
 
             public RequestPacket Build()
             {
@@ -160,7 +182,10 @@ namespace Common.Models
                     _srcPort,
                     _dstPort,
                     _whoRequests,
-                    _end);
+                    _end,
+                    _port1,
+                    _port2
+                    );
             }
         }
 
