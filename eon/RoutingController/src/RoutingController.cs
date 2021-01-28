@@ -22,11 +22,13 @@ namespace RoutingController
             defaultStartup.InitLogger(null);
 
             Configuration configuration = configurationParser.ParseConfiguration();
+
+            IRcState rcState = new RcState(); // Add some data from config
+
             IManager routingControllerManager = new RoutingControllerManager(configuration,
-                packet => new GenericDataPacket.Builder().SetType(GenericPacket.PacketType.Response).SetData(packet.Data).Build(),
-                packet => new GenericDataPacket.Builder().SetType(GenericPacket.PacketType.Response).SetData(packet.Data).Build(),
-                packet => new GenericDataPacket.Builder().SetType(GenericPacket.PacketType.Response).SetData(packet.Data).Build());
-            // TODO: Those are only mock delegates
+                rcState.OnRouteTableQuery,
+                rcState.OnLocalTopology,
+                rcState.OnNetworkTopology);
             routingControllerManager.Start();
         }
     }
