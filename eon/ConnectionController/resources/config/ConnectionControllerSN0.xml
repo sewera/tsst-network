@@ -38,4 +38,15 @@
 
     </cc_peer_coordination_remote_ports>
 
+    <lrm_remote_ports>
+
+        <lrm_remote_port port="012">15012</lrm_remote_port>
+        <lrm_remote_port port="011">15011</lrm_remote_port>
+        <lrm_remote_port port="031">15031</lrm_remote_port>
+        <lrm_remote_port port="032">15032</lrm_remote_port>
+        <lrm_remote_port port="021">15021</lrm_remote_port>
+        <lrm_remote_port port="022">15022</lrm_remote_port>
+
+    </lrm_remote_ports>
+
 </configuration>

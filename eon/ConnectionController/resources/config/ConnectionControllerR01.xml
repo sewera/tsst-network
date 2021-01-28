@@ -27,6 +27,13 @@
             <cc_peer_coordination_remote_port cc_name="CC_R03">12032</cc_peer_coordination_remote_port>
         
     </cc_peer_coordination_remote_ports>
+    
+    <lrm_remote_ports>
+        
+        <lrm_remote_port port="013">15013</lrm_remote_port>
+        <lrm_remote_port port="014">15014</lrm_remote_port>
+        
+    </lrm_remote_ports>
 
 
 </configuration>

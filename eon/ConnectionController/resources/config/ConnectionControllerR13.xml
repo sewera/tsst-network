@@ -30,5 +30,13 @@
 
     </cc_peer_coordination_remote_ports>
 
+    <lrm_remote_ports>
+
+        <lrm_remote_port port="132">15132</lrm_remote_port>
+        <lrm_remote_port port="133">15133</lrm_remote_port>
+        <lrm_remote_port port="134">15134</lrm_remote_port>
+
+    </lrm_remote_ports>
+
 
 </configuration>
