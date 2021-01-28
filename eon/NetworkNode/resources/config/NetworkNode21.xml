@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<configuration>
+
+    <router_alias>R21</router_alias>
+    <server_address>127.0.0.1</server_address>
+    <cable_cloud_address>127.0.0.1</cable_cloud_address>
+    <cable_cloud_port>3001</cable_cloud_port>
+
+    <port_aliases>
+
+        <port_alias>211</port_alias>
+        <port_alias>212</port_alias>
+        <port_alias>213</port_alias>
+        <port_alias>214</port_alias>
+
+    </port_aliases>
+
+    <link_resource_managers>
+
+        <lrm>
+            <local_port>211</local_port>
+            <remote_port>031</remote_port>
+            <rc_local_topology_remote_port>13812</rc_local_topology_remote_port>
+            <lrm_link_connection_request_local_port>15211</lrm_link_connection_request_local_port>
+            <lrm_link_connection_request_remote_port>15031</lrm_link_connection_request_remote_port>
+        </lrm>
+        <lrm>
+            <local_port>212</local_port>
+            <remote_port>022</remote_port>
+            <rc_local_topology_remote_port>13812</rc_local_topology_remote_port>
+            <lrm_link_connection_request_local_port>15212</lrm_link_connection_request_local_port>
+            <lrm_link_connection_request_remote_port>15022</lrm_link_connection_request_remote_port>
+        </lrm>
+        <lrm>
+            <local_port>213</local_port>
+            <remote_port>223</remote_port>
+            <rc_local_topology_remote_port>13922</rc_local_topology_remote_port>
+            <lrm_link_connection_request_local_port>15213</lrm_link_connection_request_local_port>
+            <lrm_link_connection_request_remote_port>15223</lrm_link_connection_request_remote_port>
+        </lrm>
+        <lrm>
+            <local_port>214</local_port>
+            <remote_port>232</remote_port>
+            <rc_local_topology_remote_port>13922</rc_local_topology_remote_port>
+            <lrm_link_connection_request_local_port>15214</lrm_link_connection_request_local_port>
+            <lrm_link_connection_request_remote_port>15232</lrm_link_connection_request_remote_port>
+        </lrm>
+
+    </link_resource_managers>
+
+
+</configuration>
