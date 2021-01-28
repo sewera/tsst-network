@@ -28,7 +28,7 @@ namespace ConnectionController
             {
                 "node" => new ConnectionControllerStateNode(), // Add things from config
                 "domain" => new ConnectionControllerStateDomain(), // Add things from config
-                "subnetwork" => new ConnectionContollerStateSubnetwork(), // Add things from config
+                "subnetwork" => new ConnectionControllerStateSubnetwork(), // Add things from config
                 _ => throw new Exception("Not a known ConnectionController type")
             };
             IManager connectionControllerManager = new ConnectionControllerManager(configuration,
