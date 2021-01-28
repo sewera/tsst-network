@@ -9,6 +9,8 @@ namespace ConnectionController.Config
         public string ConnectionControllerType { get; }
         
         public int PeerCoordinationLocalPort { get; }
+        
+        public int PeerCoordinationRemotePort { get; }
         public int ConnectionRequestLocalPort { get; }
         
         public Dictionary<string, string> CcNames { get; }
@@ -20,6 +22,7 @@ namespace ConnectionController.Config
         private Configuration(IPAddress serverAddress,
                               string connectionControllerType,
                               int peerCoordinationLocalPort,
+                              int peerCoordinationRemotePort,
                               int connectionRequestLocalPort,
                               Dictionary<string, string> ccNames,
                               Dictionary<string,int> ccConnectionRequestRemotePorts,
@@ -28,6 +31,7 @@ namespace ConnectionController.Config
             ServerAddress = serverAddress;
             ConnectionControllerType = connectionControllerType;
             PeerCoordinationLocalPort = peerCoordinationLocalPort;
+            PeerCoordinationRemotePort = peerCoordinationRemotePort;
             ConnectionRequestLocalPort = connectionRequestLocalPort;
             CcNames = ccNames;
             CcConnectionRequestRemotePorts = ccConnectionRequestRemotePorts;
@@ -39,6 +43,7 @@ namespace ConnectionController.Config
             private IPAddress _serverAddress;
             private string _connectionControllerType;
             private int _peerCoordinationLocalPort;
+            private int _peerCoordinationRemotePort;
             private int _connectionRequestLocalPort;
             private Dictionary<string, string> _ccNames;
             private Dictionary<string, int> _ccConnectionRequestRemotePorts;
@@ -59,6 +64,12 @@ namespace ConnectionController.Config
             public Builder SetPeerCoordinationLocalPort(int peerCoordinationLocalPort)
             {
                 _peerCoordinationLocalPort = peerCoordinationLocalPort;
+                return this;
+            }
+            
+            public Builder SetPeerCoordinationRemotePort(int peerCoordinationRemotePort)
+            {
+                _peerCoordinationRemotePort = peerCoordinationRemotePort;
                 return this;
             }
 
@@ -117,6 +128,7 @@ namespace ConnectionController.Config
                 return new Configuration(_serverAddress,
                     _connectionControllerType,
                     _peerCoordinationLocalPort,
+                    _peerCoordinationRemotePort,
                     _connectionRequestLocalPort,
                     _ccNames,
                     _ccConnectionRequestRemotePorts,
