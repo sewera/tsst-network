@@ -19,8 +19,8 @@ namespace NetworkNode
         
         private readonly Configuration _configuration;
         private readonly IPacketForwarder _packetForwarder;
-        private readonly IPersistentClientPortFactory<MplsPacket> _clientClientPortFactory;
-        private readonly Dictionary<string, IPersistentClientPort<MplsPacket>> _clientPorts = new Dictionary<string, IPersistentClientPort<MplsPacket>>();
+        private readonly IPersistentClientPortFactory<EonPacket> _clientClientPortFactory;
+        private readonly Dictionary<string, IPersistentClientPort<EonPacket>> _clientPorts = new Dictionary<string, IPersistentClientPort<EonPacket>>();
 
         private readonly Dictionary<string, LinkResourceManager> _lrmPorts = new Dictionary<string, LinkResourceManager>();
 
@@ -28,7 +28,7 @@ namespace NetworkNode
 
         public NetworkNodeManager(Configuration configuration,
                                   IPacketForwarder packetForwarder,
-                                  IPersistentClientPortFactory<MplsPacket> clientClientPortFactory)
+                                  IPersistentClientPortFactory<EonPacket> clientClientPortFactory)
         {
             _configuration = configuration;
             _packetForwarder = packetForwarder;
@@ -53,7 +53,7 @@ namespace NetworkNode
                         lrmConfiguration.RcLocalTopologyRemotePort));
 
                 _clientPorts.Add(clientPortAlias, _clientClientPortFactory.GetPort(clientPortAlias));
-                _clientPorts[clientPortAlias].ConnectPermanentlyToServer(new MplsPacket.Builder().SetSourcePortAlias(clientPortAlias).Build());
+                _clientPorts[clientPortAlias].ConnectPermanentlyToServer(new EonPacket.Builder().SetSrcPort(clientPortAlias).Build());
                 _clientPorts[clientPortAlias].RegisterReceiveMessageEvent(_packetForwarder.ForwardPacket);
                 _clientPorts[clientPortAlias].StartReceiving();
 

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Common.Utils;
 
 namespace NetworkNode.Networking.Forwarding.FIB
 {
@@ -7,16 +8,14 @@ namespace NetworkNode.Networking.Forwarding.FIB
     /// </summary>
     class FibRow
     {
-        private int _inLink;
-        private int _inLabel;
-        private int _outLink;
-        private int _outLabel;
-        private bool _isNextLabel;
-        private int _nextLabel;
-
+        private string _inPort;
+        private int _lowerSlotsValue;
+        private int _upperSlotsValue;
+        private string _outPort;
+        
         /// <summary>
         /// Class constructor from strig
-        /// <param name="CommandData"> String being CommandData from ManagementSystem <param>
+        /// <param name="CommandData"> String being CommandData from ManagementSystem </param>
         /// </summary>
         public FibRow(string CommandData)
         {
@@ -24,26 +23,19 @@ namespace NetworkNode.Networking.Forwarding.FIB
             // Assert there will be no "" elements (which happens sometimes after Split)
             words.RemoveAll(item => item == "");
 
-            _inLink = int.Parse(words[0]);
-            _inLabel = int.Parse(words[1]);
-            // Tunel can terminate
-            _outLink = (words[2]==".") ? 0 : int.Parse(words[2]);
-            _outLabel = (words[3]==".") ? 0 : int.Parse(words[3]);
-
-            //If command has more than 4 elements it means that row will contain nextLabel field
-            if (words.Count > 4)
-            {
-                _isNextLabel = true;
-                _nextLabel = -int.Parse(words[4]);
-            }
+            _inPort = words[0];
+            _lowerSlotsValue = int.Parse(words[1]);
+            
+            _upperSlotsValue = int.Parse(words[2]);
+            _outPort = words[3];
         }
         /// <summary>
         /// Check if the first part of row match given params
         /// <returns>True if inLink and inLabel match given params </returns>
         /// </summary>
-        public bool FirstPartMatch(int inLink, int inLabel)
+        public bool FirstPartMatch(string inPort, (int, int) slots)
         {
-            if (_inLink==inLink && _inLabel == inLabel)
+            if (Checkers.PortMatches(_inPort, inPort) && slots == (_lowerSlotsValue, _upperSlotsValue))
             {
                 return true;
             }
@@ -53,30 +45,27 @@ namespace NetworkNode.Networking.Forwarding.FIB
         /// Get second part of row
         /// <returns>_outLink,_outLabel,_isNextLabel,_nextLabel </returns>
         /// </summary>
-        public (int,int,bool,int) SecondPartGet()
+        public string SecondPartGet()
         {
-            return (_outLink,_outLabel,_isNextLabel,_nextLabel);
+            return _outPort;
         }
 
         public override string ToString()
         {
-            return $"InLink: {_inLink},InLabel: {_inLabel},OutLink: {_outLink},OutLabel: {_outLabel},isNextLabel: {_isNextLabel.ToString()},NextLabel: {_nextLabel}";
+            return $"inPort: {_outPort}, slots = ({_lowerSlotsValue}, {_upperSlotsValue}, outPort: {_outPort}";
         }
 
          public static bool operator ==(FibRow a, FibRow b)
          {
-             return (a._inLink == b._inLink)           &&
-                    (a._inLabel == b._inLabel)         &&
-                    (a._outLink == b._outLink)         &&
-                    (a._outLabel == b._outLabel)       &&
-                    (a._isNextLabel == b._isNextLabel) &&
-                    (a._nextLabel == b._nextLabel);
+            return  (a._inPort == b._inPort) &&
+                    (a._lowerSlotsValue == b._lowerSlotsValue) &&
+                    (a._upperSlotsValue == b._upperSlotsValue) &&
+                    (a._outPort == b._outPort);
          }
 
          public static bool operator !=(FibRow a, FibRow b)
          {
              return !(a==b);
          }
-
     }
 }

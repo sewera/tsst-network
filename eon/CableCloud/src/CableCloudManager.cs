@@ -11,11 +11,11 @@ namespace CableCloud
     {
         private static readonly Logger LOG = LogManager.GetCurrentClassLogger();
         
-        private readonly IPersistentServerPort<MplsPacket> _serverPort;
+        private readonly IPersistentServerPort<EonPacket> _serverPort;
         private readonly IPacketForwarder _packetForwarder;
-        private readonly ConcurrentDictionary<string, IWorker<MplsPacket>> _clientWorkers = new ConcurrentDictionary<string, IWorker<MplsPacket>>();
+        private readonly ConcurrentDictionary<string, IWorker<EonPacket>> _clientWorkers = new ConcurrentDictionary<string, IWorker<EonPacket>>();
 
-        public CableCloudManager(IPersistentServerPort<MplsPacket> serverPort, IPacketForwarder packetForwarder)
+        public CableCloudManager(IPersistentServerPort<EonPacket> serverPort, IPacketForwarder packetForwarder)
         {
             _serverPort = serverPort;
             _packetForwarder = packetForwarder;
@@ -29,9 +29,9 @@ namespace CableCloud
             _serverPort.Listen();
         }
 
-        private void RegisterWorker((string, IWorker<MplsPacket>) worker)
+        private void RegisterWorker((string, IWorker<EonPacket>) worker)
         {
-            (string portAlias, IWorker<MplsPacket> clientWorker) = worker;
+            (string portAlias, IWorker<EonPacket> clientWorker) = worker;
             _clientWorkers[portAlias] = clientWorker;
             clientWorker.RegisterReceiveMessageDelegate(_packetForwarder.ForwardPacket);
             clientWorker.RegisterClientRemovedDelegate(_packetForwarder.OnClientRemoved);

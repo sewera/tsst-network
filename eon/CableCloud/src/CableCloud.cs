@@ -28,8 +28,8 @@ namespace CableCloud
 
             defaultStartup.InitLogger(null);
 
-            IWorkerFactory<MplsPacket> clientWorkerFactory = new WorkerFactory<MplsPacket>();
-            IPersistentServerPort<MplsPacket> serverPort = new PersistentServerPort<MplsPacket>(configuration.ListeningAddress, configuration.ListeningPort, clientWorkerFactory);
+            IWorkerFactory<EonPacket> clientWorkerFactory = new WorkerFactory<EonPacket>();
+            IPersistentServerPort<EonPacket> serverPort = new PersistentServerPort<EonPacket>(configuration.ListeningAddress, configuration.ListeningPort, clientWorkerFactory);
             IPacketForwarder packetForwarder = new PacketForwarder(configuration);
 
             ICableCloudManager cableCloudManager = new CableCloudManager(serverPort, packetForwarder);
