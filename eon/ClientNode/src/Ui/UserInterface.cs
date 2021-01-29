@@ -95,9 +95,9 @@ namespace ClientNode.Ui
             }
         }
 
-        private static void MessageReceived((string portAlias, MplsPacket mplsPacket) portAliasAndPacketTuple)
+        private static void MessageReceived((string portAlias, EonPacket mplsPacket) portAliasAndPacketTuple)
         {
-            (_, MplsPacket mplsPacket) = portAliasAndPacketTuple;
+            (_, EonPacket mplsPacket) = portAliasAndPacketTuple;
             Console.WriteLine($"Received: {mplsPacket}");
             Console.Write("> ");
         }

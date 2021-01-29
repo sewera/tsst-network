@@ -65,14 +65,6 @@ namespace NetworkNode
 
             _fibInsertPort.Listen();
 
-            Thread.Sleep(1000);
-
-            _lrmPorts["111"].SendPacket(new RequestPacket.Builder().Build());
-            _lrmPorts["112"].SendPacket(new RequestPacket.Builder().Build());
-            _lrmPorts["113"].SendPacket(new RequestPacket.Builder().Build());
-            _lrmPorts["114"].SendPacket(new RequestPacket.Builder().Build());
-            _lrmPorts["115"].SendPacket(new RequestPacket.Builder().Build());
-
             ManualResetEvent allDone = new ManualResetEvent(false);
             allDone.WaitOne();
         }

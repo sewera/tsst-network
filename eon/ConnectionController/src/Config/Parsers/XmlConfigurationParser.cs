@@ -30,7 +30,6 @@ namespace ConnectionController.Config.Parsers
             configurationBuilder.SetPeerCoordinationLocalPort(
                 int.Parse(xelement.Descendants("cc_peer_coordination_listener_local_port").First().Value));
             configurationBuilder.SetServerAddress(IPAddress.Parse(xelement.Descendants("server_address").First().Value));
-            configurationBuilder.SetNnFibInsertRemotePort(int.Parse(xelement.Descendants("nn_fib_insert_remote_port").First().Value));
             configurationBuilder.SetRcRouteTableQueryRemotePort(int.Parse(xelement.Descendants("rc_route_table_query_remote_port").First().Value));
 
             foreach (XElement element in xelement.Descendants("cc_name"))
@@ -53,7 +52,7 @@ namespace ConnectionController.Config.Parsers
                        LOG.Trace($"CC: LrmRemotePortAlias: {element.FirstAttribute.Value} Port: {element.Value}");
                        configurationBuilder.AddLrmRemotePort(element.FirstAttribute.Value, int.Parse(element.Value));
                    }
-
+                   configurationBuilder.SetNnFibInsertRemotePort(int.Parse(xelement.Descendants("nn_fib_insert_remote_port").First().Value));
                    break;
                
                case "domain":

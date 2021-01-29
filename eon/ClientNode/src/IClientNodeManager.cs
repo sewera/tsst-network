@@ -7,7 +7,7 @@ namespace ClientNode
 {
     public interface IClientNodeManager : IManager
     {
-        public void RegisterReceiveMessageEvent(ReceiveMessage<MplsPacket> receiveMessage);
-        public void Send(string mplsOutLabel, string message, (List<long>, string) labels);
+        public void RegisterReceiveMessageEvent(ReceiveMessage<EonPacket> receiveMessage);
+        public void Send(string message, (int, int) slots);
     }
 }
