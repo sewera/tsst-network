@@ -1,7 +1,7 @@
-import os
-import time
 import argparse
+import os
 from pathlib import Path
+import time
 
 
 parser = argparse.ArgumentParser(description="Launch tsst-network")
@@ -60,9 +60,24 @@ NetworkNode_exe = Path("NetworkNode.exe")
 ConnectionController = Path("ConnectionController")
 ConnectionController_csproj = Path("ConnectionController.csproj")
 ConnectionController_configs = [
+    Path("ConnectionControllerR01.xml"),
+    Path("ConnectionControllerR02.xml"),
+    Path("ConnectionControllerR03.xml"),
     Path("ConnectionControllerR11.xml"),
+    Path("ConnectionControllerR12.xml"),
+    Path("ConnectionControllerR13.xml"),
+    Path("ConnectionControllerR14.xml"),
+    Path("ConnectionControllerR21.xml"),
+    Path("ConnectionControllerR22.xml"),
+    Path("ConnectionControllerR23.xml"),
+    Path("ConnectionControllerR31.xml"),
+    Path("ConnectionControllerR32.xml"),
     Path("ConnectionControllerS1.xml"),
+    Path("ConnectionControllerS2.xml"),
+    Path("ConnectionControllerSN0.xml"),
     Path("ConnectionControllerSN1.xml"),
+    Path("ConnectionControllerSN2.xml"),
+    Path("ConnectionControllerSN3.xml"),
 ]
 ConnectionController_exe = Path("ConnectionController.exe")
 
