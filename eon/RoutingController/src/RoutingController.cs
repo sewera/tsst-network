@@ -1,5 +1,4 @@
 ﻿using Common.Config.Parsers;
-using Common.Models;
 using Common.Startup;
 using RoutingController.Config;
 using RoutingController.Config.Parsers;
@@ -23,7 +22,7 @@ namespace RoutingController
 
             Configuration configuration = configurationParser.ParseConfiguration();
 
-            IRcState rcState = new RcState(); // Add some data from config
+            IRcState rcState = new RcState(configuration.RouteTable);
 
             IManager routingControllerManager = new RoutingControllerManager(configuration,
                 rcState.OnRouteTableQuery,
