@@ -36,6 +36,7 @@ namespace ConnectionController
                     configuration.CcPeerCoordinationRemotePorts,
                     configuration.CcConnectionRequestRemotePorts,
                     configuration.LrmRemotePorts,
+                    configuration.CcNames,
                     configuration.RcRouteTableQueryRemotePort),
                 _ => throw new Exception("Not a known ConnectionController type")
             };
