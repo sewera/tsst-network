@@ -6,6 +6,7 @@
     <server_address>127.0.0.1</server_address>
     <cable_cloud_address>127.0.0.1</cable_cloud_address>
     <cable_cloud_port>3001</cable_cloud_port>
+    <nn_fib_insert_local_port>18013</nn_fib_insert_local_port>
 
     <port_aliases>
 

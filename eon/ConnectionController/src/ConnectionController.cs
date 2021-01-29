@@ -1,4 +1,5 @@
-﻿using Common.Config.Parsers;
+﻿using System;
+using Common.Config.Parsers;
 using Common.Models;
 using Common.Startup;
 using ConnectionController.Config;
@@ -22,10 +23,29 @@ namespace ConnectionController
             defaultStartup.InitLogger(null);
 
             Configuration configuration = configurationParser.ParseConfiguration();
+            
+            IConnectionControllerState connectionControllerState = configuration.ConnectionControllerType switch
+            {
+                "node" => new ConnectionControllerStateNode(configuration.ServerAddress,
+                    configuration.CcPeerCoordinationRemotePorts,
+                    configuration.LrmRemotePorts,
+                    configuration.CcNames,
+                    configuration.NnFibInsertRemotePort,
+                    configuration.RcRouteTableQueryRemotePort),
+                "domain" => new ConnectionControllerStateDomain(configuration.ServerAddress,
+                    configuration.CcConnectionRequestRemotePorts,
+                    configuration.CcNames),
+                "subnetwork" => new ConnectionControllerStateSubnetwork(configuration.ServerAddress,
+                    configuration.CcPeerCoordinationRemotePorts,
+                    configuration.CcConnectionRequestRemotePorts,
+                    configuration.LrmRemotePorts,
+                    configuration.CcNames,
+                    configuration.RcRouteTableQueryRemotePort),
+                _ => throw new Exception("Not a known ConnectionController type")
+            };
             IManager connectionControllerManager = new ConnectionControllerManager(configuration,
-                packet => new GenericDataPacket.Builder().SetType(GenericPacket.PacketType.Response).SetData(packet.Data).Build(),
-                packet => new GenericDataPacket.Builder().SetType(GenericPacket.PacketType.Response).SetData(packet.Data).Build());
-            // TODO: Those are only mock delegates
+                connectionControllerState.OnConnectionRequest,
+                connectionControllerState.OnPeerCoordination);
             connectionControllerManager.Start();
         }
     }

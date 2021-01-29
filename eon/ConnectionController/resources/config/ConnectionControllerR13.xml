@@ -10,6 +10,9 @@
     <!--Localhost Ip-->
     <server_address>127.0.0.1</server_address>
 
+    <nn_fib_insert_remote_port>18013</nn_fib_insert_remote_port>
+    <rc_route_table_query_remote_port>13911</rc_route_table_query_remote_port>
+
     <!--With this dict subnetwork CC knows it's peer node CCs names by `end` from LRM::LinkConnectionRequest-->
     <cc_names>
 
