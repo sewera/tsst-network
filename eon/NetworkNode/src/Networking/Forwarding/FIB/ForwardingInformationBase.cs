@@ -65,58 +65,23 @@ namespace NetworkNode.Networking.Forwarding.FIB
         /// <param name="packet"> incoming MplsPacket<param>
         /// <returns>The packet to send and its output port</returns>
         /// </summary>
-        public (string, MplsPacket) Commutate((string portAlias, MplsPacket packet) forwardPacketTuple)
+        public (string, EonPacket) Commutate((string portAlias, EonPacket packet) forwardPacketTuple)
         {
             string resultPort = "";
-            MplsPacket resultPacket = new MplsPacket();
-
+            
             // The Port where the packet came
-            int inPort = int.Parse(forwardPacketTuple.portAlias);
+            string inPort =forwardPacketTuple.portAlias;
             // The incoming packet
-            MplsPacket inPacket = forwardPacketTuple.packet;
-            //Popping the label from the incoming packet
-            int inLabel = inPacket.PopLabel();
-
-
-            // Search rows for matching inPort and inLabel
+            EonPacket inPacket = forwardPacketTuple.packet;
+            
+            // Search rows for matching inPort and sluts
             bool isFound=false;
             foreach (FibRow row in rows)
             {
-                if(row.FirstPartMatch(inPort,inLabel))
+                if(row.FirstPartMatch(inPort, inPacket.Slots))
                 {
-                    (int outLink,int outLabel,bool isNextLabel,int nextLabel) = row.SecondPartGet();
+                    resultPort = row.SecondPartGet();
                     isFound=true;
-
-                    if(outLink == 0 && outLabel == 0)
-                    {
-                        // It means that tunel terminates here, need the recursion to be done
-                        // If the tunnel terminates here, it means that MplsPacket has at least one label remaining
-                        (resultPort, resultPacket) = Commutate((inPort.ToString(), inPacket));
-                    }
-                    else if (isNextLabel)
-                    {
-                        resultPort = outLink.ToString();
-                        // Remember that inPacket has its label popped
-                        resultPacket=inPacket; 
-                        // The pushed label here is the same level label as the previously popped one
-                        resultPacket.PushLabel(outLabel);
-                        // Now push next level label
-                        resultPacket.PushLabel(nextLabel);
-                    }
-                    else if (isNextLabel == false)
-                    {
-                        // The most common case
-                        resultPort = outLink.ToString();
-                        resultPacket=inPacket;
-                        // Now we push new label, (pop and push is the same as change)
-                        resultPacket.PushLabel(outLabel);
-                        // There is some redundancy in two last cases, but i want to clearly mark the diff between them in comments.
-                    }
-                    else
-                    {
-                        // If any other case happen, we assume packet is lost
-                        isFound=false;
-                    }
                 }
             }
 
@@ -127,7 +92,7 @@ namespace NetworkNode.Networking.Forwarding.FIB
                 // Method catching this exception should print that packet is lost
             }
             
-            return (resultPort,resultPacket);
+            return (resultPort, inPacket);
         }
     }
 

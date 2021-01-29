@@ -11,7 +11,7 @@ namespace NetworkNode.Networking.Forwarding
     {
         private static readonly Logger LOG = LogManager.GetCurrentClassLogger();
 
-        private Dictionary<string, IPersistentClientPort<MplsPacket>> _clientPorts;
+        private Dictionary<string, IPersistentClientPort<EonPacket>> _clientPorts;
 
         private ForwardingInformationBase FIB;
 
@@ -20,7 +20,7 @@ namespace NetworkNode.Networking.Forwarding
             FIB = new ForwardingInformationBase();
         }
 
-        public void ForwardPacket((string portAlias, MplsPacket packet) forwardPacketTuple)
+        public void ForwardPacket((string portAlias, EonPacket packet) forwardPacketTuple)
         {
             
             if (_clientPorts == null)
@@ -31,11 +31,8 @@ namespace NetworkNode.Networking.Forwarding
             try
             {
                 LOG.Debug($"Received packet {forwardPacketTuple.packet} on port {forwardPacketTuple.portAlias}");
-                (string outPort, MplsPacket outPacket) = FIB.Commutate(forwardPacketTuple);
-                for (int i = 0; i < outPacket.MplsLabels.Count; i++)
-                {
-                    outPacket.MplsLabels[i] = Math.Abs(outPacket.MplsLabels[i]);
-                }
+                (string outPort, EonPacket outPacket) = FIB.Commutate(forwardPacketTuple);
+               
                 LOG.Debug($"Forwarding packet {outPacket} to port {outPort}");
                 _clientPorts[outPort].Send(outPacket);
                 LOG.Debug($"Forwarded packet {outPacket} on port {outPort}");
@@ -63,7 +60,7 @@ namespace NetworkNode.Networking.Forwarding
             }
         }
 
-        public void SetClientPorts(Dictionary<string, IPersistentClientPort<MplsPacket>> clientPorts)
+        public void SetClientPorts(Dictionary<string, IPersistentClientPort<EonPacket>> clientPorts)
         {
             _clientPorts = clientPorts;
         }

@@ -27,8 +27,8 @@ namespace NetworkNode
 
             IPacketForwarder packetForwarder = new MplsPacketForwarder();
             //IPacketForwarder packetForwarder = new MockPacketForwarder(configuration);
-            IPersistentClientPortFactory<MplsPacket> clientPortFactory =
-                new PersistentClientPortFactory<MplsPacket>(configuration.CableCloudAddress, configuration.CableCloudPort);
+            IPersistentClientPortFactory<EonPacket> clientPortFactory =
+                new PersistentClientPortFactory<EonPacket>(configuration.CableCloudAddress, configuration.CableCloudPort);
             IManager networkNodeManager = new NetworkNodeManager(configuration, packetForwarder, clientPortFactory);
 
             defaultStartup.SetTitle(configuration.RouterAlias);

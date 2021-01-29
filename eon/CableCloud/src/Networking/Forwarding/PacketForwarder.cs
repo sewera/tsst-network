@@ -12,16 +12,16 @@ namespace CableCloud.Networking.Forwarding
         private static readonly Logger LOG = LogManager.GetCurrentClassLogger();
 
         private List<(string, string, bool)> _connectionTable;
-        private IDictionary<string, IWorker<MplsPacket>> _clientWorkers;
+        private IDictionary<string, IWorker<EonPacket>> _clientWorkers;
 
         public PacketForwarder(Configuration configuration)
         {
             _connectionTable = configuration.ConnectionTable;
         }
 
-        public void ForwardPacket((string, MplsPacket) forwardPacketTuple)
+        public void ForwardPacket((string, EonPacket) forwardPacketTuple)
         {
-            (string portAlias, MplsPacket packet) = forwardPacketTuple;
+            (string portAlias, EonPacket packet) = forwardPacketTuple;
             try
             {
                 (string portAlias1, string portAlias2, bool isAlive) = _connectionTable.Find(connection =>
@@ -49,11 +49,11 @@ namespace CableCloud.Networking.Forwarding
             }
             catch (ArgumentNullException)
             {
-                LOG.Error("SourcePortAlias in incoming MplsPacket did not match any entries in connection table");
+                LOG.Error("SourcePortAlias in incoming EonPacket did not match any entries in connection table");
             }
         }
 
-        public void SetClientPorts(IDictionary<string, IWorker<MplsPacket>> clientWorkers)
+        public void SetClientPorts(IDictionary<string, IWorker<EonPacket>> clientWorkers)
         {
             _clientWorkers = clientWorkers;
         }
