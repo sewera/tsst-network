@@ -32,7 +32,10 @@ namespace NetworkNode.Networking.LRM
 
             _lrmPort.RegisterReceiveRequestDelegate(OnReceiveRequest);
 
-            _lrmConnectionRequestClient = new ApiClient<RequestPacket, ResponsePacket>(lrmLinkConnectionRequestRemoteAddress, lrmLinkConnectionRequestRemotePort);
+            if (lrmLinkConnectionRequestRemotePort == 0)
+                _lrmConnectionRequestClient = null;
+            else
+                _lrmConnectionRequestClient = new ApiClient<RequestPacket, ResponsePacket>(lrmLinkConnectionRequestRemoteAddress, lrmLinkConnectionRequestRemotePort);
             _rcLocalTopologyClient = new ApiClient<RequestPacket, ResponsePacket>(rcLocalTopologyRemoteAddress, rcLocalTopologyRemotePort);
         }
 
@@ -103,13 +106,17 @@ namespace NetworkNode.Networking.LRM
             // If allocation is requested by CC inform second LRM about it
             if (whoRequests == RequestPacket.Who.Cc)
             {
-                LOG.Info($"Send LRM::LinkConnectionRequest_req(slots={slots}, allocate = true, who = LRM)");
-                ResponsePacket linkConnectionRequest = _lrmConnectionRequestClient.Get(new RequestPacket.Builder()
-                    .SetSlots(slots)
-                    .SetShouldAllocate(true)
-                    .SetWhoRequests(RequestPacket.Who.Lrm)
-                    .Build());
-                LOG.Info($"LRM::LinkConnectionRequest_{ResponsePacket.ResponseTypeToString(linkConnectionRequest.Res)}(res = {ResponsePacket.ResponseTypeToString(localTopology.Res)}");
+                if (_lrmConnectionRequestClient != null)
+                {
+                    LOG.Info($"Send LRM::LinkConnectionRequest_req(slots={slots}, allocate = true, who = LRM)");
+                    ResponsePacket linkConnectionRequest = _lrmConnectionRequestClient.Get(new RequestPacket.Builder()
+                        .SetSlots(slots)
+                        .SetShouldAllocate(true)
+                        .SetWhoRequests(RequestPacket.Who.Lrm)
+                        .Build());
+                    LOG.Info(
+                        $"LRM::LinkConnectionRequest_{ResponsePacket.ResponseTypeToString(linkConnectionRequest.Res)}(res = {ResponsePacket.ResponseTypeToString(localTopology.Res)}");
+                }
             }
            
             // Send response packet
