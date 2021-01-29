@@ -6,8 +6,8 @@ namespace NetworkNode.Networking.Forwarding
 {
     public interface IPacketForwarder
     {
-        public void ForwardPacket((string portAlias, MplsPacket packet) forwardPacketTuple);
+        public void ForwardPacket((string portAlias, EonPacket packet) forwardPacketTuple);
         public void ConfigureFromManagementSystem((string portAlias, ManagementPacket packet) managementTuple);
-        public void SetClientPorts(Dictionary<string, IPersistentClientPort<MplsPacket>> clientPorts);
+        public void SetClientPorts(Dictionary<string, IPersistentClientPort<EonPacket>> clientPorts);
     }
 }

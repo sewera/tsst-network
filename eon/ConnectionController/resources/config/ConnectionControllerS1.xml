@@ -11,6 +11,7 @@
     <cc_peer_coordination_remote_port>12822</cc_peer_coordination_remote_port>
     <!--Localhost ip-->
     <server_address>127.0.0.1</server_address>
+    <rc_route_table_query_remote_port>0</rc_route_table_query_remote_port>
 
     <!--With this dict CC knows by subnetwork CCs names by port-->
     <cc_names>
