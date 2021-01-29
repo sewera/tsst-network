@@ -15,17 +15,21 @@ namespace NetworkNode.Config
 
         public List<string> LocalPortAliases { get; }
 
+        public int NnFibInsertLocalPort { get; }
+
         private Configuration(string routerAlias,
                               IPAddress cableCloudAddress,
                               int cableCloudPort,
                               Dictionary<string, LrmConfiguration> lrms,
-                              List<string> localPortAliases)
+                              List<string> localPortAliases,
+                              int nnFibInsertLocalPort)
         {
             RouterAlias = routerAlias;
             CableCloudAddress = cableCloudAddress;
             CableCloudPort = cableCloudPort;
             Lrms = lrms;
             LocalPortAliases = localPortAliases;
+            NnFibInsertLocalPort = nnFibInsertLocalPort;
         }
 
         public class LrmConfiguration
@@ -125,6 +129,7 @@ namespace NetworkNode.Config
             private Dictionary<string, LrmConfiguration> _lrms;
 
             private List<string> _localPortAliases;
+            private int _nnFibInsertLocalPort;
 
             public Builder SetRouterAlias(string routerAlias)
             {
@@ -170,6 +175,12 @@ namespace NetworkNode.Config
                 return this;
             }
 
+            public Builder SetNnFibInsertLocalPort(int nnFibInsertLocalPort)
+            {
+                _nnFibInsertLocalPort = nnFibInsertLocalPort;
+                return this;
+            }
+
             public Configuration Build()
             {
                 _cableCloudAddress ??= IPAddress.Parse("127.0.0.1");
@@ -179,7 +190,8 @@ namespace NetworkNode.Config
                     _cableCloudAddress,
                     _cableCloudPort,
                     _lrms,
-                    _localPortAliases);
+                    _localPortAliases,
+                    _nnFibInsertLocalPort);
             }
         }
     }

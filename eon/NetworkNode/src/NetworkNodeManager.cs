@@ -1,7 +1,9 @@
 using System.Collections.Generic;
+using System.Net;
 using System.Threading;
 using Common.Models;
 using Common.Networking.Client.Persistent;
+using Common.Networking.Server.Delegates;
 using Common.Networking.Server.OneShot;
 using Common.Startup;
 using NetworkNode.Config;
@@ -22,6 +24,8 @@ namespace NetworkNode
 
         private readonly Dictionary<string, LinkResourceManager> _lrmPorts = new Dictionary<string, LinkResourceManager>();
 
+        private readonly IOneShotServerPort<ManagementPacket, ResponsePacket> _fibInsertPort;
+
         public NetworkNodeManager(Configuration configuration,
                                   IPacketForwarder packetForwarder,
                                   IPersistentClientPortFactory<MplsPacket> clientClientPortFactory)
@@ -29,6 +33,8 @@ namespace NetworkNode
             _configuration = configuration;
             _packetForwarder = packetForwarder;
             _clientClientPortFactory = clientClientPortFactory;
+            _fibInsertPort = new OneShotServerPort<ManagementPacket, ResponsePacket>(IPAddress.Parse("127.0.0.1"), configuration.NnFibInsertLocalPort);
+            _fibInsertPort.RegisterReceiveRequestDelegate(OnFibInsertRequest);
         }
 
         public void Start()
@@ -57,6 +63,8 @@ namespace NetworkNode
 
             _packetForwarder.SetClientPorts(_clientPorts);
 
+            _fibInsertPort.Listen();
+
             Thread.Sleep(1000);
 
             _lrmPorts["111"].SendPacket(new RequestPacket.Builder().Build());
@@ -67,6 +75,12 @@ namespace NetworkNode
 
             ManualResetEvent allDone = new ManualResetEvent(false);
             allDone.WaitOne();
+        }
+
+        private ResponsePacket OnFibInsertRequest(ManagementPacket managementPacket)
+        {
+            _packetForwarder.ConfigureFromManagementSystem(("", managementPacket));
+            return new ResponsePacket.Builder().SetRes(ResponsePacket.ResponseType.Ok).Build();
         }
     }
 }

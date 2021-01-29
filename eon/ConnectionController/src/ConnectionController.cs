@@ -26,15 +26,22 @@ namespace ConnectionController
             
             IConnectionControllerState connectionControllerState = configuration.ConnectionControllerType switch
             {
-                "node" => new ConnectionControllerStateNode(), // Add things from config
-                "domain" => new ConnectionControllerStateDomain(), // Add things from config
-                "subnetwork" => new ConnectionControllerStateSubnetwork(), // Add things from config
+                "node" => new ConnectionControllerStateNode(configuration.ServerAddress,
+                    configuration.CcPeerCoordinationRemotePorts,
+                    configuration.CcConnectionRequestRemotePorts,
+                    configuration.NnFibInsertRemotePort,
+                    configuration.RcRouteTableQueryRemotePort), // Add things from config
+                "domain" => new ConnectionControllerStateDomain(configuration.ServerAddress, configuration.CcPeerCoordinationRemotePorts), // Add things from config
+                "subnetwork" => new ConnectionControllerStateSubnetwork(configuration.ServerAddress,
+                    configuration.CcPeerCoordinationRemotePorts,
+                    configuration.CcConnectionRequestRemotePorts,
+                    configuration.LrmRemotePorts,
+                    configuration.RcRouteTableQueryRemotePort),
                 _ => throw new Exception("Not a known ConnectionController type")
             };
             IManager connectionControllerManager = new ConnectionControllerManager(configuration,
                 connectionControllerState.OnConnectionRequest,
                 connectionControllerState.OnPeerCoordination);
-            // TODO: Those are only mock delegates
             connectionControllerManager.Start();
         }
     }
