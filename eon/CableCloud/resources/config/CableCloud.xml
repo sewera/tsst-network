@@ -6,21 +6,46 @@
     <cable_cloud_port>3001</cable_cloud_port>
 
     <connections>
-        
-        <connection>1,12</connection>
-        <connection>11,71</connection>
-        <connection>13,52</connection>
-        <connection>14,22</connection>
-        <connection>2,24</connection>
-        <connection>21,54</connection>
-        <connection>23,32</connection>
-        <connection>3,34</connection>
-        <connection>31,53</connection>
-        <connection>33,62</connection>
-        <connection>4,41</connection>
-        <connection>42,72</connection>
-        <connection>43,61</connection>
-        <connection>44,51</connection>
+        <!--Clients to SN1-->
+        <connection>141,1419</connection>
+        <connection>131,1319</connection>
+        <!--Clients to SN2-->
+        <connection>221,2219</connection>
+        <connection>231,2319</connection>
+        <!--Clients to SN3-->
+        <connection>333,3339</connection>
+        <connection>335,3359</connection>
+        <connection>321,3219</connection>
+        <connection>322,3229</connection>
+        <connection>323,3239</connection>
+
+        <!--SN0-->
+        <connection>014,033</connection>
+        <connection>013,024</connection>
+        <connection>034,023</connection>
+        <!--SN1-->
+        <connection>142,115</connection>
+        <connection>143,122</connection>
+        <connection>144,132</connection>
+        <connection>133,114</connection>
+        <connection>134,121</connection>
+        <connection>123,113</connection>
+        <!--SN2-->
+        <connection>232,214</connection>
+        <connection>213,223</connection>
+        <connection>233,222</connection>
+        <!--SN3-->
+        <connection>334,324</connection>
+
+        <!--SN1 to SN0-->
+        <connection>111,011</connection>
+        <connection>112,032</connection>
+        <!--SN2 to SN0-->
+        <connection>211,031</connection>
+        <connection>212,022</connection>
+        <!--SN3 to SN0-->
+        <connection>312,012</connection>
+        <connection>311,021</connection>
 
     </connections>
 
