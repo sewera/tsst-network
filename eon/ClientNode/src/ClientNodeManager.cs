@@ -13,11 +13,11 @@ namespace ClientNode
         private static readonly Logger LOG = LogManager.GetCurrentClassLogger();
 
         private readonly Configuration _configuration;
-        private readonly IPersistentClientPort<MplsPacket> _clientPort;
+        private readonly IPersistentClientPort<EonPacket> _clientPort;
         private readonly IOneShotServerPort<RequestPacket, ResponsePacket> _callAcceptPort;
 
         public ClientNodeManager(Configuration configuration,
-                                 IPersistentClientPort<MplsPacket> clientPort,
+                                 IPersistentClientPort<EonPacket> clientPort,
                                  ReceiveRequest<RequestPacket, ResponsePacket> callAcceptDelegate)
         {
             _configuration = configuration;
@@ -32,22 +32,20 @@ namespace ClientNode
         {
             // TODO: Register delegate when callAccept arrives
             _callAcceptPort.Listen();
-            _clientPort.ConnectPermanentlyToServer(new MplsPacket.Builder().SetSourcePortAlias(_configuration.ClientPortAlias).Build());
+            _clientPort.ConnectPermanentlyToServer(new EonPacket.Builder().SetSrcPort(_configuration.ClientPortAlias).Build());
             _clientPort.StartReceiving();
         }
 
-        public void RegisterReceiveMessageEvent(Common.Networking.Client.Delegates.ReceiveMessage<MplsPacket> receiveMessage)
+        public void RegisterReceiveMessageEvent(Common.Networking.Client.Delegates.ReceiveMessage<EonPacket> receiveMessage)
         {
             _clientPort.RegisterReceiveMessageEvent(receiveMessage);
         }
 
-        public void Send(string mplsOutLabel, string message, (List<long>, string) labels)
+        public void Send(string message, (int, int) slots)
         {
-            (List<long> mplsLabels, string remoteHostAlias) = labels;
-            MplsPacket packet = new MplsPacket.Builder()
-                .SetSourcePortAlias(_configuration.ClientPortAlias)
-                .SetDestinationPortAlias(remoteHostAlias)
-                .SetMplsLabels(mplsLabels)
+            EonPacket packet = new EonPacket.Builder()
+                .SetSrcPort(_configuration.ClientPortAlias)
+                .SetSlots(slots)
                 .SetMessage(message)
                 .Build();
 

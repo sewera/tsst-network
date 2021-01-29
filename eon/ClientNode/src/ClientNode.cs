@@ -33,7 +33,7 @@ namespace ClientNode
                 configuration.NccCallTeardownRemotePort);
 
             ICommandParser commandParser = new CommandParser(configuration);
-            IPersistentClientPort<MplsPacket> clientPort = new PersistentClientPort<MplsPacket>(configuration.ClientPortAlias,
+            IPersistentClientPort<EonPacket> clientPort = new PersistentClientPort<EonPacket>(configuration.ClientPortAlias,
                 configuration.CableCloudAddress, configuration.CableCloudPort);
             IClientNodeManager clientNodeManager = new ClientNodeManager(configuration,
                 clientPort,
