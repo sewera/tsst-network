@@ -7,21 +7,38 @@ namespace Common.test.Utils
     public class CheckersTest
     {
         [Test]
-        public void PortMatchesTest_ReturnTrue()
+        public void PortMatchesTest_ValidPorts()
         {
-            const string pattern = "3xx";
-            string[] ports = {"321", "384", "300"};
-            foreach (string port in ports) Assert.IsTrue(Checkers.PortMatches(pattern, port));
+            (string, string, int)[] patternsPortsAndMatches =
+            {
+                ("xxx", "123", 0),
+                ("1xx", "123", 1),
+                ("12x", "123", 2),
+                ("123", "123", 3)
+            };
+
+            foreach ((string pattern, string port, int matches) in patternsPortsAndMatches)
+            {
+                Assert.AreEqual(Checkers.PortMatches(pattern, port), matches);
+            }
         }
 
         [Test]
-        public void PortMatchesTest_ReturnFalse()
+        public void PortMatchesTest_InvalidPorts_ReturnMinusOne()
         {
-            const string pattern = "3xx";
-            string[] ports = {"123", "231", "3a1", "3121", "31"};
-            foreach (string port in ports) Assert.IsFalse(Checkers.PortMatches(pattern, port));
+            (string, string)[] patternsAndPorts =
+            {
+                ("1xx", "212"),
+                ("123", "124"),
+                ("11x", "124")
+            };
+
+            foreach ((string pattern, string port) in patternsAndPorts)
+            {
+                Assert.AreEqual(Checkers.PortMatches(pattern, port), -1);
+            }
         }
-        
+
         [Test]
         public void MultipleGatewaysInRibRow_ReturnTrue()
         {

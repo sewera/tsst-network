@@ -38,7 +38,7 @@ namespace RoutingController
             // Set dstZone depending on destination domain
             string secondDomainPortPattern = "3xx";
             string dstZone;
-            if (Checkers.PortMatches(secondDomainPortPattern, dstPort))
+            if (Checkers.PortMatches(secondDomainPortPattern, dstPort) > -1) // TODO: Check for matches value
             {
                 dstZone = "012,021";
                 LOG.Trace($"Destination port belongs to other zone. Possible leaving ports: {dstZone}");
@@ -64,7 +64,7 @@ namespace RoutingController
                 foreach (Configuration.RouteTableRow row in _routeTable)
                 {
                     // If we find it we set gateway to the one from that row
-                    if (Checkers.PortMatches(row.Src, srcPort) && Checkers.PortMatches(row.Dst, dstPort))
+                    if (Checkers.PortMatches(row.Src, srcPort) > -1 && Checkers.PortMatches(row.Dst, dstPort) > -1) // TODO: Check for matches value
                     {
                         if (Checkers.MultipleGatewaysInRibRow(row.Gateway))
                         {
