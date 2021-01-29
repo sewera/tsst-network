@@ -28,10 +28,13 @@ namespace ConnectionController
             {
                 "node" => new ConnectionControllerStateNode(configuration.ServerAddress,
                     configuration.CcPeerCoordinationRemotePorts,
-                    configuration.CcConnectionRequestRemotePorts,
+                    configuration.LrmRemotePorts,
+                    configuration.CcNames,
                     configuration.NnFibInsertRemotePort,
-                    configuration.RcRouteTableQueryRemotePort), // Add things from config
-                "domain" => new ConnectionControllerStateDomain(configuration.ServerAddress, configuration.CcPeerCoordinationRemotePorts), // Add things from config
+                    configuration.RcRouteTableQueryRemotePort),
+                "domain" => new ConnectionControllerStateDomain(configuration.ServerAddress,
+                    configuration.CcConnectionRequestRemotePorts,
+                    configuration.CcNames),
                 "subnetwork" => new ConnectionControllerStateSubnetwork(configuration.ServerAddress,
                     configuration.CcPeerCoordinationRemotePorts,
                     configuration.CcConnectionRequestRemotePorts,
