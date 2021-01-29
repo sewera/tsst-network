@@ -4,8 +4,10 @@
 
     <cable_cloud_address>127.0.0.1</cable_cloud_address>
     <cable_cloud_port>3001</cable_cloud_port>
-    <client_alias>H1</client_alias>
-    <client_port>1</client_port>
+    <client_alias>Ania</client_alias>
+    <client_port>141</client_port>
+    <ncc_connection_request_remote_port>11811</ncc_connection_request_remote_port>
+    <ncc_call_teardown_remote_port>11813</ncc_call_teardown_remote_port>
 
     <labels>
         <label host="H2">101</label>
