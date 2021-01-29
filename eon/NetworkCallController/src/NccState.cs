@@ -226,7 +226,7 @@ namespace NetworkCallController
         private string GetDomainFromPort(string portAlias)
         {
             foreach (KeyValuePair<string, string> portDomain in _portDomains.Where(portDomain =>
-                Checkers.PortMatches(portDomain.Key, portAlias))) return portDomain.Value;
+                Checkers.PortMatches(portDomain.Key, portAlias) > -1)) return portDomain.Value; // TODO: Check for matches value
             LOG.Error($"Empty domain from GetDomainFromPort() for portAlias: {portAlias}");
             return "";
         }
