@@ -27,6 +27,8 @@ namespace ClientNode.Config.Parsers
             configurationBuilder.SetCableCloudPort(int.Parse(xelement.Descendants("cable_cloud_port").First().Value));
 			configurationBuilder.SetClientAlias(xelement.Descendants("client_alias").First().Value);
             configurationBuilder.SetClientPortAlias(xelement.Descendants("client_port").First().Value);
+            configurationBuilder.SetNccConnectionRequestRemotePort(int.Parse(xelement.Descendants("ncc_connection_request_remote_port").First().Value));
+            configurationBuilder.SetNccCallTeardownRemotePort(int.Parse(xelement.Descendants("ncc_call_teardown_remote_port").First().Value));
 
             foreach (XElement element in xelement.Descendants("label"))
             {
