@@ -9,16 +9,17 @@ namespace ConnectionController
     public class ConnectionControllerStateDomain : IConnectionControllerState
     {
         private static readonly Logger LOG = LogManager.GetCurrentClassLogger();
-        
-        private readonly IApiClient<RequestPacket, ResponsePacket> _ccPeerCoordinationClient;
+
+        private readonly Dictionary<string, IApiClient<RequestPacket, ResponsePacket>> _ccPeerCoordinationClients = new Dictionary<string, IApiClient<RequestPacket, ResponsePacket>>();
+
         private readonly Dictionary<string, IApiClient<RequestPacket, ResponsePacket>> _ccConnectionRequestClients;
-        public ConnectionControllerStateDomain(int ccConnectionRequestRemotePort, 
-                                               int ccPeerCoordinationRemotePort,
-                                               IPAddress serverAddress
-                                               ) // Add things from config
+        public ConnectionControllerStateDomain(IPAddress serverAddress, Dictionary<string, int> ccPeerCoordinationRemotePorts)
         {
-            _ccPeerCoordinationClient =
-                new ApiClient<RequestPacket, ResponsePacket>(serverAddress, ccPeerCoordinationRemotePort);
+            foreach ((string key, int ccPeerCoordinationRemotePort) in ccPeerCoordinationRemotePorts)
+            {
+                _ccPeerCoordinationClients[key] =
+                    new ApiClient<RequestPacket, ResponsePacket>(serverAddress, ccPeerCoordinationRemotePort);
+            }
         }
 
         public ResponsePacket OnConnectionRequest(RequestPacket requestPacket)

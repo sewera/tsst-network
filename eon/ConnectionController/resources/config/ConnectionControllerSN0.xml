@@ -9,6 +9,7 @@
     <cc_peer_coordination_listener_local_port>12902</cc_peer_coordination_listener_local_port>
     <!--Localhost Ip-->
     <server_address>127.0.0.1</server_address>
+    <rc_route_table_query_remote_port>13811</rc_route_table_query_remote_port>
 
     <!--With this dict subnetwork CC knows it's node CCs names by `src` or other subnetwork CC name by `end` from LRM::LinkConnectionRequest-->
     <cc_names>

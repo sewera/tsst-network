@@ -26,6 +26,7 @@ namespace NetworkNode.Config.Parsers
             configurationBuilder.SetRouterAlias(xelement.Descendants("router_alias").First().Value);
             configurationBuilder.SetCableCloudAddress(xelement.Descendants("cable_cloud_address").First().Value);
             configurationBuilder.SetCableCloudPort(int.Parse(xelement.Descendants("cable_cloud_port").First().Value));
+            configurationBuilder.SetNnFibInsertLocalPort(int.Parse(xelement.Descendants("nn_fib_insert_local_port").First().Value));
 
             foreach (XElement element in xelement.Descendants("port_alias"))
             {

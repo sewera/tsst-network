@@ -21,6 +21,10 @@ namespace ConnectionController.Config
         
         public Dictionary<string, int> LrmRemotePorts { get; }
 
+        public int NnFibInsertRemotePort { get; }
+
+        public int RcRouteTableQueryRemotePort { get; }
+
         private Configuration(IPAddress serverAddress,
                               string connectionControllerType,
                               int peerCoordinationLocalPort,
@@ -29,7 +33,9 @@ namespace ConnectionController.Config
                               Dictionary<string, string> ccNames,
                               Dictionary<string,int> ccConnectionRequestRemotePorts,
                               Dictionary<string, int> ccPeerCoordinationRemotePorts,
-                              Dictionary<string, int> lrmRemotePorts)
+                              Dictionary<string, int> lrmRemotePorts,
+                              int nnFibInsertRemotePort,
+                              int rcRouteTableQueryRemotePort)
         {
             ServerAddress = serverAddress;
             ConnectionControllerType = connectionControllerType;
@@ -40,6 +46,8 @@ namespace ConnectionController.Config
             CcConnectionRequestRemotePorts = ccConnectionRequestRemotePorts;
             CcPeerCoordinationRemotePorts = ccPeerCoordinationRemotePorts;
             LrmRemotePorts = lrmRemotePorts;
+            NnFibInsertRemotePort = nnFibInsertRemotePort;
+            RcRouteTableQueryRemotePort = rcRouteTableQueryRemotePort;
         }
 
         public class Builder
@@ -53,6 +61,8 @@ namespace ConnectionController.Config
             private Dictionary<string, int> _ccConnectionRequestRemotePorts;
             private Dictionary<string, int> _ccPeerCoordinationRemotePorts;
             private Dictionary<string, int> _lrmRemotePorts;
+            private int _nnFibInsertRemotePort;
+            private int _rcRouteTableQueryRemotePort;
 
             public Builder SetServerAddress(IPAddress serverAddress)
             {
@@ -136,6 +146,18 @@ namespace ConnectionController.Config
                 return this;
             }
 
+            public Builder SetNnFibInsertRemotePort(int nnFibInsertRemotePort)
+            {
+                _nnFibInsertRemotePort = nnFibInsertRemotePort;
+                return this;
+            }
+
+            public Builder SetRcRouteTableQueryRemotePort(int rcRouteTableQueryRemotePort)
+            {
+                _rcRouteTableQueryRemotePort = rcRouteTableQueryRemotePort;
+                return this;
+            }
+
             public Configuration Build()
             {
                 _serverAddress ??= IPAddress.Parse("127.0.0.1");
@@ -151,7 +173,9 @@ namespace ConnectionController.Config
                     _ccNames,
                     _ccConnectionRequestRemotePorts,
                     _ccPeerCoordinationRemotePorts,
-                    _lrmRemotePorts);
+                    _lrmRemotePorts,
+                    _nnFibInsertRemotePort,
+                    _rcRouteTableQueryRemotePort);
             }
         }
     }
