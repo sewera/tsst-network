@@ -21,6 +21,20 @@ namespace Common.test.Utils
             string[] ports = {"123", "231", "3a1", "3121", "31"};
             foreach (string port in ports) Assert.IsFalse(Checkers.PortMatches(pattern, port));
         }
+        
+        [Test]
+        public void MultipleGatewaysInRibRow_ReturnTrue()
+        {
+            string[] gateways = {"123,222", "231,000", "311,212"};
+            foreach (string gateway in gateways) Assert.IsTrue(Checkers.MultipleGatewaysInRibRow(gateway));
+        }
+        
+        [Test]
+        public void MultipleGatewaysInRibRow_ReturnFalse()
+        {
+            string[] gateways = {"123", "0", "312213"};
+            foreach (string gateway in gateways) Assert.IsFalse(Checkers.MultipleGatewaysInRibRow(gateway));
+        }
 
         [Test]
         public void SlotsOverlapTest_ReturnTrue()
