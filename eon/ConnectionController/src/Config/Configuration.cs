@@ -24,6 +24,8 @@ namespace ConnectionController.Config
         public int NnFibInsertRemotePort { get; }
 
         public int RcRouteTableQueryRemotePort { get; }
+        
+        public string ComponentName { get; }
 
         private Configuration(IPAddress serverAddress,
                               string connectionControllerType,
@@ -35,7 +37,8 @@ namespace ConnectionController.Config
                               Dictionary<string, int> ccPeerCoordinationRemotePorts,
                               Dictionary<string, int> lrmRemotePorts,
                               int nnFibInsertRemotePort,
-                              int rcRouteTableQueryRemotePort)
+                              int rcRouteTableQueryRemotePort,
+                              string componentName)
         {
             ServerAddress = serverAddress;
             ConnectionControllerType = connectionControllerType;
@@ -48,6 +51,7 @@ namespace ConnectionController.Config
             LrmRemotePorts = lrmRemotePorts;
             NnFibInsertRemotePort = nnFibInsertRemotePort;
             RcRouteTableQueryRemotePort = rcRouteTableQueryRemotePort;
+            ComponentName = componentName;
         }
 
         public class Builder
@@ -63,6 +67,8 @@ namespace ConnectionController.Config
             private Dictionary<string, int> _lrmRemotePorts;
             private int _nnFibInsertRemotePort;
             private int _rcRouteTableQueryRemotePort;
+            private string _componentName;
+            
 
             public Builder SetServerAddress(IPAddress serverAddress)
             {
@@ -157,6 +163,12 @@ namespace ConnectionController.Config
                 _rcRouteTableQueryRemotePort = rcRouteTableQueryRemotePort;
                 return this;
             }
+            
+            public Builder SetComponentName(string componentName)
+            {
+                _componentName = componentName;
+                return this;
+            }
 
             public Configuration Build()
             {
@@ -175,7 +187,8 @@ namespace ConnectionController.Config
                     _ccPeerCoordinationRemotePorts,
                     _lrmRemotePorts,
                     _nnFibInsertRemotePort,
-                    _rcRouteTableQueryRemotePort);
+                    _rcRouteTableQueryRemotePort,
+                    _componentName);
             }
         }
     }

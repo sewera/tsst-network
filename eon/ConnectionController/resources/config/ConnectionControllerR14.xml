@@ -9,7 +9,9 @@
     <cc_peer_coordination_listener_local_port>12142</cc_peer_coordination_listener_local_port>
     <!--Localhost Ip-->
     <server_address>127.0.0.1</server_address>
-
+    <!--Component name-->
+    <component_name>R14</component_name>
+    
     <nn_fib_insert_remote_port>18014</nn_fib_insert_remote_port>
     <rc_route_table_query_remote_port>13911</rc_route_table_query_remote_port>
 

@@ -12,6 +12,8 @@
     <!--Localhost ip-->
     <server_address>127.0.0.1</server_address>
     <rc_route_table_query_remote_port>0</rc_route_table_query_remote_port>
+    <!--Component name-->
+    <component_name>S1</component_name>
 
     <!--With this dict CC knows by subnetwork CCs names by port-->
     <cc_names>

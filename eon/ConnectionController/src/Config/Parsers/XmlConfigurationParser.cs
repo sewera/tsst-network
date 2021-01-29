@@ -31,6 +31,8 @@ namespace ConnectionController.Config.Parsers
                 int.Parse(xelement.Descendants("cc_peer_coordination_listener_local_port").First().Value));
             configurationBuilder.SetServerAddress(IPAddress.Parse(xelement.Descendants("server_address").First().Value));
             configurationBuilder.SetRcRouteTableQueryRemotePort(int.Parse(xelement.Descendants("rc_route_table_query_remote_port").First().Value));
+            configurationBuilder.SetComponentName(xelement.Descendants("component_name").First().Value);
+            
 
             foreach (XElement element in xelement.Descendants("cc_name"))
             {
