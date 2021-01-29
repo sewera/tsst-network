@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 using Common.Config.Parsers;
 using Common.Models;
 using Common.Startup;
@@ -46,6 +47,7 @@ namespace ConnectionController
             IManager connectionControllerManager = new ConnectionControllerManager(configuration,
                 connectionControllerState.OnConnectionRequest,
                 connectionControllerState.OnPeerCoordination);
+            defaultStartup.SetTitle($"CC_{configuration.ComponentName}");
             connectionControllerManager.Start();
         }
     }
