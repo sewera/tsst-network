@@ -37,7 +37,15 @@ namespace RoutingController.test
         [Test]
         public void GetBestGatewayTest_SingleGateway()
         {
-            Assert.AreEqual("123", _rcState.GetBestGateway("321", "123")); // TODO: More tests
+            Assert.AreEqual("123", _rcState.GetBestGateway("321", "123"));
+            Assert.AreEqual("120", _rcState.GetBestGateway("321", "129"));
+            Assert.AreEqual("123", _rcState.GetBestGateway("333", "123"));
+            Assert.AreEqual("103", _rcState.GetBestGateway("213", "177"));
+            Assert.AreEqual("122", _rcState.GetBestGateway("312", "121"));
+            Assert.AreEqual("102", _rcState.GetBestGateway("399", "156"));
+            Assert.AreEqual("101", _rcState.GetBestGateway("320", "100"));
+            Assert.AreEqual("100", _rcState.GetBestGateway("321", "199"));
+
         }
 
         [Test]
@@ -47,9 +55,21 @@ namespace RoutingController.test
 
             gateway = _rcState.GetBestGateway("321", "999");
             Assert.That(gateway == "000" || gateway == "001", gateway);
+            
+            gateway = _rcState.GetBestGateway("3xx", "xxx");
+            Assert.That(gateway == "002" || gateway == "003", gateway);
 
             gateway = _rcState.GetBestGateway("999", "999");
-            Assert.That(gateway == "003" || gateway == "004", gateway); // TODO: More tests
+            Assert.That(gateway == "003" || gateway == "004", gateway);
+            
+            gateway = _rcState.GetBestGateway("xxx", "xxx");
+            Assert.That(gateway == "003" || gateway == "004", gateway);
+
+            gateway = _rcState.GetBestGateway("32x", "xxx");
+            Assert.That(gateway == "001" || gateway == "002", gateway);
+            
+            gateway = _rcState.GetBestGateway("329", "377");
+            Assert.That(gateway == "001" || gateway == "002", gateway);
         }
     }
 }
