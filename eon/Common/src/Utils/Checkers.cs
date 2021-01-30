@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -29,12 +30,6 @@ namespace Common.Utils
             }
 
             return matches;
-        }
-
-        public static bool MultipleGatewaysInRibRow(string rowGateway)
-        {
-            Regex regex = new Regex("^[0-9]{3},[0-9]{3}$");
-            return regex.IsMatch(rowGateway);
         }
 
         public static bool SlotsOverlap((int, int) slots1, (int, int) slots2)

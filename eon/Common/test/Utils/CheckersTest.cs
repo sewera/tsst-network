@@ -40,20 +40,6 @@ namespace Common.test.Utils
         }
 
         [Test]
-        public void MultipleGatewaysInRibRow_ReturnTrue()
-        {
-            string[] gateways = {"123,222", "231,000", "311,212"};
-            foreach (string gateway in gateways) Assert.IsTrue(Checkers.MultipleGatewaysInRibRow(gateway));
-        }
-        
-        [Test]
-        public void MultipleGatewaysInRibRow_ReturnFalse()
-        {
-            string[] gateways = {"123", "0", "312213"};
-            foreach (string gateway in gateways) Assert.IsFalse(Checkers.MultipleGatewaysInRibRow(gateway));
-        }
-
-        [Test]
         public void SlotsOverlapTest_ReturnTrue()
         {
             ((int, int), (int, int))[] slotPairs =
