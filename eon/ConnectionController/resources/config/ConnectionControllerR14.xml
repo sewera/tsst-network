@@ -11,7 +11,7 @@
     <server_address>127.0.0.1</server_address>
     <!--Component name-->
     <component_name>R14</component_name>
-    
+
     <nn_fib_insert_remote_port>18014</nn_fib_insert_remote_port>
     <rc_route_table_query_remote_port>13911</rc_route_table_query_remote_port>
 
@@ -37,9 +37,9 @@
 
     <lrm_remote_ports>
 
-        <lrm_remote_port port="142">15141</lrm_remote_port>
-        <lrm_remote_port port="143">15142</lrm_remote_port>
-        <lrm_remote_port port="144">15143</lrm_remote_port>
+        <lrm_remote_port port="142">15142</lrm_remote_port>
+        <lrm_remote_port port="143">15143</lrm_remote_port>
+        <lrm_remote_port port="144">15144</lrm_remote_port>
 
     </lrm_remote_ports>
 
