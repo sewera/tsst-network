@@ -2,6 +2,8 @@
 
 <configuration>
 
+    <component_name>SN3</component_name>
+
     <rc_route_table_query_local_port>13931</rc_route_table_query_local_port>
     <rc_local_topology_local_port>13932</rc_local_topology_local_port>
     <rc_network_topology_local_port>13933</rc_network_topology_local_port>

@@ -2,6 +2,8 @@
 
 <configuration>
 
+    <component_name>S1</component_name>
+    
     <rc_route_table_query_local_port>13811</rc_route_table_query_local_port>
     <rc_local_topology_local_port>13812</rc_local_topology_local_port>
     <rc_network_topology_local_port>13813</rc_network_topology_local_port>
