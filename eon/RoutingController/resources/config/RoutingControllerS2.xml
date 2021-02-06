@@ -2,6 +2,8 @@
 
 <configuration>
 
+    <rc_alias>RC_S2</rc_alias>
+
     <rc_route_table_query_local_port>13821</rc_route_table_query_local_port>
     <rc_local_topology_local_port>13822</rc_local_topology_local_port>
     <rc_network_topology_local_port>13823</rc_network_topology_local_port>

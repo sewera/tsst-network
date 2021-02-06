@@ -7,18 +7,21 @@ namespace RoutingController.Config
     {
         public IPAddress ServerAddress { get; }
 
+        public string RoutingControllerAlias { get; }
         public int RouteTableQueryLocalPort { get; }
         public int LocalTopologyLocalPort { get; }
         public int NetworkTopologyLocalPort { get; }
         public List<RouteTableRow> RouteTable { get; }
 
         private Configuration(IPAddress serverAddress,
+                              string routingControllerAlias,
                               int routeTableQueryLocalPort,
                               int localTopologyLocalPort,
                               int networkTopologyLocalPort,
                               List<RouteTableRow> routeTable)
         {
             ServerAddress = serverAddress;
+            RoutingControllerAlias = routingControllerAlias;
             RouteTableQueryLocalPort = routeTableQueryLocalPort;
             LocalTopologyLocalPort = localTopologyLocalPort;
             NetworkTopologyLocalPort = networkTopologyLocalPort;
@@ -28,6 +31,7 @@ namespace RoutingController.Config
         public class Builder
         {
             private IPAddress _serverAddress;
+            private string _routingControllerAlias;
             private int _routeTableQueryLocalPort;
             private int _localTopologyLocalPort;
             private int _networkTopologyLocalPort;
@@ -39,6 +43,12 @@ namespace RoutingController.Config
                 return this;
             }
 
+            public Builder SetRoutingControllerAlias(string routingControllerAlias)
+            {
+                _routingControllerAlias = routingControllerAlias;
+                return this;
+            }
+            
             public Builder SetRouteTableQueryLocalPort(int routeTableQueryLocalPort)
             {
                 _routeTableQueryLocalPort = routeTableQueryLocalPort;
@@ -74,6 +84,7 @@ namespace RoutingController.Config
             {
                 _serverAddress ??= IPAddress.Parse("127.0.0.1");
                 return new Configuration(_serverAddress,
+                    _routingControllerAlias,
                     _routeTableQueryLocalPort,
                     _localTopologyLocalPort,
                     _networkTopologyLocalPort,

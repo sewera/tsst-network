@@ -23,6 +23,8 @@ namespace RoutingController
             Configuration configuration = configurationParser.ParseConfiguration();
 
             IRcState rcState = new RcState(configuration.RouteTable);
+            
+            defaultStartup.SetTitle(configuration.RoutingControllerAlias);
 
             IManager routingControllerManager = new RoutingControllerManager(configuration,
                 rcState.OnRouteTableQuery,
