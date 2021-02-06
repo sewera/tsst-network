@@ -2,7 +2,7 @@
 
 <configuration>
 
-    <rc_alias>RC_S2</rc_alias>
+    <component_name>S2</component_name>
 
     <rc_route_table_query_local_port>13821</rc_route_table_query_local_port>
     <rc_local_topology_local_port>13822</rc_local_topology_local_port>
