@@ -24,7 +24,7 @@ namespace RoutingController
 
             IRcState rcState = new RcState(configuration.RouteTable);
             
-            defaultStartup.SetTitle(configuration.RoutingControllerAlias);
+            defaultStartup.SetTitle($"RC_{configuration.ComponentName}");
 
             IManager routingControllerManager = new RoutingControllerManager(configuration,
                 rcState.OnRouteTableQuery,

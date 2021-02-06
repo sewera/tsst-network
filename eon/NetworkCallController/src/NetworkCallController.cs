@@ -37,7 +37,7 @@ namespace NetworkCallController
                 nccState.OnConnectionRequestReceived);
             // TODO: Those are only empty delegates, make proper ones: 2 left
 
-            defaultStartup.SetTitle("NCC_" + configuration.Domain);
+            defaultStartup.SetTitle($"NCC_{configuration.Domain}");
 
             networkCallControllerManager.Start();
         }

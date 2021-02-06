@@ -2,7 +2,7 @@
 
 <configuration>
 
-    <rc_alias>RC_SN0</rc_alias>
+    <component_name>SN0</component_name>
 
     <rc_route_table_query_local_port>13901</rc_route_table_query_local_port>
     <rc_local_topology_local_port>13902</rc_local_topology_local_port>
