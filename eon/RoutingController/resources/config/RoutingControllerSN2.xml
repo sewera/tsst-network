@@ -2,6 +2,8 @@
 
 <configuration>
 
+    <rc_alias>RC_SN2</rc_alias>
+
     <rc_route_table_query_local_port>13921</rc_route_table_query_local_port>
     <rc_local_topology_local_port>13922</rc_local_topology_local_port>
     <rc_network_topology_local_port>13923</rc_network_topology_local_port>

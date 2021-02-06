@@ -22,7 +22,7 @@ namespace RoutingController.Config.Parsers
 
             LOG.Trace($"Reading configuration from {_filename}");
             XElement xelement = XElement.Load(_filename);
-
+            configurationBuilder.SetRoutingControllerAlias(xelement.Descendants("rc_alias").First().Value);
             configurationBuilder.SetRouteTableQueryLocalPort(
                 int.Parse(xelement.Descendants("rc_route_table_query_local_port").First().Value));
             configurationBuilder.SetLocalTopologyLocalPort(
