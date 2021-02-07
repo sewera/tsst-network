@@ -21,6 +21,10 @@ namespace RoutingController
             _connections = new List<Connection>();
             _links = new List<Link>();
             _routeTable = routeTable;
+            foreach (Configuration.RouteTableRow routeTableRow in routeTable)
+            {
+                LOG.Trace($"RouteTableRow: src = {routeTableRow.Src}, dst = {routeTableRow.Dst}, gateway = {routeTableRow.Gateway}");
+            }
         }
 
         public ResponsePacket OnRouteTableQuery(RequestPacket requestPacket)
