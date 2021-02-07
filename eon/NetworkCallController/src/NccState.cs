@@ -44,7 +44,7 @@ namespace NetworkCallController
             _connectionCounter = 0;
         }
 
-        public ResponsePacket OnConnectionRequestReceived(RequestPacket requestPacket)
+        public ResponsePacket OnCallRequestReceived(RequestPacket requestPacket)
         {
             // Get ConnectionRequest_req packet params
             GenericPacket.PacketType type = requestPacket.Type;
@@ -52,7 +52,7 @@ namespace NetworkCallController
             string dstName = requestPacket.DstName;
             int slotsNumber = requestPacket.SlotsNumber;
 
-            LOG.Info($"Received NCC::ConnectionRequest_req" + $"(srcName = {srcName}, dstName = {dstName},slotsNumber = {slotsNumber}");
+            LOG.Info($"Received NCC::CallRequest_req" + $"(srcName = {srcName}, dstName = {dstName},slotsNumber = {slotsNumber}");
             // < C A L L   A D M I S S I O N   C O N T R O L >
             LOG.Info("Call Admission Control");
             // P O L I C Y
@@ -76,11 +76,11 @@ namespace NetworkCallController
                     dstPort = _clientPortAliases[clientPortName];
             }
 
-            // If Directory couldn't find dstPort send NCC::ConnectionRequest_res(res=No client);
+            // If Directory couldn't find dstPort send NCC::CallRequest_res(res=No client);
             if (dstPort == null)
             {
                 LOG.Info($"Directory could not find port for user {dstName}");
-                LOG.Info($"NCC::ConnectionRequest_res(res = {ResponseTypeToString(ResponseType.NoClient)})");
+                LOG.Info($"NCC::CallRequest_res(res = {ResponseTypeToString(ResponseType.NoClient)})");
                 return new Builder()
                     .SetRes(ResponseType.NoClient)
                     .Build();
@@ -125,7 +125,7 @@ namespace NetworkCallController
                 if (res != ResponseType.Ok)
                 {
                     LOG.Info($"Second domain refused the call");
-                    LOG.Info($"Send NCC::ConnectionRequest_res(res = {ResponseTypeToString(ResponseType.AuthProblem)})");
+                    LOG.Info($"Send NCC::CallRequest_res(res = {ResponseTypeToString(ResponseType.AuthProblem)})");
                     return new Builder()
                         .SetRes(ResponseType.Refused)
                         .Build();
@@ -149,8 +149,8 @@ namespace NetworkCallController
             {
                 case ResponseType.Ok:
                 {
-                    // Send NCC::ConnectionRequest_res(res=OK, id = newConnection.Id)
-                    LOG.Info($"Send NCC::ConnectionRequest_res(res = OK, id = {newConnection.Id})");
+                    // Send NCC::CallRequest_res(res=OK, id = newConnection.Id)
+                    LOG.Info($"Send NCC::CallRequest_res(res = OK, id = {newConnection.Id})");
                     return new Builder()
                         .SetRes(ResponseType.Ok)
                         .SetId(newConnection.Id)
@@ -158,8 +158,8 @@ namespace NetworkCallController
                 }
                 default:
                 {
-                    // Send NCC::ConnectionRequest_res(res=Network problem)
-                    LOG.Info("Send NCC::ConnectionRequest_res(res = Network Problem)");
+                    // Send NCC::CallRequest_res(res=Network problem)
+                    LOG.Info("Send NCC::CallRequest_res(res = Network Problem)");
                     return new Builder()
                         .SetRes(ResponseType.NetworkProblem)
                         .Build();
@@ -201,11 +201,11 @@ namespace NetworkCallController
                     dstPort = _clientPortAliases[clientPortName];
             }
 
-            // If Directory couldn't find dstPort send NCC::ConnectionRequest_res(res=No client);
+            // If Directory couldn't find dstPort send NCC::CallRequest_res(res=No client);
             if (dstPort == null)
             {
                 LOG.Info($"Directory could not find port for user {dstName}");
-                LOG.Info($"NCC::ConnectionRequest_res(res = {ResponseTypeToString(ResponseType.NoClient)})");
+                LOG.Info($"NCC::CallRequest_res(res = {ResponseTypeToString(ResponseType.NoClient)})");
                 return new Builder()
                     .SetRes(ResponseType.NoClient)
                     .Build();

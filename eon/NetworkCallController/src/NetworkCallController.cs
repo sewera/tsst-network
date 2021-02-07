@@ -34,8 +34,10 @@ namespace NetworkCallController
             IManager networkCallControllerManager = new NetworkCallControllerManager(configuration,
                 nccState.OnCallCoordinationReceived,
                 nccState.OnCallTeardownReceived,
-                nccState.OnConnectionRequestReceived);
+                nccState.OnCallRequestReceived);
             // TODO: Those are only empty delegates, make proper ones: 2 left
+
+            defaultStartup.SetTitle($"NCC_{configuration.Domain}");
 
             networkCallControllerManager.Start();
         }
