@@ -9,55 +9,68 @@
     <rc_network_topology_local_port>13903</rc_network_topology_local_port>
 
     <route_table>
+        
         <row>
             <src>01x</src>
             <dst>011</dst>
             <gateway>011</gateway>
-
+        </row>
+        <row>
             <src>01x</src>
             <dst>032</dst>
             <gateway>014</gateway>
-
+        </row>
+        <row>
             <src>01x</src>
             <dst>031</dst>
             <gateway>014</gateway>
-
+        </row>
+        <row>
             <src>01x</src>
             <dst>022</dst>
             <gateway>013</gateway>
-
+        </row>
+        
+        <row>
             <src>02x</src>
             <dst>011</dst>
             <gateway>024</gateway>
-            
+        </row>
+        <row>
             <src>02x</src>
             <dst>032</dst>
             <gateway>023</gateway>
-            
+        </row>
+        <row>
             <src>02x</src>
             <dst>031</dst>
             <gateway>023</gateway>
-            
+        </row>
+        <row>
             <src>02x</src>
             <dst>022</dst>
             <gateway>022</gateway>
-
+        </row>
+        
+        <row>
             <src>03x</src>
             <dst>011</dst>
             <gateway>033</gateway>
-            
+        </row>
+        <row>
             <src>03x</src>
             <dst>032</dst>
             <gateway>032</gateway>
-            
+        </row>
+        <row>
             <src>03x</src>
             <dst>031</dst>
             <gateway>031</gateway>
-            
+        </row>
+        <row>
             <src>03x</src>
             <dst>022</dst>
             <gateway>034</gateway>
-            
         </row>
         
     </route_table>
