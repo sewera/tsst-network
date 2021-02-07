@@ -35,7 +35,7 @@ namespace NetworkNode.Networking.Forwarding.FIB
         /// </summary>
         public bool FirstPartMatch(string inPort, (int, int) slots)
         {
-            if (Checkers.PortMatches(_inPort, inPort) && slots == (_lowerSlotsValue, _upperSlotsValue))
+            if (Checkers.PortMatches(_inPort, inPort) > -1 && slots == (_lowerSlotsValue, _upperSlotsValue)) // TODO: Check for matches value
             {
                 return true;
             }
