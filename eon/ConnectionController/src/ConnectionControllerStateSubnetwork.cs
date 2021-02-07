@@ -112,6 +112,16 @@ namespace ConnectionController
                     .SetWhoRequests(RequestPacket.Who.Cc)
                     .Build());
                 
+                if (linkConnectionRequestResponse.Res == ResponsePacket.ResponseType.Refused)
+                {
+                    LOG.Info($"Received LRM::LinkConnectionRequest_res(res = Refused");
+                    LOG.Info($"Send CC::ConnectionRequest_res(res = Refused)");
+                    
+                    return new ResponsePacket.Builder()
+                        .SetRes(ResponsePacket.ResponseType.Refused)
+                        .Build();
+                }
+                
                 string end = linkConnectionRequestResponse.End;
 
                 LOG.Info($"Received LRM::LinkConnectionRequest_res(end = {end})");
