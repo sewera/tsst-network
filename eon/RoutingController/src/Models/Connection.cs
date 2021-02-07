@@ -1,4 +1,4 @@
-namespace RoutingController.Model
+namespace RoutingController.Models
 {
     public class Connection
     {
