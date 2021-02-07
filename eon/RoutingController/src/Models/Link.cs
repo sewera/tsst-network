@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace RoutingController.Model
+namespace RoutingController.Models
 {
     public class Link
     {
