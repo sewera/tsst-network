@@ -13,6 +13,11 @@ parser.add_argument(
     help="Build solution with Release configuration",
 )
 parser.add_argument(
+    "--debug",
+    action="store_true",
+    help="Debug, do not kill terminals after a process dies, Linux only",
+)
+parser.add_argument(
     "--forcewindowsimpl",
     action="store_true",
     help="Force the Windows implementation of the script",
@@ -189,33 +194,38 @@ else:
         os.system("killall RoutingController")
         exit(0)
 
+    if args.debug:
+        dbg = "--hold"
+    else:
+        dbg = ""
+
     os.popen(
-        f'{os.getenv("TERM")} -e {(project_root/CableCloud/exec_dir/CableCloud).absolute()} -c {(project_root/CableCloud/config_dir/CableCloud_config).absolute()} -l {(project_root/log_dir).absolute()}'
+        f'{os.getenv("TERM")} {dbg} -e {(project_root/CableCloud/exec_dir/CableCloud).absolute()} -c {(project_root/CableCloud/config_dir/CableCloud_config).absolute()} -l {(project_root/log_dir).absolute()}'
     )
 
     for rc_config in RoutingController_configs:
         os.popen(
-            f'{os.getenv("TERM")} -e {(project_root/RoutingController/exec_dir/RoutingController).absolute()} -c {(project_root/RoutingController/config_dir/rc_config).absolute()} -l {(project_root/log_dir).absolute()}'
+            f'{os.getenv("TERM")} {dbg} -e {(project_root/RoutingController/exec_dir/RoutingController).absolute()} -c {(project_root/RoutingController/config_dir/rc_config).absolute()} -l {(project_root/log_dir).absolute()}'
         )
 
     time.sleep(2)
 
     for ncc_config in NetworkCallController_configs:
         os.popen(
-            f'{os.getenv("TERM")} -e {(project_root/NetworkCallController/exec_dir/NetworkCallController).absolute()} -c {(project_root/NetworkCallController/config_dir/ncc_config).absolute()} -l {(project_root/log_dir).absolute()}'
+            f'{os.getenv("TERM")} {dbg} -e {(project_root/NetworkCallController/exec_dir/NetworkCallController).absolute()} -c {(project_root/NetworkCallController/config_dir/ncc_config).absolute()} -l {(project_root/log_dir).absolute()}'
         )
 
     for cc_config in ConnectionController_configs:
         os.popen(
-            f'{os.getenv("TERM")} -e {(project_root/ConnectionController/exec_dir/ConnectionController).absolute()} -c {(project_root/ConnectionController/config_dir/cc_config).absolute()} -l {(project_root/log_dir).absolute()}'
+            f'{os.getenv("TERM")} {dbg} -e {(project_root/ConnectionController/exec_dir/ConnectionController).absolute()} -c {(project_root/ConnectionController/config_dir/cc_config).absolute()} -l {(project_root/log_dir).absolute()}'
         )
 
     for nn_config in NetworkNode_configs:
         os.popen(
-            f'{os.getenv("TERM")} -e {(project_root/NetworkNode/exec_dir/NetworkNode).absolute()} -c {(project_root/NetworkNode/config_dir/nn_config).absolute()} -l {(project_root/log_dir).absolute()}'
+            f'{os.getenv("TERM")} {dbg} -e {(project_root/NetworkNode/exec_dir/NetworkNode).absolute()} -c {(project_root/NetworkNode/config_dir/nn_config).absolute()} -l {(project_root/log_dir).absolute()}'
         )
 
     for cn_config in ClientNode_configs:
         os.popen(
-            f'{os.getenv("TERM")} -e {(project_root/ClientNode/exec_dir/ClientNode).absolute()} -c {(project_root/ClientNode/config_dir/cn_config).absolute()} -l {(project_root/log_dir).absolute()}'
+            f'{os.getenv("TERM")} {dbg} -e {(project_root/ClientNode/exec_dir/ClientNode).absolute()} -c {(project_root/ClientNode/config_dir/cn_config).absolute()} -l {(project_root/log_dir).absolute()}'
         )
