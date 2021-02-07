@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Common.Models;
@@ -26,7 +27,6 @@ namespace RoutingController
         public ResponsePacket OnRouteTableQuery(RequestPacket requestPacket)
         {
             // Get RouteTableQuery_req packet params
-            GenericPacket.PacketType type = requestPacket.Type;
             int connectionId = requestPacket.Id;
             string srcPort = requestPacket.SrcPort;
             string dstPort = requestPacket.DstPort;
@@ -38,7 +38,7 @@ namespace RoutingController
             // Set dstZone depending on destination domain
             string secondDomainPortPattern = "3xx";
             string dstZone;
-            if (Checkers.PortMatches(secondDomainPortPattern, dstPort))
+            if (Checkers.PortMatches(secondDomainPortPattern, dstPort) > -1) // TODO: Check for matches value
             {
                 dstZone = "012,021";
                 LOG.Trace($"Destination port belongs to other zone. Possible leaving ports: {dstZone}");
@@ -49,42 +49,16 @@ namespace RoutingController
                 LOG.Trace($"Destination port belongs to the same zone. Leaving port: {dstZone}");
             }
 
-            string gateway = "0";
+            string gateway = GetBestGateway(srcPort, dstPort) ?? "0";
             (int, int) slots = (0, 0);
             // Check whether we don't already have a registered connection with given connectionId
-            foreach (Connection connection in _connections.Where(connection => connection.Id == connectionId))
+            if (!_connections.Exists(connection => connection.Id == connectionId))
             {
-                slots = connection.Slots;
-            }
-            
-            // If there is no connection with given id we create new one with new pair of slots
-            if (!(_connections.Any(connection => connection.Id == connectionId)))
-            {
-                // We search through the RIB until we find pattern matching our src and dst port
-                foreach (Configuration.RouteTableRow row in _routeTable)
-                {
-                    // If we find it we set gateway to the one from that row
-                    if (Checkers.PortMatches(row.Src, srcPort) && Checkers.PortMatches(row.Dst, dstPort))
-                    {
-                        if (Checkers.MultipleGatewaysInRibRow(row.Gateway))
-                        {
-                            string[] possibleGateways = row.Gateway.Split(",");
-                            gateway = possibleGateways.First();
-                            // TODO: losowanko
-                        }
-                        else gateway = row.Gateway;
-                        LOG.Trace($"Found matching gateway: {gateway} for given srcPort: {srcPort} and dstPort: {dstPort}");
-
-                        slots = CreateSlots(gateway, slotsNumber);
-                    }
-                    else
-                    {
-                        LOG.Trace($"Could not find matching gateway for given srcPort: {srcPort} and dstPort: {dstPort}");
-                    }
-                }
-                
+                slots = CreateSlots(gateway, slotsNumber);
                 _connections.Add(new Connection(connectionId, slots));
             }
+            else
+                slots = _connections.Find(connection => connection.Id == connectionId).Slots;
 
             LOG.Info($"Sending RC::RouteTableQuery_res" + $"(connectionId = {connectionId}, gateway = {gateway}," +
                      $" slots = {slots.ToString()}, dstZone = {dstZone}");
@@ -165,6 +139,41 @@ namespace RoutingController
             }
 
             return result;
+        }
+
+        public string GetBestGateway(string srcPort, string dstPort)
+        {
+            int maxPrioritySrc = -1;
+            int maxPriorityDst = -1;
+            string bestGateway = null;
+            foreach (Configuration.RouteTableRow ribRow in _routeTable)
+            {
+                if (Checkers.PortMatches(ribRow.Src, srcPort) == -1 || Checkers.PortMatches(ribRow.Dst, dstPort) == -1)
+                    continue;
+
+                int priorityDst = Checkers.PortMatches(ribRow.Dst, dstPort);
+                if (priorityDst > maxPriorityDst)
+                {
+                    maxPriorityDst = priorityDst;
+                    maxPrioritySrc = Checkers.PortMatches(ribRow.Src, srcPort);
+                    bestGateway = Choosers.GetGatewayFromRibRow(ribRow.Gateway);
+                    continue;
+                }
+
+                int prioritySrc = Checkers.PortMatches(ribRow.Src, srcPort);
+                if (prioritySrc > maxPrioritySrc)
+                {
+                    maxPrioritySrc = prioritySrc;
+                    bestGateway = Choosers.GetGatewayFromRibRow(ribRow.Gateway);
+                }
+            }
+
+            if (bestGateway == null)
+                LOG.Error($"Could not find route for srcPort = {srcPort} and dstPort = {dstPort}");
+            else
+                LOG.Trace($"Found matching gateway: {bestGateway} for srcPort = {srcPort} and dstPort = {dstPort}");
+
+            return bestGateway;
         }
     }
 }

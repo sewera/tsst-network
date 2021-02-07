@@ -236,7 +236,7 @@ namespace ConnectionController
         private string GetCcName(string portAlias)
         {
             foreach (KeyValuePair<string, string> ccName in _ccNames.Where(ccName =>
-                Checkers.PortMatches(ccName.Key, portAlias))) return ccName.Value;
+                Checkers.PortMatches(ccName.Key, portAlias) > -1)) return ccName.Value; // TODO: Check for matches value
             LOG.Error($"Empty ccName from GetCcName() for portAlias: {portAlias}");
             return "";
         }
