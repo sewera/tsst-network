@@ -1,11 +1,10 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Common.Models;
 using Common.Utils;
 using NLog;
 using RoutingController.Config;
-using RoutingController.Model;
+using RoutingController.Models;
 
 namespace RoutingController
 {
@@ -56,9 +55,13 @@ namespace RoutingController
             {
                 slots = CreateSlots(gateway, slotsNumber);
                 _connections.Add(new Connection(connectionId, slots));
+                LOG.Trace($"Allocated slots {slots} for new connection with id {connectionId}");
             }
             else
+            {
                 slots = _connections.Find(connection => connection.Id == connectionId).Slots;
+                LOG.Trace($"There is already registered connection with id {connectionId}. Allocated slots: {slots}");
+            }
 
             LOG.Info($"Sending RC::RouteTableQuery_res" + $"(connectionId = {connectionId}, gateway = {gateway}," +
                      $" slots = {slots.ToString()}, dstZone = {dstZone}");
@@ -118,9 +121,12 @@ namespace RoutingController
 
                 foreach (Link link in _links.Where(link => gateway == link.PortAlias1 || gateway == link.PortAlias2))
                 {
-                    if (link.SlotsArray.Any(slotsTuple => !Checkers.SlotsOverlap(slots, slotsTuple)))
+                    // If there are no allocated slots for a link,
+                    // or if there are but they are not overlapping slots we try to allocate 
+                    // assign created slots for a gateway in that link.
+                    if (link.SlotsArray.Any(slotsTuple => !Checkers.SlotsOverlap(slots, slotsTuple)) || !link.SlotsArray.Any())
                     {
-                        LOG.Trace($"Assigned slots: {slots.ToString()} for gateway: {gateway}");
+                        LOG.Trace($"Assigned slots {slots.ToString()} to gateway {gateway}");
                         return slots;
                     }
                 }
@@ -135,7 +141,7 @@ namespace RoutingController
             
             foreach ((int, int) slotsTuple in slotsArray)
             {
-                result += slotsTuple.ToString() + " ";
+                result += slotsTuple + " ";
             }
 
             return result;
