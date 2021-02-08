@@ -20,7 +20,7 @@
         }
         public override string ToString()
         {
-            return $"[{Id}, {SrcName} : {SrcPortAlias}, {DstName} : {DstPortAlias}, sl={SlotsNumber}";
+            return $"[{Id}, {SrcName} : {SrcPortAlias}, {DstName} : {DstPortAlias}, sl={SlotsNumber}]";
         }
     }
 }

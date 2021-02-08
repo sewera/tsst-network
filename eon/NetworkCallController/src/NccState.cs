@@ -52,7 +52,7 @@ namespace NetworkCallController
             string dstName = requestPacket.DstName;
             int slotsNumber = requestPacket.SlotsNumber;
 
-            LOG.Info($"Received NCC::CallRequest_req" + $"(srcName = {srcName}, dstName = {dstName},slotsNumber = {slotsNumber}");
+            LOG.Info($"Received NCC::CallRequest_req" + $"(srcName = {srcName}, dstName = {dstName}, slotsNumber = {slotsNumber})");
             // < C A L L   A D M I S S I O N   C O N T R O L >
             LOG.Info("Call Admission Control");
             // P O L I C Y
@@ -113,7 +113,7 @@ namespace NetworkCallController
                 // Ask second domain NCC 
                 // Send NCC::CallCoordination(srcName, dstName, sl)
                 LOG.Info("Send NCC::CallCoordination_req" +
-                         $"(srcName = {newConnection.SrcName}, dstName = {newConnection.DstName}, sl = {newConnection.SlotsNumber}");
+                         $"(srcName = {newConnection.SrcName}, dstName = {newConnection.DstName}, sl = {newConnection.SlotsNumber})");
                 ResponsePacket nccCallCoordinationResponse = _nccCallCoordinationClient.Get(new RequestPacket.Builder()
                     .SetSrcName(newConnection.SrcName)
                     .SetDstName(newConnection.DstName)
@@ -175,7 +175,7 @@ namespace NetworkCallController
             string dstName = requestPacket.DstName;
             int slotsNumber = requestPacket.SlotsNumber;
             
-            LOG.Info($"Received NCC::CallCoordination_req" + $"(srcName = {srcName}, dstName = {dstName},slotsNumber = {slotsNumber}");
+            LOG.Info($"Received NCC::CallCoordination_req" + $"(srcName = {srcName}, dstName = {dstName},slotsNumber = {slotsNumber})");
             
             // < C A L L   A D M I S S I O N   C O N T R O L >
             LOG.Info("Call Admission Control");
