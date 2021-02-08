@@ -1,5 +1,6 @@
 using System;
 using NLog;
+using NLog.Conditions;
 using NLog.Config;
 using NLog.Targets;
 
@@ -40,6 +41,12 @@ namespace Common.Startup
                 Name = "console",
                 Layout = "[${time} | ${level:format=FirstCharacter} | ${logger}] ${message}"
             };
+            ConsoleRowHighlightingRule highlightRule = new ConsoleRowHighlightingRule
+            {
+                Condition = ConditionParser.ParseExpression("level == LogLevel.Info"),
+                ForegroundColor = ConsoleOutputColor.Green
+            };
+            consoleTarget.RowHighlightingRules.Add(highlightRule);
             string suffix = string.IsNullOrEmpty(logFilenameSuffix) ? "" : $"_{logFilenameSuffix}";
             FileTarget fileTarget = new FileTarget
             {
