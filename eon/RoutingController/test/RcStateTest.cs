@@ -14,6 +14,7 @@ namespace RoutingController.test
         {
             List<Configuration.RouteTableRow> routeTable = new List<Configuration.RouteTableRow>
             {
+                new Configuration.RouteTableRow.RouteTableRowBuilder().SetSrc("01x").SetDst("022").SetGateway("014").Build(),
                 new Configuration.RouteTableRow.RouteTableRowBuilder().SetSrc("321").SetDst("123").SetGateway("123").Build(),
                 new Configuration.RouteTableRow.RouteTableRowBuilder().SetSrc("321").SetDst("12x").SetGateway("120").Build(),
                 new Configuration.RouteTableRow.RouteTableRowBuilder().SetSrc("321").SetDst("1xx").SetGateway("100").Build(),
@@ -45,7 +46,7 @@ namespace RoutingController.test
             Assert.AreEqual("102", _rcState.GetBestGateway("399", "156"));
             Assert.AreEqual("101", _rcState.GetBestGateway("320", "100"));
             Assert.AreEqual("100", _rcState.GetBestGateway("321", "199"));
-
+            Assert.AreEqual("014", _rcState.GetBestGateway("011", "022"));
         }
 
         [Test]
