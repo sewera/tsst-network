@@ -76,6 +76,10 @@ namespace ConnectionController
                 .SetWhoRequests(RequestPacket.Who.Cc)
                 .Build());
             
+            string end = linkConnectionRequestResponse.End;
+
+            LOG.Info($"Received LRM::LinkConnectionRequest_res(end = {end})");
+            
             if (dst == rtqrGateway)
             {
                 LOG.Info($"Insert FIB row [inPort = {src}, slots = ({rtqrSlots.Item1}, {rtqrSlots.Item2}), outPort = {rtqrGateway}]");
@@ -110,10 +114,7 @@ namespace ConnectionController
                         .SetRes(ResponsePacket.ResponseType.Refused)
                         .Build();
                 }
-
-                string end = linkConnectionRequestResponse.End;
-
-                LOG.Info($"Received LRM::LinkConnectionRequest_res(end = {end})");
+                
                 LOG.Info($"Send CC::PeerCoordination_req(id = {id}, src = {end}, dst = {dst}, slots = {rtqrSlots})");
 
                 ResponsePacket peerCoordinationResponse = _ccPeerCoordinationClients[GetCcName(end)].Get(new RequestPacket.Builder()
