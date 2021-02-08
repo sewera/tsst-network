@@ -56,7 +56,7 @@ namespace NetworkNode.Networking.LRM
 
         public void SendLocalTopologyPacketAfterWakeUp()
         {
-            LOG.Info($"LRM{_localPortAlias}: Send RC::LocalTopology_req(port1 = {_localPortAlias}, port2 = {_remotePortAlias}, slotsArray = {_slotsArray})");
+            LOG.Info($"LRM{_localPortAlias}: Send RC::LocalTopology_req(port1 = {_localPortAlias}, port2 = {_remotePortAlias}, slotsArray = {SlotsArrayToString()})");
             ResponsePacket localTopology = _rcLocalTopologyClient.Get(new RequestPacket.Builder()
                 .SetPort1(_localPortAlias)
                 .SetPort2(_remotePortAlias)
@@ -94,7 +94,7 @@ namespace NetworkNode.Networking.LRM
             _slotsArray.Add(slots);
             
             // Do LocalTopology to RC server
-            LOG.Info($"LRM{_localPortAlias}: Send RC::LocalTopology_req(port1 = {_localPortAlias}, port2 = {_remotePortAlias}, slotsArray = {_slotsArray})");
+            LOG.Info($"LRM{_localPortAlias}: Send RC::LocalTopology_req(port1 = {_localPortAlias}, port2 = {_remotePortAlias}, slotsArray = {SlotsArrayToString()})");
             ResponsePacket localTopology = _rcLocalTopologyClient.Get(new RequestPacket.Builder()
                 .SetPort1(_localPortAlias)
                 .SetPort2(_remotePortAlias)
@@ -126,6 +126,19 @@ namespace NetworkNode.Networking.LRM
                 .SetRes(ResponsePacket.ResponseType.Ok)
                 .SetEnd(_remotePortAlias)
                 .Build();
+        }
+        
+        private string SlotsArrayToString()
+        {
+            string result = "[";
+            
+            foreach ((int, int) slotsTuple in _slotsArray)
+            {
+                result += " (" + slotsTuple.Item1 + ";" + slotsTuple.Item2 + ") ";
+            }
+
+            result += "]";
+            return result;
         }
     }
 }

@@ -72,7 +72,7 @@ namespace ConnectionController
 
             if (dst == rtqrGateway)
             {
-                LOG.Info($"Insert FIB row [inPort = {src}, slots = [{rtqrSlots.Item1}, {rtqrSlots.Item2}], outPort = {rtqrGateway}]");
+                LOG.Info($"Insert FIB row [inPort = {src}, slots = ({rtqrSlots.Item1}, {rtqrSlots.Item2}), outPort = {rtqrGateway}]");
                 ResponsePacket insertFibResponseDst = _nnFibInsertClient.Get(new ManagementPacket.Builder()
                     .SetCommandType("add")
                     .SetCommandData($"{src} {rtqrSlots.Item1} {rtqrSlots.Item2} {rtqrGateway}")
@@ -85,7 +85,7 @@ namespace ConnectionController
             }
 
             // gateway == dstZone && dstZone != dst -- TODO Not implemented
-            LOG.Info($"Insert FIB row [inPort = {src}, slots = [{rtqrSlots.Item1}, {rtqrSlots.Item2}], outPort = {rtqrGateway}]");
+            LOG.Info($"Insert FIB row [inPort = {src}, slots = ({rtqrSlots.Item1}, {rtqrSlots.Item2}), outPort = {rtqrGateway}]");
             ResponsePacket insertFibResponse = _nnFibInsertClient.Get(new ManagementPacket.Builder()
                 .SetCommandType("add")
                 .SetCommandData($"{src} {rtqrSlots.Item1} {rtqrSlots.Item2} {rtqrGateway}")
@@ -166,7 +166,7 @@ namespace ConnectionController
 
             if (dst == rtqrGateway)
             {
-                LOG.Info($"Insert FIB row [inPort = {src}, slots = [{rtqrSlots.Item1}, {rtqrSlots.Item2}], outPort = {rtqrGateway}]");
+                LOG.Info($"Insert FIB row [inPort = {src}, slots = ({rtqrSlots.Item1}, {rtqrSlots.Item2}), outPort = {rtqrGateway}]");
                 ResponsePacket insertFibResponseDst = _nnFibInsertClient.Get(new ManagementPacket.Builder()
                     .SetCommandType("add")
                     .SetCommandData($"{src} {rtqrSlots.Item1} {rtqrSlots.Item2} {rtqrGateway}")
@@ -179,7 +179,7 @@ namespace ConnectionController
             }
 
             // gateway == dstZone && dstZone != dst -- TODO Not implemented
-            LOG.Info($"Insert FIB row [inPort = {src}, slots = [{rtqrSlots.Item1}, {rtqrSlots.Item2}], outPort = {rtqrGateway}]");
+            LOG.Info($"Insert FIB row [inPort = {src}, slots = ({rtqrSlots.Item1}, {rtqrSlots.Item2}), outPort = {rtqrGateway}]");
             ResponsePacket insertFibResponse = _nnFibInsertClient.Get(new ManagementPacket.Builder()
                 .SetCommandType("add")
                 .SetCommandData($"{src} {rtqrSlots.Item1} {rtqrSlots.Item2} {rtqrGateway}")
