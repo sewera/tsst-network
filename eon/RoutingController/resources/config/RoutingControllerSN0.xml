@@ -9,59 +9,70 @@
     <rc_network_topology_local_port>13903</rc_network_topology_local_port>
 
     <route_table>
+        
         <row>
             <src>01x</src>
-            <dst>1xx</dst>
+            <dst>011</dst>
             <gateway>011</gateway>
         </row>
-
-        <row>
-            <src>02x</src>
-            <dst>1xx</dst>
-            <gateway>024,023</gateway>
-        </row>
-
-        <row>
-            <src>03x</src>
-            <dst>1xx</dst>
-            <gateway>032</gateway>
-        </row>
-
         <row>
             <src>01x</src>
-            <dst>2xx</dst>
-            <gateway>013,014</gateway>
+            <dst>032</dst>
+            <gateway>014</gateway>
         </row>
-
+        <row>
+            <src>01x</src>
+            <dst>031</dst>
+            <gateway>014</gateway>
+        </row>
+        <row>
+            <src>01x</src>
+            <dst>022</dst>
+            <gateway>013</gateway>
+        </row>
+        
         <row>
             <src>02x</src>
-            <dst>2xx</dst>
+            <dst>011</dst>
+            <gateway>024</gateway>
+        </row>
+        <row>
+            <src>02x</src>
+            <dst>032</dst>
+            <gateway>023</gateway>
+        </row>
+        <row>
+            <src>02x</src>
+            <dst>031</dst>
+            <gateway>023</gateway>
+        </row>
+        <row>
+            <src>02x</src>
+            <dst>022</dst>
             <gateway>022</gateway>
         </row>
-
+        
         <row>
             <src>03x</src>
-            <dst>2xx</dst>
+            <dst>011</dst>
+            <gateway>033</gateway>
+        </row>
+        <row>
+            <src>03x</src>
+            <dst>032</dst>
+            <gateway>032</gateway>
+        </row>
+        <row>
+            <src>03x</src>
+            <dst>031</dst>
             <gateway>031</gateway>
         </row>
-
-        <row>
-            <src>01x</src>
-            <dst>3xx</dst>
-            <gateway>012</gateway>
-        </row>
-
-        <row>
-            <src>02x</src>
-            <dst>3xx</dst>
-            <gateway>021</gateway>
-        </row>
-
         <row>
             <src>03x</src>
-            <dst>3xx</dst>
-            <gateway>033,034</gateway>
+            <dst>022</dst>
+            <gateway>034</gateway>
         </row>
+        
     </route_table>
 
 </configuration>
