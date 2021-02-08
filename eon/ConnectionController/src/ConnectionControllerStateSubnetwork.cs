@@ -114,7 +114,7 @@ namespace ConnectionController
                 
                 if (linkConnectionRequestResponse.Res == ResponsePacket.ResponseType.Refused)
                 {
-                    LOG.Info($"Received LRM::LinkConnectionRequest_res(res = Refused");
+                    LOG.Info($"Received LRM::LinkConnectionRequest_res(res = Refused)");
                     LOG.Info($"Send CC::ConnectionRequest_res(res = Refused)");
                     
                     return new ResponsePacket.Builder()
