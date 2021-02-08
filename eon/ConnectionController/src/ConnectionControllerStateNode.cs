@@ -53,9 +53,9 @@ namespace ConnectionController
             string src = requestPacket.SrcPort;
             string dst = requestPacket.DstPort;
             int sl = requestPacket.SlotsNumber;
-            LOG.Info($"Received CC::ConnectionRequest_req(id = {id}, src = {src}, dst = {dst}, sl = {sl}");
+            LOG.Info($"Received CC::ConnectionRequest_req(id = {id}, src = {src}, dst = {dst}, sl = {sl})");
 
-            LOG.Info($"Send RC::RouteTableQuery_req(id = {id}, src = {src}, dst = {dst}, sl = {sl}");
+            LOG.Info($"Send RC::RouteTableQuery_req(id = {id}, src = {src}, dst = {dst}, sl = {sl})");
             ResponsePacket routeTableQueryResponse = _rcRouteTableQueryClient.Get(new RequestPacket.Builder()
                 .SetId(id)
                 .SetSrcPort(src)
@@ -67,25 +67,25 @@ namespace ConnectionController
             string rtqrGateway = routeTableQueryResponse.Gateway;
             (int, int) rtqrSlots = routeTableQueryResponse.Slots;
             string dstZone = routeTableQueryResponse.DstZone;
-            LOG.Info($"Received RC::RouteTableQuery_res(id = {rtqrId}, gateway = {rtqrGateway}, slots = {rtqrSlots}, dstZone = {dstZone}");
+            LOG.Info($"Received RC::RouteTableQuery_res(id = {rtqrId}, gateway = {rtqrGateway}, slots = {rtqrSlots}, dstZone = {dstZone})");
 
 
             if (dst == rtqrGateway)
             {
-                LOG.Info($"Insert FIB row inPort = {src}, slots = [{rtqrSlots.Item1}, {rtqrSlots.Item2}], outPort = {rtqrGateway}");
+                LOG.Info($"Insert FIB row [inPort = {src}, slots = [{rtqrSlots.Item1}, {rtqrSlots.Item2}], outPort = {rtqrGateway}]");
                 ResponsePacket insertFibResponseDst = _nnFibInsertClient.Get(new ManagementPacket.Builder()
                     .SetCommandType("add")
                     .SetCommandData($"{src} {rtqrSlots.Item1} {rtqrSlots.Item2} {rtqrGateway}")
                     .Build());
                 if (insertFibResponseDst.Res == ResponsePacket.ResponseType.Ok)
                 {
-                    LOG.Info($"Send CC::ConnectionRequest_res(OK, slots = {rtqrSlots}");
+                    LOG.Info($"Send CC::ConnectionRequest_res(OK, slots = {rtqrSlots})");
                     return new ResponsePacket.Builder().SetRes(ResponsePacket.ResponseType.Ok).SetSlots(rtqrSlots).Build();
                 }
             }
 
             // gateway == dstZone && dstZone != dst -- TODO Not implemented
-            LOG.Info($"Insert FIB row inPort = {src}, slots = [{rtqrSlots.Item1}, {rtqrSlots.Item2}], outPort = {rtqrGateway}");
+            LOG.Info($"Insert FIB row [inPort = {src}, slots = [{rtqrSlots.Item1}, {rtqrSlots.Item2}], outPort = {rtqrGateway}]");
             ResponsePacket insertFibResponse = _nnFibInsertClient.Get(new ManagementPacket.Builder()
                 .SetCommandType("add")
                 .SetCommandData($"{src} {rtqrSlots.Item1} {rtqrSlots.Item2} {rtqrGateway}")
@@ -148,9 +148,9 @@ namespace ConnectionController
             string dst = requestPacket.DstPort;
             (int, int) slots = requestPacket.Slots;
             int sl = slots.Item2 - slots.Item1;
-            LOG.Info($"Received CC::PeerCoordination_req(id = {id}, src = {src}, dst = {dst}, slots = {slots}");
+            LOG.Info($"Received CC::PeerCoordination_req(id = {id}, src = {src}, dst = {dst}, slots = {slots})");
 
-            LOG.Info($"Send RC::RouteTableQuery_req(id = {id}, src = {src}, dst = {dst}, sl = {sl}");
+            LOG.Info($"Send RC::RouteTableQuery_req(id = {id}, src = {src}, dst = {dst}, sl = {sl})");
             ResponsePacket routeTableQueryResponse = _rcRouteTableQueryClient.Get(new RequestPacket.Builder()
                 .SetId(id)
                 .SetSrcPort(src)
@@ -162,24 +162,24 @@ namespace ConnectionController
             string rtqrGateway = routeTableQueryResponse.Gateway;
             (int, int) rtqrSlots = routeTableQueryResponse.Slots;
             string dstZone = routeTableQueryResponse.DstZone;
-            LOG.Info($"Received RC::RouteTableQuery_res(id = {rtqrId}, gateway = {rtqrGateway}, slots = {rtqrSlots}, dstZone = {dstZone}");
+            LOG.Info($"Received RC::RouteTableQuery_res(id = {rtqrId}, gateway = {rtqrGateway}, slots = {rtqrSlots}, dstZone = {dstZone})");
 
             if (dst == rtqrGateway)
             {
-                LOG.Info($"Insert FIB row inPort = {src}, slots = [{rtqrSlots.Item1}, {rtqrSlots.Item2}], outPort = {rtqrGateway}");
+                LOG.Info($"Insert FIB row [inPort = {src}, slots = [{rtqrSlots.Item1}, {rtqrSlots.Item2}], outPort = {rtqrGateway}]");
                 ResponsePacket insertFibResponseDst = _nnFibInsertClient.Get(new ManagementPacket.Builder()
                     .SetCommandType("add")
                     .SetCommandData($"{src} {rtqrSlots.Item1} {rtqrSlots.Item2} {rtqrGateway}")
                     .Build());
                 if (insertFibResponseDst.Res == ResponsePacket.ResponseType.Ok)
                 {
-                    LOG.Info($"Send CC::ConnectionRequest_res(OK, slots = {rtqrSlots}");
+                    LOG.Info($"Send CC::ConnectionRequest_res(OK, slots = {rtqrSlots})");
                     return new ResponsePacket.Builder().SetRes(ResponsePacket.ResponseType.Ok).SetSlots(rtqrSlots).Build();
                 }
             }
 
             // gateway == dstZone && dstZone != dst -- TODO Not implemented
-            LOG.Info($"Insert FIB row inPort = {src}, slots = [{rtqrSlots.Item1}, {rtqrSlots.Item2}], outPort = {rtqrGateway}");
+            LOG.Info($"Insert FIB row [inPort = {src}, slots = [{rtqrSlots.Item1}, {rtqrSlots.Item2}], outPort = {rtqrGateway}]");
             ResponsePacket insertFibResponse = _nnFibInsertClient.Get(new ManagementPacket.Builder()
                 .SetCommandType("add")
                 .SetCommandData($"{src} {rtqrSlots.Item1} {rtqrSlots.Item2} {rtqrGateway}")
