@@ -32,7 +32,7 @@ namespace RoutingController
             int slotsNumber = requestPacket.SlotsNumber;
             
             LOG.Info($"Received RC::RouteTableQuery_req" + $"(connectionId = {connectionId}, srcPort = {srcPort}," +
-                     $" dstPort = {dstPort}, slotsNumber = {slotsNumber}");
+                     $" dstPort = {dstPort}, slotsNumber = {slotsNumber})");
 
             // Set dstZone depending on destination domain
             string secondDomainPortPattern = "3xx";
@@ -64,7 +64,7 @@ namespace RoutingController
             }
 
             LOG.Info($"Sending RC::RouteTableQuery_res" + $"(connectionId = {connectionId}, gateway = {gateway}," +
-                     $" slots = {slots.ToString()}, dstZone = {dstZone}");
+                     $" slots = {slots.ToString()}, dstZone = {dstZone})");
             
             return new ResponsePacket.Builder()
                 .SetId(connectionId)
@@ -83,7 +83,7 @@ namespace RoutingController
             List<(int, int)> slotsArray = requestPacket.SlotsArray;
 
             LOG.Info($"Received RC::OnLocalTopology_req" + $"(port1 = {port1}, port2 = {port2}," +
-                     $" slotsArray = {SlotsArrayToString(slotsArray)}");
+                     $" slotsArray = {SlotsArrayToString(slotsArray)})");
             
             // If it's first OnLocalTopology_req for this link just add it to the _links List
             if (!(_links.Any((link => link.PortAlias1 == port1 && link.PortAlias2 == port2))))

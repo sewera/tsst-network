@@ -57,9 +57,9 @@ namespace ConnectionController
             string src = requestPacket.SrcPort;
             string dst = requestPacket.DstPort;
             int sl = requestPacket.SlotsNumber;
-            LOG.Info($"Received CC::ConnectionRequest_req(id = {id}, src = {src}, dst = {dst}, sl = {sl}");
+            LOG.Info($"Received CC::ConnectionRequest_req(id = {id}, src = {src}, dst = {dst}, sl = {sl})");
             
-            LOG.Info($"Send RC::RouteTableQuery_req(id = {id}, src = {src}, dst = {dst}, sl = {sl}");
+            LOG.Info($"Send RC::RouteTableQuery_req(id = {id}, src = {src}, dst = {dst}, sl = {sl})");
             ResponsePacket routeTableQueryResponse = _rcRouteTableQueryClient.Get(new RequestPacket.Builder()
                 .SetId(id)
                 .SetSrcPort(src)
@@ -71,35 +71,35 @@ namespace ConnectionController
             string rtqrGateway = routeTableQueryResponse.Gateway;
             (int, int) rtqrSlots = routeTableQueryResponse.Slots;
             string dstZone = routeTableQueryResponse.DstZone;
-            LOG.Info($"Received RC::RouteTableQuery_res(id = {rtqrId}, gateway = {rtqrGateway}, slots = {rtqrSlots}, dstZone = {dstZone}");
+            LOG.Info($"Received RC::RouteTableQuery_res(id = {rtqrId}, gateway = {rtqrGateway}, slots = {rtqrSlots}, dstZone = {dstZone})");
 
             
             if (dst == rtqrGateway)
             {
-                LOG.Info($"Send CC::ConnectionRequest_req(id = {rtqrId}, src = {src}, dst = {rtqrGateway}, sl = {sl}");
+                LOG.Info($"Send CC::ConnectionRequest_req(id = {rtqrId}, src = {src}, dst = {rtqrGateway}, sl = {sl})");
                 ResponsePacket connectionRequestResponseDst = _ccConnectionRequestClients[GetCcName(src)].Get(new RequestPacket.Builder()
                     .SetId(id)
                     .SetSrcPort(src)
                     .SetDstPort(rtqrGateway)
                     .SetSlotsNumber(sl)
                     .Build());
-                LOG.Info($"Received CC::ConnectionRequest_res({ResponsePacket.ResponseTypeToString(connectionRequestResponseDst.Res)}");
+                LOG.Info($"Received CC::ConnectionRequest_res({ResponsePacket.ResponseTypeToString(connectionRequestResponseDst.Res)})");
                 if (connectionRequestResponseDst.Res == ResponsePacket.ResponseType.Ok)
                 {
-                    LOG.Info($"Send CC::ConnectionRequest_res({ResponsePacket.ResponseTypeToString(connectionRequestResponseDst.Res)}, slots = {rtqrSlots}");
+                    LOG.Info($"Send CC::ConnectionRequest_res({ResponsePacket.ResponseTypeToString(connectionRequestResponseDst.Res)}, slots = {rtqrSlots})");
                     return new ResponsePacket.Builder().SetRes(ResponsePacket.ResponseType.Ok).SetSlots(rtqrSlots).Build();
                 }
             }
 
             // gateway == dstZone && dstZone != dst -- TODO Not implemented
-            LOG.Info($"Send CC::ConnectionRequest_req(id = {rtqrId}, src = {src}, dst = {rtqrGateway}, sl = {sl}");
+            LOG.Info($"Send CC::ConnectionRequest_req(id = {rtqrId}, src = {src}, dst = {rtqrGateway}, sl = {sl})");
             ResponsePacket connectionRequestResponse = _ccConnectionRequestClients[GetCcName(src)].Get(new RequestPacket.Builder()
                 .SetId(id)
                 .SetSrcPort(src)
                 .SetDstPort(rtqrGateway)
                 .SetSlotsNumber(sl)
                 .Build());
-            LOG.Info($"Received CC::ConnectionRequest_res({ResponsePacket.ResponseTypeToString(connectionRequestResponse.Res)}");
+            LOG.Info($"Received CC::ConnectionRequest_res({ResponsePacket.ResponseTypeToString(connectionRequestResponse.Res)})");
             
             ResponsePacket.ResponseType res = connectionRequestResponse.Res;
 
@@ -168,9 +168,9 @@ namespace ConnectionController
             string dst = requestPacket.DstPort;
             (int, int) slots = requestPacket.Slots;
             int sl = slots.Item2 - slots.Item1;
-            LOG.Info($"Received CC::PeerCoordination_req(id = {id}, src = {src}, dst = {dst}, slots = {slots}");
+            LOG.Info($"Received CC::PeerCoordination_req(id = {id}, src = {src}, dst = {dst}, slots = {slots})");
             
-            LOG.Info($"Send RC::RouteTableQuery_req(id = {id}, src = {src}, dst = {dst}, sl = {sl}");
+            LOG.Info($"Send RC::RouteTableQuery_req(id = {id}, src = {src}, dst = {dst}, sl = {sl})");
             ResponsePacket routeTableQueryResponse = _rcRouteTableQueryClient.Get(new RequestPacket.Builder()
                 .SetId(id)
                 .SetSrcPort(src)
@@ -182,34 +182,34 @@ namespace ConnectionController
             string rtqrGateway = routeTableQueryResponse.Gateway;
             (int, int) rtqrSlots = routeTableQueryResponse.Slots;
             string dstZone = routeTableQueryResponse.DstZone;
-            LOG.Info($"Received RC::RouteTableQuery_res(id = {rtqrId}, gateway = {rtqrGateway}, slots = {rtqrSlots}, dstZone = {dstZone}");
+            LOG.Info($"Received RC::RouteTableQuery_res(id = {rtqrId}, gateway = {rtqrGateway}, slots = {rtqrSlots}, dstZone = {dstZone})");
             
             if (dst == rtqrGateway)
             {
-                LOG.Info($"Send CC::ConnectionRequest_req(id = {rtqrId}, src = {src}, dst = {rtqrGateway}, sl = {sl}");
+                LOG.Info($"Send CC::ConnectionRequest_req(id = {rtqrId}, src = {src}, dst = {rtqrGateway}, sl = {sl})");
                 ResponsePacket connectionRequestResponseDst = _ccConnectionRequestClients[GetCcName(src)].Get(new RequestPacket.Builder()
                     .SetId(id)
                     .SetSrcPort(src)
                     .SetDstPort(rtqrGateway)
                     .SetSlotsNumber(sl)
                     .Build());
-                LOG.Info($"Received CC::ConnectionRequest_res({ResponsePacket.ResponseTypeToString(connectionRequestResponseDst.Res)}");
+                LOG.Info($"Received CC::ConnectionRequest_res({ResponsePacket.ResponseTypeToString(connectionRequestResponseDst.Res)})");
                 if (connectionRequestResponseDst.Res == ResponsePacket.ResponseType.Ok)
                 {
-                    LOG.Info($"Send CC::PeerCoordination_res({ResponsePacket.ResponseTypeToString(connectionRequestResponseDst.Res)}");
+                    LOG.Info($"Send CC::PeerCoordination_res({ResponsePacket.ResponseTypeToString(connectionRequestResponseDst.Res)})");
                     return new ResponsePacket.Builder().SetRes(ResponsePacket.ResponseType.Ok).Build();
                 }
             }
 
             // gateway == dstZone && dstZone != dst -- TODO Not implemented
-            LOG.Info($"Send CC::ConnectionRequest_req(id = {rtqrId}, src = {src}, dst = {rtqrGateway}, sl = {sl}");
+            LOG.Info($"Send CC::ConnectionRequest_req(id = {rtqrId}, src = {src}, dst = {rtqrGateway}, sl = {sl})");
             ResponsePacket connectionRequestResponse = _ccConnectionRequestClients[GetCcName(src)].Get(new RequestPacket.Builder()
                 .SetId(id)
                 .SetSrcPort(src)
                 .SetDstPort(rtqrGateway)
                 .SetSlotsNumber(sl)
                 .Build());
-            LOG.Info($"Received CC::ConnectionRequest_res({ResponsePacket.ResponseTypeToString(connectionRequestResponse.Res)}");
+            LOG.Info($"Received CC::ConnectionRequest_res({ResponsePacket.ResponseTypeToString(connectionRequestResponse.Res)})");
             
             ResponsePacket.ResponseType res = connectionRequestResponse.Res;
 

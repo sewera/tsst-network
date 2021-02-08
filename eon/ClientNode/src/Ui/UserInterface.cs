@@ -47,7 +47,7 @@ namespace ClientNode.Ui
                 {
                     case false:
                         Console.WriteLine("Not connected");
-                        Console.WriteLine("Input format: <<dst_name>> [space] <<slots_lower>> [space] <<slots_upper>>");
+                        Console.WriteLine("Input format: <<dst_name>> [space] <<required slots number>>");
                         Console.Write("> ");
                         string input = Console.ReadLine();
 
@@ -57,11 +57,11 @@ namespace ClientNode.Ui
                             ResponsePacket responsePacket = _cpccState.AskForConnection(_localName, mplsOutLabel, slotsNumber);
                             if (responsePacket.Res == ResponsePacket.ResponseType.Ok)
                             {
-                                LOG.Info($"Successfully connected with id: {responsePacket.Id}");
+                                LOG.Info($"Received NCC::CallRequest_res(res = OK, id = {responsePacket.Id})");
                                 _connected = true;
                             }
                             else
-                                LOG.Debug($"Connection refused with description: {ResponsePacket.ResponseTypeToString(responsePacket.Res)}");
+                                LOG.Debug($"Received NCC::CallRequest_res(res = {ResponsePacket.ResponseTypeToString(responsePacket.Res)})");
                         }
                         catch (ParserException e)
                         {
