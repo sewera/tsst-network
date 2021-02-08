@@ -69,7 +69,13 @@ namespace ConnectionController
             string dstZone = routeTableQueryResponse.DstZone;
             LOG.Info($"Received RC::RouteTableQuery_res(id = {rtqrId}, gateway = {rtqrGateway}, slots = {rtqrSlots}, dstZone = {dstZone})");
 
-
+            LOG.Info($"Send LRM::LinkConnectionRequest_req(slots = {rtqrSlots}, allocate, who = CC)");
+            ResponsePacket linkConnectionRequestResponse = _lrmLinkConnectionRequestClients[rtqrGateway].Get(new RequestPacket.Builder()
+                .SetSlots(rtqrSlots)
+                .SetShouldAllocate(true)
+                .SetWhoRequests(RequestPacket.Who.Cc)
+                .Build());
+            
             if (dst == rtqrGateway)
             {
                 LOG.Info($"Insert FIB row [inPort = {src}, slots = ({rtqrSlots.Item1}, {rtqrSlots.Item2}), outPort = {rtqrGateway}]");
@@ -95,12 +101,6 @@ namespace ConnectionController
 
             if (res == ResponsePacket.ResponseType.Ok)
             {
-                LOG.Info($"Send LRM::LinkConnectionRequest_req(slots = {rtqrSlots}, allocate, who = CC)");
-                ResponsePacket linkConnectionRequestResponse = _lrmLinkConnectionRequestClients[rtqrGateway].Get(new RequestPacket.Builder()
-                    .SetSlots(rtqrSlots)
-                    .SetShouldAllocate(true)
-                    .SetWhoRequests(RequestPacket.Who.Cc)
-                    .Build());
 
                 if (linkConnectionRequestResponse.Res == ResponsePacket.ResponseType.Refused)
                 {
