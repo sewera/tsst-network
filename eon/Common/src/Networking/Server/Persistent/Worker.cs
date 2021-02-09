@@ -64,8 +64,9 @@ namespace Common.Networking.Server.Persistent
                     _log.Fatal("_buffer.WorkSocket is null in ReadCallback");
                 }
             }
-            catch
+            catch (Exception e)
             {
+                _log.Debug(e);
                 // If exception is thrown, check if socket is connected, because you can start receiving again. If not - Disconnect.
                 if (!_socket.Connected)
                 {
