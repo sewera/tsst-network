@@ -15,8 +15,8 @@ namespace ConnectionController
         private readonly Dictionary<string, IApiClient<RequestPacket, ResponsePacket>> _ccPeerCoordinationClients =
             new Dictionary<string, IApiClient<RequestPacket, ResponsePacket>>();
 
-        private readonly Dictionary<string, IApiClient<RequestPacket, ResponsePacket>> _lrmLinkConnectionRequestClients
-            = new Dictionary<string, IApiClient<RequestPacket, ResponsePacket>>();
+        private readonly Dictionary<string, IApiClient<RequestPacket, ResponsePacket>> _lrmLinkConnectionRequestClients =
+            new Dictionary<string, IApiClient<RequestPacket, ResponsePacket>>();
 
         private readonly Dictionary<string, string> _ccNames;
 
