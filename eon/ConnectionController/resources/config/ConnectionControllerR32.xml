@@ -32,10 +32,7 @@
     </cc_peer_coordination_remote_ports>
 
     <lrm_remote_ports>
-        
-        <lrm_remote_port port="321">15321</lrm_remote_port>
-        <lrm_remote_port port="322">15322</lrm_remote_port>
-        <lrm_remote_port port="323">15323</lrm_remote_port>
+
         <lrm_remote_port port="324">15324</lrm_remote_port>
 
     </lrm_remote_ports>

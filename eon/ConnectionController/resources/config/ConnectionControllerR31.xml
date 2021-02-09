@@ -33,11 +33,7 @@
     
     <lrm_remote_ports>
 
-        <lrm_remote_port port="311">15311</lrm_remote_port>
-        <lrm_remote_port port="312">15312</lrm_remote_port>
-        <lrm_remote_port port="313">15313</lrm_remote_port>
         <lrm_remote_port port="314">15314</lrm_remote_port>
-        <lrm_remote_port port="315">15315</lrm_remote_port>
 
     </lrm_remote_ports>
     
