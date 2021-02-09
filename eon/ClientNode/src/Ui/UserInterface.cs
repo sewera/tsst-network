@@ -70,7 +70,7 @@ namespace ClientNode.Ui
                         break;
 
                     case true:
-                        Console.WriteLine("Enter message or 'dc' to disconnect");
+                        Console.WriteLine("Enter message in the following format 'send <connection_id> <message> or 'dc' to disconnect");
                         Console.Write("> ");
                         string inputConn = Console.ReadLine();
 
@@ -90,6 +90,13 @@ namespace ClientNode.Ui
                                 _connected = false;
                             }
                         }
+
+                        if (Regex.IsMatch(inputConn, "^send"))
+                        {
+                            string[] message = inputConn.Split(' ', 3);
+                            _clientNodeManager.Send(message[2], message[1]);
+                        }
+
                         break;
                 }
             }
