@@ -1,11 +1,14 @@
 using System.Net;
 using Common.Api;
 using Common.Models;
+using NLog;
 
 namespace ClientNode
 {
     public class CpccState
     {
+        private static readonly Logger LOG = LogManager.GetCurrentClassLogger();
+
         private IApiClient<RequestPacket, ResponsePacket> _nccConnectionRequestClient;
         private IApiClient<RequestPacket, ResponsePacket> _nccCallTeardownClient;
 
@@ -39,6 +42,7 @@ namespace ClientNode
 
         public ResponsePacket Teardown()
         {
+            LOG.Info($"Send NCC::CallTeardown_req(connectionId = {_connectionId})");
             return _nccCallTeardownClient.Get(new RequestPacket.Builder()
                 .SetId(_connectionId)
                 .Build());
