@@ -8,6 +8,6 @@ namespace ClientNode
     public interface IClientNodeManager : IManager
     {
         public void RegisterReceiveMessageEvent(ReceiveMessage<EonPacket> receiveMessage);
-        public void Send(string message, string connection);
+        public void Send(string message, string connection, (int, int) slots);
     }
 }

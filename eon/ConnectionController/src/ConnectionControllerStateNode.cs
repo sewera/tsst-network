@@ -244,6 +244,7 @@ namespace ConnectionController
                     return new ResponsePacket.Builder()
                         .SetRes(ResponsePacket.ResponseType.Ok)
                         .SetNextZonePort("")
+                        .SetSlots(rtqrSlots)
                         .Build();
                 }
 
