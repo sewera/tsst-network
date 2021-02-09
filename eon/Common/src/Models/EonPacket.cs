@@ -23,7 +23,7 @@ namespace Common.Models
 
         public override string ToString()
         {
-            return $"[{Slots}, {Message}]";
+            return $"[{SrcPort}, {Slots}, {Message}]";
         }
 
         private EonPacket((int, int) slots, string srcPort, string message)
