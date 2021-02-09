@@ -218,7 +218,7 @@ namespace ConnectionController
                 if (connectionRequestResponseDst.Res == ResponsePacket.ResponseType.Ok)
                 {
                     LOG.Info($"Send CC::PeerCoordination_res({ResponsePacket.ResponseTypeToString(connectionRequestResponseDst.Res)})");
-                    return new ResponsePacket.Builder().SetRes(ResponsePacket.ResponseType.Ok).Build();
+                    return new ResponsePacket.Builder().SetRes(ResponsePacket.ResponseType.Ok).SetSlots(rtqrSlots).Build();
                 }
             }
 
@@ -253,6 +253,7 @@ namespace ConnectionController
                     return new ResponsePacket.Builder()
                         .SetRes(ResponsePacket.ResponseType.Ok)
                         .SetNextZonePort("")
+                        .SetSlots(rtqrSlots)
                         .Build();
                 }
                 

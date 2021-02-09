@@ -17,6 +17,7 @@ namespace ClientNode.Ui
         private readonly string _localName;
         private bool _connected = false;
         private static readonly Logger LOG = LogManager.GetCurrentClassLogger();
+        private (int, int) _currentSlots;
         
         public UserInterface(ICommandParser commandParser, IClientNodeManager clientNodeManager, CpccState cpccState, string localName)
         {
@@ -57,8 +58,10 @@ namespace ClientNode.Ui
                             ResponsePacket responsePacket = _cpccState.AskForConnection(_localName, mplsOutLabel, slotsNumber);
                             if (responsePacket.Res == ResponsePacket.ResponseType.Ok)
                             {
-                                LOG.Info($"Received NCC::CallRequest_res(res = OK, id = {responsePacket.Id})");
+                                _currentSlots = responsePacket.Slots;
                                 _connected = true;
+                                LOG.Info($"Received NCC::CallRequest_res(res = OK, id = {responsePacket.Id}, slots = {_currentSlots})");
+
                             }
                             else
                                 LOG.Debug($"Received NCC::CallRequest_res(res = {ResponsePacket.ResponseTypeToString(responsePacket.Res)})");
@@ -94,7 +97,7 @@ namespace ClientNode.Ui
                         if (Regex.IsMatch(inputConn, "^send"))
                         {
                             string[] message = inputConn.Split(' ', 3);
-                            _clientNodeManager.Send(message[2], message[1]);
+                            _clientNodeManager.Send(message[2], message[1], _currentSlots);
                         }
 
                         break;
