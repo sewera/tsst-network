@@ -73,7 +73,7 @@ namespace ClientNode.Ui
                         break;
 
                     case true:
-                        Console.WriteLine("Enter message in the following format 'send <connection_id> <message> or 'dc' to disconnect");
+                        Console.WriteLine("Enter message in the following format 'send <connection_id> <message> or 'dc <connection_id>' to disconnect");
                         Console.Write("> ");
                         string inputConn = Console.ReadLine();
 
@@ -108,7 +108,9 @@ namespace ClientNode.Ui
         private static void MessageReceived((string portAlias, EonPacket mplsPacket) portAliasAndPacketTuple)
         {
             (_, EonPacket mplsPacket) = portAliasAndPacketTuple;
-            Console.WriteLine($"Received: {mplsPacket}");
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine($"Received EonPacket: {mplsPacket}");
+            Console.ForegroundColor = ConsoleColor.White;
             Console.Write("> ");
         }
     }
