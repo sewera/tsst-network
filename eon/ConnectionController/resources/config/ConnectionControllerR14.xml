@@ -37,7 +37,6 @@
 
     <lrm_remote_ports>
 
-        <lrm_remote_port port="141">15141</lrm_remote_port>
         <lrm_remote_port port="142">15142</lrm_remote_port>
         <lrm_remote_port port="143">15143</lrm_remote_port>
         <lrm_remote_port port="144">15144</lrm_remote_port>
