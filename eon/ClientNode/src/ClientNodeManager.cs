@@ -41,8 +41,10 @@ namespace ClientNode
             _clientPort.RegisterReceiveMessageEvent(receiveMessage);
         }
 
-        public void Send(string message, (int, int) slots)
+        public void Send(string message, string connection, (int, int) slots)
         {
+            LOG.Info($"Sending message '{message}' through connection {connection} on port {_configuration.ClientPortAlias}");
+
             EonPacket packet = new EonPacket.Builder()
                 .SetSrcPort(_configuration.ClientPortAlias)
                 .SetSlots(slots)

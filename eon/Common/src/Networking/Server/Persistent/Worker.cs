@@ -64,8 +64,9 @@ namespace Common.Networking.Server.Persistent
                     _log.Fatal("_buffer.WorkSocket is null in ReadCallback");
                 }
             }
-            catch
+            catch (Exception e)
             {
+                _log.Debug(e);
                 // If exception is thrown, check if socket is connected, because you can start receiving again. If not - Disconnect.
                 if (!_socket.Connected)
                 {
@@ -81,6 +82,7 @@ namespace Common.Networking.Server.Persistent
 
         public void Send(TPacket packet)
         {
+            _log.Trace("Send in worker");
             byte[] bytes = packet.ToBytes();
             _socket.BeginSend(bytes, 0, bytes.Length, 0, SendCallback, _socket);
         }

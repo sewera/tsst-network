@@ -66,22 +66,35 @@ namespace ConnectionController
             string rtqrGateway = routeTableQueryResponse.Gateway;
             (int, int) rtqrSlots = routeTableQueryResponse.Slots;
             string dstZone = routeTableQueryResponse.DstZone;
-            LOG.Info(
-                $"Received RC::RouteTableQuery_res(id = {rtqrId}, gateway = {rtqrGateway}, slots = {rtqrSlots}, dstZone = {dstZone})");
+            string gatewayOrEnd = rtqrGateway;
+            LOG.Info($"Received RC::RouteTableQuery_res(id = {rtqrId}, gateway = {rtqrGateway}, slots = {rtqrSlots}, dstZone = {dstZone})");
 
-            LOG.Info($"Send LRM::LinkConnectionRequest_req(slots = {rtqrSlots}, allocate, who = CC)");
-            ResponsePacket linkConnectionRequestResponse = _lrmLinkConnectionRequestClients[rtqrGateway].Get(
-                new RequestPacket.Builder()
-                    .SetSlots(rtqrSlots)
-                    .SetShouldAllocate(true)
-                    .SetWhoRequests(RequestPacket.Who.Cc)
-                    .Build());
-
-            string end = linkConnectionRequestResponse.End;
-
-            LOG.Info($"Received LRM::LinkConnectionRequest_res(end = {end})");
-            if (dst == rtqrGateway)
+            if (dst != rtqrGateway)
             {
+                LOG.Info($"Send LRM::LinkConnectionRequest_req(slots = {rtqrSlots}, allocate, who = CC)");
+                ResponsePacket linkConnectionRequestResponse = _lrmLinkConnectionRequestClients[rtqrGateway].Get(
+                    new RequestPacket.Builder()
+                        .SetSlots(rtqrSlots)
+                        .SetShouldAllocate(true)
+                        .SetWhoRequests(RequestPacket.Who.Cc)
+                        .Build());
+
+                if (linkConnectionRequestResponse.Res == ResponsePacket.ResponseType.Refused)
+                {
+                    LOG.Info("Received LRM::LinkConnectionRequest_res(res = Refused)");
+                    LOG.Info("Send CC::ConnectionRequest_res(res = Refused)");
+                    return new ResponsePacket.Builder()
+                        .SetRes(ResponsePacket.ResponseType.Refused)
+                        .Build();
+                }
+                
+                gatewayOrEnd = linkConnectionRequestResponse.End;
+    
+                LOG.Info($"Received LRM::LinkConnectionRequest_res(end = {gatewayOrEnd})");
+            }
+            else
+            {
+                LOG.Debug("Dst == Gateway, LRM will be handled by the layers above");
                 LOG.Info(
                     $"Insert FIB row [inPort = {src}, slots = ({rtqrSlots.Item1}, {rtqrSlots.Item2}), outPort = {rtqrGateway}]");
                 ResponsePacket insertFibResponseDst = _nnFibInsertClient.Get(new ManagementPacket.Builder()
@@ -108,28 +121,18 @@ namespace ConnectionController
 
             if (res == ResponsePacket.ResponseType.Ok)
             {
-                if (linkConnectionRequestResponse.Res == ResponsePacket.ResponseType.Refused)
-                {
-                    LOG.Info("Received LRM::LinkConnectionRequest_res(res = Refused)");
-                    LOG.Info("Send CC::ConnectionRequest_res(res = Refused)");
-                    return new ResponsePacket.Builder()
-                        .SetRes(ResponsePacket.ResponseType.Refused)
-                        .Build();
-                }
+                LOG.Info($"Send CC::PeerCoordination_req(id = {id}, src = {gatewayOrEnd}, dst = {dst}, slots = {rtqrSlots})");
 
-                LOG.Info($"Send CC::PeerCoordination_req(id = {id}, src = {end}, dst = {dst}, slots = {rtqrSlots})");
-
-                ResponsePacket peerCoordinationResponse = _ccPeerCoordinationClients[GetCcName(end)].Get(
+                ResponsePacket peerCoordinationResponse = _ccPeerCoordinationClients[GetCcName(gatewayOrEnd)].Get(
                     new RequestPacket.Builder()
                         .SetId(id)
-                        .SetSrcPort(end)
+                        .SetSrcPort(gatewayOrEnd)
                         .SetDstPort(dst)
                         .SetSlots(rtqrSlots)
                         .Build());
                 LOG.Info(
                     $"Received CC::PeerCoordination_req(res = {ResponsePacket.ResponseTypeToString(peerCoordinationResponse.Res)})");
-
-
+                
                 if (peerCoordinationResponse.Res == ResponsePacket.ResponseType.Ok)
                 {
                     LOG.Info($"Send CC::ConnectionRequest_res(res = OK, nextZonePort = NULL, slots = {rtqrSlots})");
@@ -178,8 +181,7 @@ namespace ConnectionController
             (int, int) rtqrSlots = routeTableQueryResponse.Slots;
             string dstZone = routeTableQueryResponse.DstZone;
             string gatewayOrEnd = rtqrGateway;
-            LOG.Info(
-                $"Received RC::RouteTableQuery_res(id = {rtqrId}, gateway = {rtqrGateway}, slots = {rtqrSlots}, dstZone = {dstZone})");
+            LOG.Info($"Received RC::RouteTableQuery_res(id = {rtqrId}, gateway = {rtqrGateway}, slots = {rtqrSlots}, dstZone = {dstZone})");
 
             if (dst != rtqrGateway)
             {
@@ -241,6 +243,7 @@ namespace ConnectionController
                     return new ResponsePacket.Builder()
                         .SetRes(ResponsePacket.ResponseType.Ok)
                         .SetNextZonePort("")
+                        .SetSlots(rtqrSlots)
                         .Build();
                 }
 

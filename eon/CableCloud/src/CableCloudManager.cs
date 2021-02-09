@@ -33,6 +33,7 @@ namespace CableCloud
         {
             (string portAlias, IWorker<EonPacket> clientWorker) = worker;
             _clientWorkers[portAlias] = clientWorker;
+            LOG.Debug($"Registered worker on port {portAlias}");
             clientWorker.RegisterReceiveMessageDelegate(_packetForwarder.ForwardPacket);
             clientWorker.RegisterClientRemovedDelegate(_packetForwarder.OnClientRemoved);
         }

@@ -43,12 +43,14 @@ namespace ConnectionController
                 .Build());
 
             var res = connectionRequestResponse.Res;
-            LOG.Info($"Received CC::ConnectionRequest_res({ResponsePacket.ResponseTypeToString(res)}, nextZonePort = NULL)");
+            (int, int) slots = connectionRequestResponse.Slots;
+            
+            LOG.Info($"Received CC::ConnectionRequest_res({ResponsePacket.ResponseTypeToString(res)}, slots = {slots}, nextZonePort = NULL)");
 
             if (res == ResponsePacket.ResponseType.Ok)
             {
                 LOG.Info($"Send CC::ConnectionRequest_res(res = OK)");
-                return new ResponsePacket.Builder().SetRes(ResponsePacket.ResponseType.Ok).Build();
+                return new ResponsePacket.Builder().SetRes(ResponsePacket.ResponseType.Ok).SetSlots(slots).Build();
             }
 
             LOG.Info($"Send CC::ConnectionRequest_res(res = Refused)");

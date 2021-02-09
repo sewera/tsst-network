@@ -7,9 +7,9 @@ namespace Common.Models
     [MessagePackObject]
     public class EonPacket : ISerializablePacket
     {
-        [Key(1)] public (int, int) Slots  { get; set; }
-        [Key(2)] public string SrcPort { get; set; }
-        [Key(3)] public string Message { get; set; }
+        [Key(0)] public (int, int) Slots  { get; set; }
+        [Key(1)] public string SrcPort { get; set; }
+        [Key(2)] public string Message { get; set; }
 
         public byte[] ToBytes()
         {
@@ -23,7 +23,7 @@ namespace Common.Models
 
         public override string ToString()
         {
-            return $"[{Slots}, {Message}]";
+            return $"[{SrcPort}, {Slots}, {Message}]";
         }
 
         private EonPacket((int, int) slots, string srcPort, string message)
