@@ -78,6 +78,14 @@ namespace NetworkNode.Networking.LRM
             // Check if requested slots are free to use
             foreach ((int, int) s in _slotsArray)
             {
+                if (s == slots)
+                {
+                    LOG.Debug($"LRM{_localPortAlias}: Gateway resources are already reserved.");
+                    return new ResponsePacket.Builder()
+                        .SetRes(ResponsePacket.ResponseType.Ok)
+                        .SetEnd(_remotePortAlias)
+                        .Build();
+                }
                 if (Checkers.SlotsOverlap(s, slots))
                 {
                     // If not, response with LRM::LinkConnectionRequest_res(res = REFUSED)
