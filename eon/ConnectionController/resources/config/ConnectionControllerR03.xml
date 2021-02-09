@@ -37,6 +37,9 @@
 
         <lrm_remote_port port="033">15033</lrm_remote_port>
         <lrm_remote_port port="034">15034</lrm_remote_port>
+        <lrm_remote_port port="032">15032</lrm_remote_port>
+        <lrm_remote_port port="031">15031</lrm_remote_port>
+
 
     </lrm_remote_ports>
 

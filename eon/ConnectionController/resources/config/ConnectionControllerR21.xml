@@ -35,6 +35,8 @@
 
     <lrm_remote_ports>
 
+        <lrm_remote_port port="211">15211</lrm_remote_port>
+        <lrm_remote_port port="212">15212</lrm_remote_port>
         <lrm_remote_port port="214">15214</lrm_remote_port>
         <lrm_remote_port port="213">15213</lrm_remote_port>
 
