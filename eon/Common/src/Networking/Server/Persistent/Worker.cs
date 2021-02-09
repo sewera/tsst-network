@@ -82,6 +82,7 @@ namespace Common.Networking.Server.Persistent
 
         public void Send(TPacket packet)
         {
+            _log.Trace("Send in worker");
             byte[] bytes = packet.ToBytes();
             _socket.BeginSend(bytes, 0, bytes.Length, 0, SendCallback, _socket);
         }
