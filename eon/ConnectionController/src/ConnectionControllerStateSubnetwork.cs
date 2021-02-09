@@ -83,10 +83,6 @@ namespace ConnectionController
                     .SetWhoRequests(RequestPacket.Who.Cc)
                     .Build());
                 
-                gatewayOrEnd = linkConnectionRequestResponse.End;
-    
-                LOG.Info($"Received LRM::LinkConnectionRequest_res(end = {gatewayOrEnd})");
-                
                 if (linkConnectionRequestResponse.Res == ResponsePacket.ResponseType.Refused)
                 {
                     LOG.Info($"Received LRM::LinkConnectionRequest_res(res = Refused)");
@@ -96,6 +92,11 @@ namespace ConnectionController
                         .SetRes(ResponsePacket.ResponseType.Refused)
                         .Build();
                 }
+                
+                gatewayOrEnd = linkConnectionRequestResponse.End;
+    
+                LOG.Info($"Received LRM::LinkConnectionRequest_res(end = {gatewayOrEnd})");
+
             }
             else
             {

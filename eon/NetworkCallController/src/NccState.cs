@@ -142,7 +142,6 @@ namespace NetworkCallController
                 .SetSlotsNumber(newConnection.SlotsNumber)
                 .Build());
             LOG.Info($"Received CC:ConnectionRequest_res(res = {connectionRequestResponse.Res})");
-            // In NCC we are ignoring nextZonePort and slots
             res = connectionRequestResponse.Res;
             (int, int) slots = connectionRequestResponse.Slots;
             // Check domain CC response
@@ -150,7 +149,6 @@ namespace NetworkCallController
             {
                 case ResponseType.Ok:
                 {
-                    // Send NCC::CallRequest_res(res=OK, id = newConnection.Id)
                     LOG.Info($"Send NCC::CallRequest_res(res = OK, id = {newConnection.Id}, slots = {slots})");
                     return new Builder()
                         .SetRes(ResponseType.Ok)
@@ -160,7 +158,6 @@ namespace NetworkCallController
                 }
                 default:
                 {
-                    // Send NCC::CallRequest_res(res=Network problem)
                     LOG.Info("Send NCC::CallRequest_res(res = Network Problem)");
                     return new Builder()
                         .SetRes(ResponseType.NetworkProblem)

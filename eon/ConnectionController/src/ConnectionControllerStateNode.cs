@@ -67,8 +67,7 @@ namespace ConnectionController
             (int, int) rtqrSlots = routeTableQueryResponse.Slots;
             string dstZone = routeTableQueryResponse.DstZone;
             string gatewayOrEnd = rtqrGateway;
-            LOG.Info(
-                $"Received RC::RouteTableQuery_res(id = {rtqrId}, gateway = {rtqrGateway}, slots = {rtqrSlots}, dstZone = {dstZone})");
+            LOG.Info($"Received RC::RouteTableQuery_res(id = {rtqrId}, gateway = {rtqrGateway}, slots = {rtqrSlots}, dstZone = {dstZone})");
 
             if (dst != rtqrGateway)
             {
@@ -79,11 +78,7 @@ namespace ConnectionController
                         .SetShouldAllocate(true)
                         .SetWhoRequests(RequestPacket.Who.Cc)
                         .Build());
-                
-                gatewayOrEnd = linkConnectionRequestResponse.End;
-    
-                LOG.Info($"Received LRM::LinkConnectionRequest_res(end = {gatewayOrEnd})");
-                
+
                 if (linkConnectionRequestResponse.Res == ResponsePacket.ResponseType.Refused)
                 {
                     LOG.Info("Received LRM::LinkConnectionRequest_res(res = Refused)");
@@ -92,6 +87,10 @@ namespace ConnectionController
                         .SetRes(ResponsePacket.ResponseType.Refused)
                         .Build();
                 }
+                
+                gatewayOrEnd = linkConnectionRequestResponse.End;
+    
+                LOG.Info($"Received LRM::LinkConnectionRequest_res(end = {gatewayOrEnd})");
             }
             else
             {
