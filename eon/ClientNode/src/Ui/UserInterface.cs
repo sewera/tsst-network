@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Threading;
 using ClientNode.Ui.Parsers;
@@ -17,7 +19,7 @@ namespace ClientNode.Ui
         private readonly string _localName;
         private bool _connected = false;
         private static readonly Logger LOG = LogManager.GetCurrentClassLogger();
-        private (int, int) _currentSlots;
+        private readonly ConcurrentDictionary<string, (int, int)> _currentSlots = new ConcurrentDictionary<string, (int, int)>();
         
         public UserInterface(ICommandParser commandParser, IClientNodeManager clientNodeManager, CpccState cpccState, string localName)
         {
@@ -47,7 +49,14 @@ namespace ClientNode.Ui
                 switch (_connected)
                 {
                     case false:
-                        Console.WriteLine("Not connected");
+                        if (_currentSlots.IsEmpty)
+                            Console.WriteLine("Not connected");
+                        else
+                        {
+                            Console.WriteLine($"Connected with ID(s): [{string.Join(", ", _currentSlots.Keys)}]");
+                            Console.WriteLine("Add another connection");
+                        }
+
                         Console.WriteLine("Input format: <<dst_name>> [space] <<required slots number>>");
                         Console.Write("> ");
                         string input = Console.ReadLine();
@@ -58,9 +67,9 @@ namespace ClientNode.Ui
                             ResponsePacket responsePacket = _cpccState.AskForConnection(_localName, mplsOutLabel, slotsNumber);
                             if (responsePacket.Res == ResponsePacket.ResponseType.Ok)
                             {
-                                _currentSlots = responsePacket.Slots;
+                                _currentSlots[responsePacket.Id.ToString()] = responsePacket.Slots;
                                 _connected = true;
-                                LOG.Info($"Received NCC::CallRequest_res(res = OK, id = {responsePacket.Id}, slots = {_currentSlots})");
+                                LOG.Info($"Received NCC::CallRequest_res(res = OK, id = {responsePacket.Id}, slots = {responsePacket.Slots})");
 
                             }
                             else
@@ -73,7 +82,9 @@ namespace ClientNode.Ui
                         break;
 
                     case true:
-                        Console.WriteLine("Enter message in the following format 'send <connection_id> <message> or 'dc <connection_id>' to disconnect");
+                        Console.WriteLine("Enter message in the following format 'send <connection_id> <message>',");
+                        Console.WriteLine("'add' to add another connection");
+                        Console.WriteLine("or 'dc <connection_id>' to disconnect");
                         Console.Write("> ");
                         string inputConn = Console.ReadLine();
 
@@ -94,10 +105,23 @@ namespace ClientNode.Ui
                             }
                         }
 
+                        if (Regex.IsMatch(inputConn, "^add"))
+                        {
+                            LOG.Info("Keeping current connection");
+                            _connected = false;
+                        }
+
                         if (Regex.IsMatch(inputConn, "^send"))
                         {
                             string[] message = inputConn.Split(' ', 3);
-                            _clientNodeManager.Send(message[2], message[1], _currentSlots);
+                            try
+                            {
+                                _clientNodeManager.Send(message[2], message[1], _currentSlots[message[1]]);
+                            }
+                            catch (KeyNotFoundException)
+                            {
+                                LOG.Error("Connection id not found");
+                            }
                         }
 
                         break;

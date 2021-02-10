@@ -114,22 +114,16 @@ namespace RoutingController
         private (int, int) CreateSlots(string gateway, int slotsNumber)
         {
             (int, int) slots;
-            
+
+            // Naive approach, slots are assigned regardless of a route.
             for (int i = 1; i < 100 - slotsNumber; i++)
             {
                 slots = (i, i + slotsNumber);
 
-                foreach (Link link in _links.Where(link => gateway == link.PortAlias1 || gateway == link.PortAlias2))
-                {
-                    // If there are no allocated slots for a link,
-                    // or if there are but they are not overlapping slots we try to allocate 
-                    // assign created slots for a gateway in that link.
-                    if (link.SlotsArray.Any(slotsTuple => !Checkers.SlotsOverlap(slots, slotsTuple)) || !link.SlotsArray.Any())
-                    {
-                        LOG.Trace($"Assigned slots {slots.ToString()} to gateway {gateway}");
-                        return slots;
-                    }
-                }
+                if (_connections.Exists(connection => Checkers.SlotsOverlap(connection.Slots, slots)))
+                    continue;
+
+                return slots;
             }
 
             return (0, 0);
