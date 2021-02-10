@@ -43,6 +43,12 @@ namespace ConnectionController
                 .Build());
 
             var res = connectionRequestResponse.Res;
+            if (res == ResponsePacket.ResponseType.ResourcesProblem)
+            {
+                LOG.Info("Send CC:ConnectionRequest_res(res = ResourcesProblem)");
+                return new ResponsePacket.Builder().SetRes(ResponsePacket.ResponseType.ResourcesProblem).Build();
+            }
+
             (int, int) slots = connectionRequestResponse.Slots;
             
             LOG.Info($"Received CC::ConnectionRequest_res({ResponsePacket.ResponseTypeToString(res)}, slots = {slots}, nextZonePort = NULL)");

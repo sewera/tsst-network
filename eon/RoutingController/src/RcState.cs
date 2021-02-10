@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Common.Models;
@@ -53,7 +54,18 @@ namespace RoutingController
             // Check whether we don't already have a registered connection with given connectionId
             if (!_connections.Exists(connection => connection.Id == connectionId))
             {
-                slots = CreateSlots(gateway, slotsNumber);
+                try
+                {
+                    slots = CreateSlots(gateway, slotsNumber);
+                }
+                catch (Exception e)
+                {
+                    LOG.Info(e.Message);
+                    return new ResponsePacket.Builder()
+                        .SetRes(ResponsePacket.ResponseType.ResourcesProblem)
+                        .Build();
+                }
+
                 _connections.Add(new Connection(connectionId, slots));
                 LOG.Trace($"Allocated slots {slots} for new connection with id {connectionId}");
             }
@@ -67,6 +79,7 @@ namespace RoutingController
                      $" slots = {slots.ToString()}, dstZone = {dstZone})");
             
             return new ResponsePacket.Builder()
+                .SetRes(ResponsePacket.ResponseType.Ok)
                 .SetId(connectionId)
                 .SetGateway(gateway)
                 .SetSlots(slots)
@@ -126,7 +139,7 @@ namespace RoutingController
                 return slots;
             }
 
-            return (0, 0);
+            throw new Exception("Slots could not be allocated");
         }
 
         private string SlotsArrayToString(List<(int, int)> slotsArray)
