@@ -156,6 +156,13 @@ namespace NetworkCallController
                         .SetSlots(slots)
                         .Build();
                 }
+                case ResponseType.ResourcesProblem:
+                {
+                    LOG.Info("Send NCC:CallRequest_res(res = ResourcesProblem)");
+                    return new Builder()
+                        .SetRes(ResponseType.ResourcesProblem)
+                        .Build();
+                }
                 default:
                 {
                     LOG.Info("Send NCC::CallRequest_res(res = Network Problem)");
