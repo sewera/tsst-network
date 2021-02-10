@@ -62,6 +62,15 @@ namespace ConnectionController
                 .SetSlotsNumber(sl)
                 .Build());
 
+            if (routeTableQueryResponse.Res == ResponsePacket.ResponseType.ResourcesProblem)
+            {
+                LOG.Info("Received RC::RouteTableQuery_res(res = ResourcesProblem)");
+                LOG.Info("Send ConnectionRequest_res(res = ResourcesProblem)");
+                return new ResponsePacket.Builder()
+                    .SetRes(ResponsePacket.ResponseType.ResourcesProblem)
+                    .Build();
+            }
+
             int rtqrId = routeTableQueryResponse.Id;
             string rtqrGateway = routeTableQueryResponse.Gateway;
             (int, int) rtqrSlots = routeTableQueryResponse.Slots;
@@ -175,6 +184,15 @@ namespace ConnectionController
                 .SetDstPort(dst)
                 .SetSlotsNumber(sl)
                 .Build());
+
+            if (routeTableQueryResponse.Res == ResponsePacket.ResponseType.ResourcesProblem)
+            {
+                LOG.Info("Received RC::RouteTableQuery_res(res = ResourcesProblem)");
+                LOG.Info("Send ConnectionRequest_res(res = ResourcesProblem)");
+                return new ResponsePacket.Builder()
+                    .SetRes(ResponsePacket.ResponseType.ResourcesProblem)
+                    .Build();
+            }
 
             int rtqrId = routeTableQueryResponse.Id;
             string rtqrGateway = routeTableQueryResponse.Gateway;
