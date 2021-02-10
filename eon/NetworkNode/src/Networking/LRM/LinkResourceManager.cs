@@ -109,7 +109,7 @@ namespace NetworkNode.Networking.LRM
                 .SetSlotsArray(_slotsArray)
                 .Build());
 
-            LOG.Info($"LRM{_localPortAlias}: Received RC::LocalTopology_req(res = {ResponsePacket.ResponseTypeToString(localTopology.Res)}");
+            LOG.Info($"LRM{_localPortAlias}: Received RC::LocalTopology_res(res = {ResponsePacket.ResponseTypeToString(localTopology.Res)})");
             
             // If allocation is requested by CC inform second LRM about it
             if (whoRequests == RequestPacket.Who.Cc)
@@ -123,12 +123,12 @@ namespace NetworkNode.Networking.LRM
                         .SetWhoRequests(RequestPacket.Who.Lrm)
                         .Build());
                     LOG.Info(
-                        $"LRM{_localPortAlias}: LRM::LinkConnectionRequest_{ResponsePacket.ResponseTypeToString(linkConnectionRequest.Res)}(res = {ResponsePacket.ResponseTypeToString(localTopology.Res)}");
+                        $"LRM{_localPortAlias}: LRM::LinkConnectionRequest_res(res = {ResponsePacket.ResponseTypeToString(localTopology.Res)})");
                 }
             }
            
             // Send response packet
-            LOG.Info($"LRM{_localPortAlias}: LRM::LinkConnectionRequest_{GenericPacket.PacketTypeToString(GenericPacket.PacketType.Response)}" +
+            LOG.Info($"LRM{_localPortAlias}: LRM::LinkConnectionRequest_res" +
                      $"(res = {ResponsePacket.ResponseTypeToString(ResponsePacket.ResponseType.Ok)})");
             return new ResponsePacket.Builder()
                 .SetRes(ResponsePacket.ResponseType.Ok)
