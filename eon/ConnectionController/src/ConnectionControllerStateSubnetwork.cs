@@ -148,7 +148,7 @@ namespace ConnectionController
                     .SetDstPort(dst)
                     .SetSlots(rtqrSlots)
                     .Build());
-                LOG.Info($"Received CC::PeerCoordination_req(res = {ResponsePacket.ResponseTypeToString(peerCoordinationResponse.Res)})");
+                LOG.Info($"Received CC::PeerCoordination_res(res = {ResponsePacket.ResponseTypeToString(peerCoordinationResponse.Res)})");
 
                 if (peerCoordinationResponse.Res == ResponsePacket.ResponseType.Ok)
                 {
@@ -195,7 +195,7 @@ namespace ConnectionController
             if (routeTableQueryResponse.Res == ResponsePacket.ResponseType.ResourcesProblem)
             {
                 LOG.Info("Received RC::RouteTableQuery_res(res = ResourcesProblem)");
-                LOG.Info("Send ConnectionRequest_res(res = ResourcesProblem)");
+                LOG.Info("Send PeerCoordination_res(res = ResourcesProblem)");
                 return new ResponsePacket.Builder()
                     .SetRes(ResponsePacket.ResponseType.ResourcesProblem)
                     .Build();
@@ -263,7 +263,7 @@ namespace ConnectionController
                     .SetDstPort(dst)
                     .SetSlots(rtqrSlots)
                     .Build());
-                LOG.Info($"Received CC::PeerCoordination_req(res = {ResponsePacket.ResponseTypeToString(peerCoordinationResponse.Res)})");
+                LOG.Info($"Received CC::PeerCoordination_res(res = {ResponsePacket.ResponseTypeToString(peerCoordinationResponse.Res)})");
 
 
                 if (peerCoordinationResponse.Res == ResponsePacket.ResponseType.Ok)
