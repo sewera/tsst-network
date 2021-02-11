@@ -79,9 +79,6 @@ namespace NetworkNode.Networking.LRM
             {
                 LOG.Debug($"Deallocating slots: {slots}");
                 _slotsArray.RemoveAll(slt => slt == slots);
-                return new ResponsePacket.Builder()
-                    .SetEnd(_remotePortAlias)
-                    .Build();
             }
             else
             {
