@@ -70,47 +70,50 @@ namespace NetworkNode.Networking.LRM
             // Get LRM::LinkConnectionRequest_req packet params
             GenericPacket.PacketType type = requestPacket.Type;
             (int, int) slots = requestPacket.Slots;
-            bool shouldAllocate = requestPacket.ShouldAllocate;
             RequestPacket.Who whoRequests = requestPacket.WhoRequests;
             RequestPacket.Est est = requestPacket.Establish;
-            //TODO: Check for est and teardown if it == Teardown.
-
+            
+            LOG.Info($"LRM{_localPortAlias}: Received LRM::LinkConnectionRequest_{GenericPacket.PacketTypeToString(type)}(slots = {slots}, {(est == RequestPacket.Est.Establish ? "allocate" : "deallocate")})");
+            
             if (est == RequestPacket.Est.Teardown)
             {
-                LOG.Info("Teardown"); // TODO
+                LOG.Debug($"Deallocating slots: {slots}");
+                _slotsArray.RemoveAll(slt => slt == slots);
                 return new ResponsePacket.Builder()
                     .SetEnd(_remotePortAlias)
                     .Build();
             }
-            
-            LOG.Info($"LRM{_localPortAlias}: Received LRM::LinkConnectionRequest_{GenericPacket.PacketTypeToString(type)}(slots = {slots}, {(shouldAllocate ? "allocate" : "release")})");
-            
-            // Check if requested slots are free to use
-            foreach ((int, int) s in _slotsArray)
+            else
             {
-                if (s == slots)
+                // Check if requested slots are free to use
+                foreach ((int, int) s in _slotsArray)
                 {
-                    LOG.Debug($"LRM{_localPortAlias}: Gateway resources are already reserved.");
-                    return new ResponsePacket.Builder()
-                        .SetRes(ResponsePacket.ResponseType.Ok)
-                        .SetEnd(_remotePortAlias)
-                        .Build();
+                    if (s == slots)
+                    {
+                        LOG.Debug($"LRM{_localPortAlias}: Gateway resources are already reserved.");
+                        return new ResponsePacket.Builder()
+                            .SetRes(ResponsePacket.ResponseType.Ok)
+                            .SetEnd(_remotePortAlias)
+                            .Build();
+                    }
+
+                    if (Checkers.SlotsOverlap(s, slots))
+                    {
+                        // If not, response with LRM::LinkConnectionRequest_res(res = REFUSED)
+                        LOG.Info(
+                            $"LRM{_localPortAlias}: LRM::LinkConnectionRequest_{GenericPacket.PacketTypeToString(GenericPacket.PacketType.Response)}" +
+                            $"(res = {ResponsePacket.ResponseTypeToString(ResponsePacket.ResponseType.Refused)})");
+
+                        return new ResponsePacket.Builder()
+                            .SetRes(ResponsePacket.ResponseType.Refused)
+                            .Build();
+                    }
                 }
-                if (Checkers.SlotsOverlap(s, slots))
-                {
-                    // If not, response with LRM::LinkConnectionRequest_res(res = REFUSED)
-                    LOG.Info($"LRM{_localPortAlias}: LRM::LinkConnectionRequest_{GenericPacket.PacketTypeToString(GenericPacket.PacketType.Response)}" +
-                             $"(res = {ResponsePacket.ResponseTypeToString(ResponsePacket.ResponseType.Refused)})");
-                    
-                    return new ResponsePacket.Builder()
-                        .SetRes(ResponsePacket.ResponseType.Refused)
-                        .Build();
-                }
+
+                // Allocate
+                _slotsArray.Add(slots);
             }
-            
-            // Allocate
-            _slotsArray.Add(slots);
-            
+
             // Do LocalTopology to RC server
             LOG.Info($"LRM{_localPortAlias}: Send RC::LocalTopology_req(port1 = {_localPortAlias}, port2 = {_remotePortAlias}, slotsArray = {SlotsArrayToString()})");
             ResponsePacket localTopology = _rcLocalTopologyClient.Get(new RequestPacket.Builder()
@@ -126,14 +129,15 @@ namespace NetworkNode.Networking.LRM
             {
                 if (_lrmConnectionRequestClient != null)
                 {
-                    LOG.Info($"LRM{_localPortAlias}: Send LRM::LinkConnectionRequest_req(slots={slots}, allocate = true, who = LRM)");
+                    LOG.Info($"LRM{_localPortAlias}: Send LRM::LinkConnectionRequest_req(slots={slots}, {(est == RequestPacket.Est.Establish ? "allocate" : "deallocate")}, who = LRM)");
                     ResponsePacket linkConnectionRequest = _lrmConnectionRequestClient.Get(new RequestPacket.Builder()
+                        .SetEst(est)
                         .SetSlots(slots)
                         .SetShouldAllocate(true)
                         .SetWhoRequests(RequestPacket.Who.Lrm)
                         .Build());
                     LOG.Info(
-                        $"LRM{_localPortAlias}: LRM::LinkConnectionRequest_res(res = {ResponsePacket.ResponseTypeToString(localTopology.Res)})");
+                        $"LRM{_localPortAlias}: LRM::LinkConnectionRequest_res(res = {ResponsePacket.ResponseTypeToString(linkConnectionRequest.Res)})");
                 }
             }
            
