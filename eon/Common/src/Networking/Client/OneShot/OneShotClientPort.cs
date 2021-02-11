@@ -54,7 +54,7 @@ namespace Common.Networking.Client.OneShot
                 if (bytesRead > 0)
                 {
                     TResponsePacket packet = ISerializablePacket.FromBytes<TResponsePacket>(buffer);
-                    Log.Debug($"Received: {packet}");
+                    Log.Trace($"Received: {packet}");
                     OnMessageReceivedEvent(packet);
                 }
             }
