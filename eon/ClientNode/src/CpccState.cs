@@ -40,11 +40,11 @@ namespace ClientNode
             return nccConnectionRequestResponse;
         }
 
-        public ResponsePacket Teardown()
+        public ResponsePacket Teardown(int connId)
         {
-            LOG.Info($"Send NCC::CallTeardown_req(connectionId = {_connectionId})");
+            LOG.Info($"Send NCC::CallTeardown_req(connectionId = {connId})");
             return _nccCallTeardownClient.Get(new RequestPacket.Builder()
-                .SetId(_connectionId)
+                .SetId(connId)
                 .Build());
         }
 

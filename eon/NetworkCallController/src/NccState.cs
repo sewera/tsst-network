@@ -225,8 +225,19 @@ namespace NetworkCallController
 
         public ResponsePacket OnCallTeardownReceived(RequestPacket requestPacket)
         {
+            int id = requestPacket.Id;
             //TODO Simply pass the information to domain CC
-            return new Builder().Build();
+            ResponsePacket callTeardownResponse = _ccConnectionRequestClient.Get(new RequestPacket.Builder()
+                .SetId(id)
+                .SetEst(RequestPacket.Est.Teardown)
+                .Build());
+
+            if (callTeardownResponse.Res != ResponseType.Ok)
+                return new Builder().SetRes(ResponseType.NetworkProblem).Build();
+
+            return new Builder()
+                .SetRes(ResponseType.Ok)
+                .Build();
         }
 
         private string GetDomainFromPort(string portAlias)

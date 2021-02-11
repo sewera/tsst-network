@@ -32,6 +32,33 @@ namespace ConnectionController
             string src = requestPacket.SrcPort;
             string dst = requestPacket.DstPort;
             int sl = requestPacket.SlotsNumber;
+            RequestPacket.Est est = requestPacket.Establish;
+
+            if (est == RequestPacket.Est.Teardown)
+            {
+                LOG.Info($"Received CC::ConnectionRequest_req(id = {id}, Teardown)");
+                LOG.Info($"Send CC::ConnectionRequest_req(id = {id}, Teardown)");
+                var teardownRequestResponse = _ccConnectionRequestClients[GetCcName(src)].Get(new RequestPacket.Builder()
+                    .SetEst(RequestPacket.Est.Teardown)
+                    .SetId(id)
+                    .SetSrcPort(src)
+                    .SetDstPort(dst)
+                    .Build());
+
+                LOG.Info($"Received CC::ConnectionRequest_res(res = {ResponsePacket.ResponseTypeToString(teardownRequestResponse.Res)}, Teardown)");
+
+                if (teardownRequestResponse.Res != ResponsePacket.ResponseType.Ok)
+                {
+                    LOG.Info("Send CC::ConnectionRequest_res(res = NetworkProblem, Teardown)");
+                    return new ResponsePacket.Builder().SetRes(ResponsePacket.ResponseType.NetworkProblem).Build();
+                }
+
+                LOG.Info("Send CC::ConnectionRequest_res(res = OK, Teardown)");
+                return new ResponsePacket.Builder()
+                    .SetRes(ResponsePacket.ResponseType.Ok)
+                    .Build();
+            }
+
             LOG.Info($"Received CC::ConnectionRequest_req(id = {id}, src = {src}, dst = {dst}, sl = {sl})");
 
             LOG.Info($"Send CC::ConnectionRequest_req(id = {id}, src = {src}, dst = {dst}, sl = {sl})");
