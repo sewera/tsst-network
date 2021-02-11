@@ -50,6 +50,11 @@ namespace RoutingController
                 // and then when the Teardown comes, just do:
                 LOG.Info($"Sending RC::RouteTableQuery_res(Teardown, connectionId = {connectionId})");
                 _responsePackets.Remove(requestPacket, out ResponsePacket teardownResponsePacket);
+                if (teardownResponsePacket == null)
+                {
+                    LOG.Error("Could not find such connection");
+                    return new ResponsePacket.Builder().SetRes(ResponsePacket.ResponseType.Refused).Build();
+                }
                 return teardownResponsePacket;
             }
             
@@ -106,7 +111,7 @@ namespace RoutingController
 
             RequestPacket requestPacketWhenTeardown = requestPacket;
             requestPacketWhenTeardown.Establish = RequestPacket.Est.Teardown;
-            _responsePackets[requestPacket] = responsePacket;
+            _responsePackets[requestPacketWhenTeardown] = responsePacket;
 
             LOG.Info($"Sending RC::RouteTableQuery_res" + $"(connectionId = {connectionId}, gateway = {gateway}," +
                      $" slots = {slots.ToString()}, dstZone = {dstZone})");
