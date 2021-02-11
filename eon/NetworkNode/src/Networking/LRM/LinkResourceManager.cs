@@ -72,6 +72,8 @@ namespace NetworkNode.Networking.LRM
             (int, int) slots = requestPacket.Slots;
             bool shouldAllocate = requestPacket.ShouldAllocate;
             RequestPacket.Who whoRequests = requestPacket.WhoRequests;
+            RequestPacket.Est est = requestPacket.Establish;
+            //TODO: Check for est and teardown if it == Teardown.
             
             LOG.Info($"LRM{_localPortAlias}: Received LRM::LinkConnectionRequest_{GenericPacket.PacketTypeToString(type)}(slots = {slots}, {(shouldAllocate ? "allocate" : "release")})");
             
