@@ -88,7 +88,7 @@ namespace ConnectionController
             if (dst != rtqrGateway)
             {
                 string allocDealloc = est == RequestPacket.Est.Establish ? "allocate" : "deallocate";
-                LOG.Info($"Send LRM::LinkConnectionRequest_req(slots = {rtqrSlots}, {allocDealloc}, who = CC");
+                LOG.Info($"Send LRM::LinkConnectionRequest_req(slots = {rtqrSlots}, {allocDealloc}, who = CC)");
                 ResponsePacket linkConnectionRequestResponse = _lrmLinkConnectionRequestClients[rtqrGateway].Get(
                     new RequestPacket.Builder()
                     .SetEst(est)
@@ -254,7 +254,7 @@ namespace ConnectionController
             if (dst != rtqrGateway)
             {
                 string allocDealloc = est == RequestPacket.Est.Establish ? "allocate" : "deallocate";
-                LOG.Info($"Send LRM::LinkConnectionRequest_req(slots = {rtqrSlots}, {allocDealloc}, who = CC");
+                LOG.Info($"Send LRM::LinkConnectionRequest_req(slots = {rtqrSlots}, {allocDealloc}, who = CC)");
                 ResponsePacket linkConnectionRequestResponse = _lrmLinkConnectionRequestClients[rtqrGateway].Get(
                     new RequestPacket.Builder()
                         .SetEst(est)

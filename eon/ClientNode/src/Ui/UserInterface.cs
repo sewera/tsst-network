@@ -43,7 +43,7 @@ namespace ClientNode.Ui
 
         private void StartCommandParsing()
         {
-            Console.WriteLine("Enter destination name and slot range to request from NCC.");
+            Console.WriteLine("Enter destination name and slots to request from NCC.");
             while (true)
             {
                 switch (_connected)
