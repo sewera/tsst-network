@@ -19,9 +19,9 @@ namespace Common.Networking.Client.OneShot
         {
             try
             {
-                Log.Debug($"Connecting to server on port: {ServerPort}");
+                Log.Trace($"Connecting to server on port: {ServerPort}");
                 ClientSocket.Connect(ServerEndPoint);
-                Log.Debug("Connected");
+                Log.Trace("Connected");
             }
             catch (Exception e)
             {
