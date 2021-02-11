@@ -74,6 +74,12 @@ namespace NetworkNode.Networking.LRM
             RequestPacket.Who whoRequests = requestPacket.WhoRequests;
             RequestPacket.Est est = requestPacket.Establish;
             //TODO: Check for est and teardown if it == Teardown.
+
+            if (est == RequestPacket.Est.Teardown)
+            {
+                LOG.Info("Teardown"); // TODO
+                return new ResponsePacket.Builder().Build();
+            }
             
             LOG.Info($"LRM{_localPortAlias}: Received LRM::LinkConnectionRequest_{GenericPacket.PacketTypeToString(type)}(slots = {slots}, {(shouldAllocate ? "allocate" : "release")})");
             

@@ -43,6 +43,7 @@ namespace ConnectionController
                     .SetId(id)
                     .SetSrcPort(src)
                     .SetDstPort(dst)
+                    .SetSlotsNumber(sl)
                     .Build());
 
                 LOG.Info($"Received CC::ConnectionRequest_res(res = {ResponsePacket.ResponseTypeToString(teardownRequestResponse.Res)}, Teardown)");
