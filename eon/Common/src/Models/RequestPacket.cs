@@ -33,6 +33,8 @@ namespace Common.Models
         
         [Key(13)] public string Port2;
 
+        [Key(14)] public Est Establish;
+
         /// <summary>
         /// Constructor only for MessagePack deserialization
         /// </summary>
@@ -51,7 +53,8 @@ namespace Common.Models
                                 Who whoRequests,
                                 string end,
                                 string port1,
-                                string port2) : base(PacketType.Request)
+                                string port2,
+                                Est establish) : base(PacketType.Request)
         {
             Id = id;
             SlotsNumber = slotsNumber;
@@ -66,13 +69,14 @@ namespace Common.Models
             End = end;
             Port1 = port1;
             Port2 = port2;
+            Establish = establish;
         }
 
         public override string ToString()
         {
             return $"[Request, id: {Id}, slots: {Slots}, slotsArray: [{string.Join(", ", SlotsArray)}],\n" +
                    $" shouldAllocate: {ShouldAllocate}, srcName: {SrcName}, dstName: {DstName},\n" +
-                   $" srcPort: {SrcPort}, dstPort: {DstPort}, who: {WhoRequestsToString(WhoRequests)}, end: {End}]";
+                   $" srcPort: {SrcPort}, dstPort: {DstPort}, who: {WhoRequestsToString(WhoRequests)}, end: {End}, establish: {Establish}]";
         }
 
         public override byte[] ToBytes()
@@ -95,6 +99,7 @@ namespace Common.Models
             private string _end = string.Empty;
             private string _port1 = string.Empty;
             private string _port2 = string.Empty;
+            private Est _establish = Est.Establish;
 
             public Builder SetId(int id)
             {
@@ -181,6 +186,12 @@ namespace Common.Models
                 return this;
             }
 
+            public Builder SetEst(Est establish)
+            {
+                _establish = establish;
+                return this;
+            }
+
             public RequestPacket Build()
             {
                 _slotsArray ??= new List<(int, int)>();
@@ -196,7 +207,8 @@ namespace Common.Models
                     _whoRequests,
                     _end,
                     _port1,
-                    _port2
+                    _port2,
+                    _establish
                     );
             }
         }
@@ -216,6 +228,12 @@ namespace Common.Models
             NotSet,
             Lrm,
             Cc
+        }
+
+        public enum Est
+        {
+            Establish,
+            Teardown
         }
     }
 }

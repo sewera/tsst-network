@@ -97,11 +97,27 @@ namespace ClientNode.Ui
                         if (Regex.IsMatch(inputConn, "^dc"))
                         {
                             LOG.Info("Disconnecting");
-                            ResponsePacket nccTeardownResponse = _cpccState.Teardown();
-                            if (nccTeardownResponse.Res == ResponsePacket.ResponseType.Ok)
+                            string[] message = inputConn.Split(' ', 2);
+                            try
                             {
-                                LOG.Info("Successfully disconnected");
-                                _connected = false;
+                                if (!_currentSlots.Keys.Contains(message[1]))
+                                {
+                                    LOG.Error($"There is no such Connection ID. Available options: [{string.Join(", ", _currentSlots.Keys)}]");
+                                    break;
+                                }
+                                int connId = int.Parse(message[1]);
+                                ResponsePacket nccTeardownResponse = _cpccState.Teardown(connId);
+                                if (nccTeardownResponse.Res == ResponsePacket.ResponseType.Ok)
+                                {
+                                    LOG.Info("Successfully disconnected");
+                                    _currentSlots.Remove(message[1], out (int, int) removedValue);
+                                    LOG.Info($"Removed Connection with ID: {message[1]} that had slots: {removedValue}");
+                                    _connected = false;
+                                }
+                            }
+                            catch (FormatException)
+                            {
+                                LOG.Error("Connection ID could not be parsed: integer parse error");
                             }
                         }
 

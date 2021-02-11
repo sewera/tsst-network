@@ -52,6 +52,33 @@ namespace ConnectionController
             string src = requestPacket.SrcPort;
             string dst = requestPacket.DstPort;
             int sl = requestPacket.SlotsNumber;
+            RequestPacket.Est est = requestPacket.Establish;
+
+            if (est == RequestPacket.Est.Teardown)
+            {
+                LOG.Info($"Received CC::ConnectionRequest_req(id = {id}, Teardown)");
+
+                // TODO: We can ask RC for a route with given ID and Teardown the connection exactly like it was routed
+                // The only thing is that RC will have to keep the whole connection
+                ResponsePacket routeTableQueryTeardownResponse = _rcRouteTableQueryClient.Get(new RequestPacket.Builder()
+                    .SetId(id)
+                    .SetSrcPort(src)
+                    .SetDstPort(dst)
+                    .SetSlotsNumber(sl)
+                    .SetEst(RequestPacket.Est.Teardown)
+                    .Build());
+
+                // TODO: Teardown the connection: LRMs and such
+                ResponsePacket removeFibResponse = _nnFibInsertClient.Get(new ManagementPacket.Builder()
+                    .SetCommandType("delete")
+                    .SetCommandData($"") // TODO
+                    .Build());
+
+                return new ResponsePacket.Builder()
+                    .SetRes(ResponsePacket.ResponseType.Ok)
+                    .Build();
+            }
+
             LOG.Info($"Received CC::ConnectionRequest_req(id = {id}, src = {src}, dst = {dst}, sl = {sl})");
 
             LOG.Info($"Send RC::RouteTableQuery_req(id = {id}, src = {src}, dst = {dst}, sl = {sl})");
@@ -175,6 +202,34 @@ namespace ConnectionController
             string dst = requestPacket.DstPort;
             (int, int) slots = requestPacket.Slots;
             int sl = slots.Item2 - slots.Item1;
+            RequestPacket.Est est = requestPacket.Establish;
+
+            if (est == RequestPacket.Est.Teardown)
+            {
+                LOG.Info($"Received CC::ConnectionRequest_req(id = {id}, Teardown)");
+
+                // TODO: We can ask RC for a route with given ID and Teardown the connection exactly like it was routed
+                // The only thing is that RC will have to keep the whole connection
+                ResponsePacket routeTableQueryTeardownResponse = _rcRouteTableQueryClient.Get(new RequestPacket.Builder()
+                    .SetId(id)
+                    .SetSrcPort(src)
+                    .SetDstPort(dst)
+                    .SetSlotsNumber(sl)
+                    .SetEst(RequestPacket.Est.Teardown)
+                    .Build());
+
+                // TODO: Teardown the connection: LRMs and such
+                LOG.Info($"Delete FIB row [inPort = {src}]"); // TODO
+                ResponsePacket removeFibResponse = _nnFibInsertClient.Get(new ManagementPacket.Builder()
+                    .SetCommandType("delete")
+                    .SetCommandData($"") // TODO
+                    .Build());
+
+                return new ResponsePacket.Builder()
+                    .SetRes(ResponsePacket.ResponseType.Ok)
+                    .Build();
+            }
+
             LOG.Info($"Received CC::PeerCoordination_req(id = {id}, src = {src}, dst = {dst}, slots = {slots})");
 
             LOG.Info($"Send RC::RouteTableQuery_req(id = {id}, src = {src}, dst = {dst}, sl = {sl})");
