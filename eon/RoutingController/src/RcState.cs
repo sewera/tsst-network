@@ -55,6 +55,9 @@ namespace RoutingController
                     LOG.Error("Could not find such connection");
                     return new ResponsePacket.Builder().SetRes(ResponsePacket.ResponseType.Refused).Build();
                 }
+
+                _connections.RemoveAll(connection => connectionId == connection.Id);
+                
                 return teardownResponsePacket;
             }
             
