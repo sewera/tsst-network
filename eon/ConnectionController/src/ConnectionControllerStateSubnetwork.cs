@@ -58,44 +58,15 @@ namespace ConnectionController
             int sl = requestPacket.SlotsNumber;
             RequestPacket.Est est = requestPacket.Establish;
 
-            if (est == RequestPacket.Est.Teardown)
-            {
-                LOG.Info($"Received CC::ConnectionRequest_req(id = {id}, Teardown)");
-
-                // TODO: We can ask RC for a route with given ID and Teardown the connection exactly like it was routed
-                // The only thing is that RC will have to keep the whole connection
-                ResponsePacket routeTableQueryTeardownResponse = _rcRouteTableQueryClient.Get(new RequestPacket.Builder()
-                    .SetId(id)
-                    .SetSrcPort(src)
-                    .SetDstPort(dst)
-                    .SetSlotsNumber(sl)
-                    .SetEst(RequestPacket.Est.Teardown)
-                    .Build());
-
-                string rtqrTeardownGateway = routeTableQueryTeardownResponse.Gateway;
-
-                // TODO: Teardown the connection: LRMs and such
-                ResponsePacket connectionTeardownResponse = _ccConnectionRequestClients[GetCcName(src)].Get(new RequestPacket.Builder()
-                    .SetId(id)
-                    .SetSrcPort(src)
-                    .SetDstPort(rtqrTeardownGateway)
-                    .SetSlotsNumber(sl)
-                    .SetEst(RequestPacket.Est.Teardown)
-                    .Build());
-
-                return new ResponsePacket.Builder()
-                    .SetRes(ResponsePacket.ResponseType.Ok)
-                    .Build();
-            }
-
-            LOG.Info($"Received CC::ConnectionRequest_req(id = {id}, src = {src}, dst = {dst}, sl = {sl})");
+            LOG.Info($"Received CC::ConnectionRequest_req(id = {id}, src = {src}, dst = {dst}, sl = {sl}, teardown = {est})");
             
-            LOG.Info($"Send RC::RouteTableQuery_req(id = {id}, src = {src}, dst = {dst}, sl = {sl})");
+            LOG.Info($"Send RC::RouteTableQuery_req(id = {id}, src = {src}, dst = {dst}, sl = {sl}, teardown = {est})");
             ResponsePacket routeTableQueryResponse = _rcRouteTableQueryClient.Get(new RequestPacket.Builder()
                 .SetId(id)
                 .SetSrcPort(src)
                 .SetDstPort(dst)
                 .SetSlotsNumber(sl)
+                .SetEst(est)
                 .Build());
 
             if (routeTableQueryResponse.Res == ResponsePacket.ResponseType.ResourcesProblem)
@@ -119,6 +90,7 @@ namespace ConnectionController
                 LOG.Info($"Send LRM::LinkConnectionRequest_req(slots = {rtqrSlots}, allocate, who = CC)");
                 ResponsePacket linkConnectionRequestResponse = _lrmLinkConnectionRequestClients[rtqrGateway].Get(
                     new RequestPacket.Builder()
+                    .SetEst(est)
                     .SetSlots(rtqrSlots)
                     .SetShouldAllocate(true)
                     .SetWhoRequests(RequestPacket.Who.Cc)
@@ -144,6 +116,7 @@ namespace ConnectionController
                 LOG.Debug("Dst == Gateway, LRM will be handled by the layers above");
                 LOG.Info($"Send CC::ConnectionRequest_req(id = {rtqrId}, src = {src}, dst = {rtqrGateway}, sl = {sl})");
                 ResponsePacket connectionRequestResponseDst = _ccConnectionRequestClients[GetCcName(src)].Get(new RequestPacket.Builder()
+                    .SetEst(est)
                     .SetId(id)
                     .SetSrcPort(src)
                     .SetDstPort(rtqrGateway)
@@ -161,6 +134,7 @@ namespace ConnectionController
             // gateway == dstZone && dstZone != dst -- TODO Not implemented
             LOG.Info($"Send CC::ConnectionRequest_req(id = {rtqrId}, src = {src}, dst = {rtqrGateway}, sl = {sl})");
             ResponsePacket connectionRequestResponse = _ccConnectionRequestClients[GetCcName(src)].Get(new RequestPacket.Builder()
+                .SetEst(est)
                 .SetId(id)
                 .SetSrcPort(src)
                 .SetDstPort(rtqrGateway)
@@ -175,6 +149,7 @@ namespace ConnectionController
                 LOG.Info($"Send CC::PeerCoordination_req(id = {id}, src = {gatewayOrEnd}, dst = {dst}, slots = {rtqrSlots})");
                 
                 ResponsePacket peerCoordinationResponse = _ccPeerCoordinationClients[GetCcName(gatewayOrEnd)].Get(new RequestPacket.Builder()
+                    .SetEst(est)
                     .SetId(id)
                     .SetSrcPort(gatewayOrEnd)
                     .SetDstPort(dst)
@@ -223,6 +198,7 @@ namespace ConnectionController
                 // TODO: We can ask RC for a route with given ID and Teardown the connection exactly like it was routed
                 // The only thing is that RC will have to keep the whole connection
                 ResponsePacket routeTableQueryTeardownResponse = _rcRouteTableQueryClient.Get(new RequestPacket.Builder()
+                    .SetEst(est)
                     .SetId(id)
                     .SetSrcPort(src)
                     .SetDstPort(dst)
@@ -234,6 +210,7 @@ namespace ConnectionController
 
                 // TODO: Teardown the connection: LRMs and such
                 ResponsePacket connectionTeardownResponse = _ccConnectionRequestClients[GetCcName(src)].Get(new RequestPacket.Builder()
+                    .SetEst(est)
                     .SetId(id)
                     .SetSrcPort(src)
                     .SetDstPort(rtqrTeardownGateway)
@@ -250,6 +227,7 @@ namespace ConnectionController
             
             LOG.Info($"Send RC::RouteTableQuery_req(id = {id}, src = {src}, dst = {dst}, sl = {sl})");
             ResponsePacket routeTableQueryResponse = _rcRouteTableQueryClient.Get(new RequestPacket.Builder()
+                .SetEst(est)
                 .SetId(id)
                 .SetSrcPort(src)
                 .SetDstPort(dst)
@@ -277,6 +255,7 @@ namespace ConnectionController
                 LOG.Info($"Send LRM::LinkConnectionRequest_req(slots = {rtqrSlots}, allocate, who = CC)");
                 ResponsePacket linkConnectionRequestResponse = _lrmLinkConnectionRequestClients[rtqrGateway].Get(
                     new RequestPacket.Builder()
+                        .SetEst(est)
                         .SetSlots(rtqrSlots)
                         .SetShouldAllocate(true)
                         .SetWhoRequests(RequestPacket.Who.Cc)
@@ -292,6 +271,7 @@ namespace ConnectionController
                 LOG.Debug("Dst == Gateway, LRM will be handled by the layers above");
                 LOG.Info($"Send CC::ConnectionRequest_req(id = {rtqrId}, src = {src}, dst = {rtqrGateway}, sl = {sl})");
                 ResponsePacket connectionRequestResponseDst = _ccConnectionRequestClients[GetCcName(src)].Get(new RequestPacket.Builder()
+                    .SetEst(est)
                     .SetId(id)
                     .SetSrcPort(src)
                     .SetDstPort(rtqrGateway)
@@ -308,6 +288,7 @@ namespace ConnectionController
             // gateway == dstZone && dstZone != dst -- TODO Not implemented
             LOG.Info($"Send CC::ConnectionRequest_req(id = {rtqrId}, src = {src}, dst = {rtqrGateway}, sl = {sl})");
             ResponsePacket connectionRequestResponse = _ccConnectionRequestClients[GetCcName(src)].Get(new RequestPacket.Builder()
+                .SetEst(est)
                 .SetId(id)
                 .SetSrcPort(src)
                 .SetDstPort(rtqrGateway)
@@ -322,6 +303,7 @@ namespace ConnectionController
                 LOG.Info($"Send CC::PeerCoordination_req(id = {id}, src = {gatewayOrEnd}, dst = {dst}, slots = {rtqrSlots})");
                 
                 ResponsePacket peerCoordinationResponse = _ccPeerCoordinationClients[GetCcName(gatewayOrEnd)].Get(new RequestPacket.Builder()
+                    .SetEst(est)
                     .SetId(id)
                     .SetSrcPort(gatewayOrEnd)
                     .SetDstPort(dst)
