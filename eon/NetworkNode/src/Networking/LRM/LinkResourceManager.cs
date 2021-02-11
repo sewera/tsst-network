@@ -78,7 +78,9 @@ namespace NetworkNode.Networking.LRM
             if (est == RequestPacket.Est.Teardown)
             {
                 LOG.Info("Teardown"); // TODO
-                return new ResponsePacket.Builder().Build();
+                return new ResponsePacket.Builder()
+                    .SetEnd(_remotePortAlias)
+                    .Build();
             }
             
             LOG.Info($"LRM{_localPortAlias}: Received LRM::LinkConnectionRequest_{GenericPacket.PacketTypeToString(type)}(slots = {slots}, {(shouldAllocate ? "allocate" : "release")})");
