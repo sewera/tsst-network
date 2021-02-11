@@ -26,6 +26,8 @@ namespace NetworkCallController
         private readonly List<Connection> _connections;
         private int _connectionCounter;
 
+        private readonly Dictionary<int, RequestPacket> _ccConnectionRequests = new Dictionary<int, RequestPacket>();
+
         public NccState(Dictionary<string, string> clientPortAliases,
                         Dictionary<string, string> portDomains,
                         string domain,
@@ -135,12 +137,13 @@ namespace NetworkCallController
             // Send CC:ConnectionRequest(id, src, dst, sl)
             LOG.Info("Send CC:ConnectionRequest_req" +
                      $"(id = {connectionId}, src = {newConnection.SrcPortAlias}, dst = {newConnection.DstPortAlias}, sl = {newConnection.SlotsNumber}");
-            ResponsePacket connectionRequestResponse = _ccConnectionRequestClient.Get(new RequestPacket.Builder()
+            RequestPacket ccConnectionRequestPacket = new RequestPacket.Builder()
                 .SetId(newConnection.Id)
                 .SetSrcPort(newConnection.SrcPortAlias)
                 .SetDstPort(newConnection.DstPortAlias)
                 .SetSlotsNumber(newConnection.SlotsNumber)
-                .Build());
+                .Build();
+            ResponsePacket connectionRequestResponse = _ccConnectionRequestClient.Get(ccConnectionRequestPacket);
             LOG.Info($"Received CC:ConnectionRequest_res(res = {connectionRequestResponse.Res})");
             res = connectionRequestResponse.Res;
             (int, int) slots = connectionRequestResponse.Slots;
@@ -149,6 +152,7 @@ namespace NetworkCallController
             {
                 case ResponseType.Ok:
                 {
+                    _ccConnectionRequests[newConnection.Id] = ccConnectionRequestPacket;
                     LOG.Info($"Send NCC::CallRequest_res(res = OK, id = {newConnection.Id}, slots = {slots})");
                     return new Builder()
                         .SetRes(ResponseType.Ok)
@@ -226,13 +230,20 @@ namespace NetworkCallController
         public ResponsePacket OnCallTeardownReceived(RequestPacket requestPacket)
         {
             int id = requestPacket.Id;
-            //TODO Simply pass the information to domain CC
-            ResponsePacket callTeardownResponse = _ccConnectionRequestClient.Get(new RequestPacket.Builder()
-                .SetId(id)
-                .SetEst(RequestPacket.Est.Teardown)
-                .Build());
+            _ccConnectionRequests.Remove(id, out RequestPacket ccConnectionTeardownRequest);
+            if (ccConnectionTeardownRequest == null)
+            {
+                LOG.Error($"Could not find a connection with id = {id}");
+                return new Builder()
+                    .SetRes(ResponseType.Refused)
+                    .Build();
+            }
 
-            if (callTeardownResponse.Res != ResponseType.Ok)
+            ccConnectionTeardownRequest.Establish = RequestPacket.Est.Teardown;
+
+            ResponsePacket connectionTeardownResponse = _ccConnectionRequestClient.Get(ccConnectionTeardownRequest);
+
+            if (connectionTeardownResponse.Res != ResponseType.Ok)
                 return new Builder().SetRes(ResponseType.NetworkProblem).Build();
 
             return new Builder()
