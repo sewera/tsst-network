@@ -136,7 +136,7 @@ namespace NetworkCallController
             // Order domain CC to set a Connection
             // Send CC:ConnectionRequest(id, src, dst, sl)
             LOG.Info("Send CC:ConnectionRequest_req" +
-                     $"(id = {connectionId}, src = {newConnection.SrcPortAlias}, dst = {newConnection.DstPortAlias}, sl = {newConnection.SlotsNumber}");
+                     $"(id = {connectionId}, src = {newConnection.SrcPortAlias}, dst = {newConnection.DstPortAlias}, sl = {newConnection.SlotsNumber})");
             RequestPacket ccConnectionRequestPacket = new RequestPacket.Builder()
                 .SetId(newConnection.Id)
                 .SetSrcPort(newConnection.SrcPortAlias)
