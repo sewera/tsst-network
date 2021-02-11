@@ -108,16 +108,31 @@ namespace ConnectionController
             }
             else
             {
-                // TODO: Check for est and if it == Teardown, delete row
-                LOG.Debug("Dst == Gateway, LRM will be handled by the layers above");
-                LOG.Info($"Insert FIB row [inPort = {src}, slots = ({rtqrSlots.Item1}, {rtqrSlots.Item2}), outPort = {rtqrGateway}]");
-                ResponsePacket insertFibResponseDst = _nnFibInsertClient.Get(new ManagementPacket.Builder()
-                    .SetCommandType("add")
-                    .SetCommandData($"{src} {rtqrSlots.Item1} {rtqrSlots.Item2} {rtqrGateway}")
-                    .Build());
-                if (insertFibResponseDst.Res == ResponsePacket.ResponseType.Ok)
+                ResponsePacket.ResponseType resp;
+                if (est == RequestPacket.Est.Teardown)
                 {
-                    LOG.Info($"Send CC::ConnectionRequest_res(OK, slots = {rtqrSlots})");
+                    LOG.Debug("Dst == Gateway, LRM will be handled by the layers above");
+                    LOG.Info($"Delete FIB row [inPort = {src}, slots = ({rtqrSlots.Item1}, {rtqrSlots.Item2}), outPort = {rtqrGateway}]");
+                    ResponsePacket deleteFibResponseDst = _nnFibInsertClient.Get(new ManagementPacket.Builder()
+                        .SetCommandType("delete")
+                        .SetCommandData($"{src} {rtqrSlots.Item1} {rtqrSlots.Item2} {rtqrGateway}")
+                        .Build());
+                    resp = deleteFibResponseDst.Res;
+                }
+                else
+                {
+                    LOG.Debug("Dst == Gateway, LRM will be handled by the layers above");
+                    LOG.Info($"Insert FIB row [inPort = {src}, slots = ({rtqrSlots.Item1}, {rtqrSlots.Item2}), outPort = {rtqrGateway}]");
+                    ResponsePacket insertFibResponseDst = _nnFibInsertClient.Get(new ManagementPacket.Builder()
+                        .SetCommandType("add")
+                        .SetCommandData($"{src} {rtqrSlots.Item1} {rtqrSlots.Item2} {rtqrGateway}")
+                        .Build());
+                    resp = insertFibResponseDst.Res;
+                }
+
+                if (resp == ResponsePacket.ResponseType.Ok)
+                {
+                    LOG.Info($"Send CC::PeerCoordination_res(OK, slots = {rtqrSlots})");
                     return new ResponsePacket.Builder().SetRes(ResponsePacket.ResponseType.Ok).SetSlots(rtqrSlots)
                         .Build();
                 }
@@ -126,11 +141,15 @@ namespace ConnectionController
             // gateway == dstZone && dstZone != dst -- TODO Not implemented
 
             ResponsePacket.ResponseType res;
+
             if (est == RequestPacket.Est.Teardown)
             {
-                LOG.Info("Teardown"); // TODO: Delete row
-                res = ResponsePacket.ResponseType.Ok;
-                // res = deleteFibResponse.Res;
+                LOG.Info($"Delete FIB row [inPort = {src}, slots = ({rtqrSlots.Item1}, {rtqrSlots.Item2}), outPort = {rtqrGateway}]");
+                ResponsePacket deleteFibResponse = _nnFibInsertClient.Get(new ManagementPacket.Builder()
+                    .SetCommandType("delete")
+                    .SetCommandData($"{src} {rtqrSlots.Item1} {rtqrSlots.Item2} {rtqrGateway}")
+                    .Build());
+                res = deleteFibResponse.Res;
             }
             else
             {
@@ -267,7 +286,6 @@ namespace ConnectionController
             }
 
             // gateway == dstZone && dstZone != dst -- TODO Not implemented
-            // TODO: Check for est and if it == Teardown, delete row
             ResponsePacket.ResponseType res;
 
             if (est == RequestPacket.Est.Teardown)
