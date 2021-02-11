@@ -36,7 +36,7 @@ namespace Common.Networking.Server.OneShot
                 Log.Trace("Waiting for a packet...");
                 handler.Receive(_buffer);
                 TRequestPacket receivedRequestPacket = ISerializablePacket.FromBytes<TRequestPacket>(_buffer);
-                Log.Debug($"Received: {receivedRequestPacket}");
+                Log.Trace($"Received: {receivedRequestPacket}");
                 TResponsePacket responsePacket = OnRequestReceivedEvent(receivedRequestPacket);
                 handler.Send(responsePacket.ToBytes());
                 handler.Shutdown(SocketShutdown.Both);
