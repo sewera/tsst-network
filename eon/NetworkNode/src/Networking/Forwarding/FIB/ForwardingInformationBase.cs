@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Common.Models;
+using NLog;
 
 namespace NetworkNode.Networking.Forwarding.FIB
 {
@@ -10,6 +11,7 @@ namespace NetworkNode.Networking.Forwarding.FIB
     /// </summary>
     class ForwardingInformationBase
     {
+        private static readonly Logger LOG = LogManager.GetCurrentClassLogger();
         /// <summary>
         /// List of rows that Table contains
         /// </summary>
@@ -31,6 +33,7 @@ namespace NetworkNode.Networking.Forwarding.FIB
         /// </summary>
         public void AddRow(string CommandData)
         {
+            LOG.Info($"FIB: Add row: {CommandData}");
             rows.Add( new FibRow(CommandData));
         }
 
@@ -41,6 +44,7 @@ namespace NetworkNode.Networking.Forwarding.FIB
         /// </summary>
         public void DeleteRow(string CommandData)
         {
+            LOG.Info($"FIB: Delete row: {CommandData}");
             FibRow predicate = new FibRow(CommandData);
             rows.RemoveAll(item => item==predicate);
         }
