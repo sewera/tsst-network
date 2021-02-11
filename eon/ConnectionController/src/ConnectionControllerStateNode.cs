@@ -54,9 +54,9 @@ namespace ConnectionController
             int sl = requestPacket.SlotsNumber;
             RequestPacket.Est est = requestPacket.Establish;
 
-            LOG.Info($"Received CC::ConnectionRequest_req(id = {id}, src = {src}, dst = {dst}, sl = {sl})");
+            LOG.Info($"Received CC::ConnectionRequest_req(id = {id}, src = {src}, dst = {dst}, sl = {sl}, teardown = {est})");
 
-            LOG.Info($"Send RC::RouteTableQuery_req(id = {id}, src = {src}, dst = {dst}, sl = {sl})");
+            LOG.Info($"Send RC::RouteTableQuery_req(id = {id}, src = {src}, dst = {dst}, sl = {sl}, teardown = {est})");
             ResponsePacket routeTableQueryResponse = _rcRouteTableQueryClient.Get(new RequestPacket.Builder()
                 .SetEst(est)
                 .SetId(id)
@@ -83,7 +83,8 @@ namespace ConnectionController
 
             if (dst != rtqrGateway)
             {
-                LOG.Info($"Send LRM::LinkConnectionRequest_req(slots = {rtqrSlots}, allocate, who = CC)");
+                string allocDealloc = est == RequestPacket.Est.Establish ? "allocate" : "deallocate";
+                LOG.Info($"Send LRM::LinkConnectionRequest_req(slots = {rtqrSlots}, {allocDealloc}, who = CC");
                 ResponsePacket linkConnectionRequestResponse = _lrmLinkConnectionRequestClients[rtqrGateway].Get(
                     new RequestPacket.Builder()
                         .SetEst(est)
@@ -143,7 +144,7 @@ namespace ConnectionController
 
             if (res == ResponsePacket.ResponseType.Ok)
             {
-                LOG.Info($"Send CC::PeerCoordination_req(id = {id}, src = {gatewayOrEnd}, dst = {dst}, slots = {rtqrSlots})");
+                LOG.Info($"Send CC::PeerCoordination_req(id = {id}, src = {gatewayOrEnd}, dst = {dst}, slots = {rtqrSlots}, teardown = {est})");
 
                 ResponsePacket peerCoordinationResponse = _ccPeerCoordinationClients[GetCcName(gatewayOrEnd)].Get(
                     new RequestPacket.Builder()
@@ -190,9 +191,9 @@ namespace ConnectionController
             int sl = slots.Item2 - slots.Item1;
             RequestPacket.Est est = requestPacket.Establish;
 
-            LOG.Info($"Received CC::PeerCoordination_req(id = {id}, src = {src}, dst = {dst}, slots = {slots})");
+            LOG.Info($"Received CC::PeerCoordination_req(id = {id}, src = {src}, dst = {dst}, slots = {slots}, teardown = {est})");
 
-            LOG.Info($"Send RC::RouteTableQuery_req(id = {id}, src = {src}, dst = {dst}, sl = {sl})");
+            LOG.Info($"Send RC::RouteTableQuery_req(id = {id}, src = {src}, dst = {dst}, sl = {sl}, teardown = {est})");
             ResponsePacket routeTableQueryResponse = _rcRouteTableQueryClient.Get(new RequestPacket.Builder()
                 .SetEst(est)
                 .SetId(id)
@@ -219,7 +220,8 @@ namespace ConnectionController
 
             if (dst != rtqrGateway)
             {
-                LOG.Info($"Send LRM::LinkConnectionRequest_req(slots = {rtqrSlots}, allocate, who = CC)");
+                string allocDealloc = est == RequestPacket.Est.Establish ? "allocate" : "deallocate";
+                LOG.Info($"Send LRM::LinkConnectionRequest_req(slots = {rtqrSlots}, {allocDealloc}, who = CC");
                 ResponsePacket linkConnectionRequestResponse = _lrmLinkConnectionRequestClients[rtqrGateway].Get(
                     new RequestPacket.Builder()
                         .SetEst(est)
@@ -272,7 +274,7 @@ namespace ConnectionController
 
             if (res == ResponsePacket.ResponseType.Ok)
             {
-                LOG.Info($"Send CC::PeerCoordination_req(id = {id}, src = {gatewayOrEnd}, dst = {dst}, slots = {rtqrSlots})");
+                LOG.Info($"Send CC::PeerCoordination_req(id = {id}, src = {gatewayOrEnd}, dst = {dst}, slots = {rtqrSlots}, teardown = {est})");
 
                 ResponsePacket peerCoordinationResponse = _ccPeerCoordinationClients[GetCcName(gatewayOrEnd)].Get(
                     new RequestPacket.Builder()

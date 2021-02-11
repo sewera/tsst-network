@@ -87,7 +87,8 @@ namespace ConnectionController
 
             if (dst != rtqrGateway)
             {
-                LOG.Info($"Send LRM::LinkConnectionRequest_req(slots = {rtqrSlots}, allocate, who = CC)");
+                string allocDealloc = est == RequestPacket.Est.Establish ? "allocate" : "deallocate";
+                LOG.Info($"Send LRM::LinkConnectionRequest_req(slots = {rtqrSlots}, {allocDealloc}, who = CC");
                 ResponsePacket linkConnectionRequestResponse = _lrmLinkConnectionRequestClients[rtqrGateway].Get(
                     new RequestPacket.Builder()
                     .SetEst(est)
@@ -114,7 +115,7 @@ namespace ConnectionController
             else
             {
                 LOG.Debug("Dst == Gateway, LRM will be handled by the layers above");
-                LOG.Info($"Send CC::ConnectionRequest_req(id = {rtqrId}, src = {src}, dst = {rtqrGateway}, sl = {sl})");
+                LOG.Info($"Send CC::ConnectionRequest_req(id = {rtqrId}, src = {src}, dst = {rtqrGateway}, sl = {sl}, teardown = {est})");
                 ResponsePacket connectionRequestResponseDst = _ccConnectionRequestClients[GetCcName(src)].Get(new RequestPacket.Builder()
                     .SetEst(est)
                     .SetId(id)
@@ -132,7 +133,7 @@ namespace ConnectionController
             }
 
             // gateway == dstZone && dstZone != dst -- TODO Not implemented
-            LOG.Info($"Send CC::ConnectionRequest_req(id = {rtqrId}, src = {src}, dst = {rtqrGateway}, sl = {sl})");
+            LOG.Info($"Send CC::ConnectionRequest_req(id = {rtqrId}, src = {src}, dst = {rtqrGateway}, sl = {sl}, teardown = {est})");
             ResponsePacket connectionRequestResponse = _ccConnectionRequestClients[GetCcName(src)].Get(new RequestPacket.Builder()
                 .SetEst(est)
                 .SetId(id)
@@ -146,7 +147,7 @@ namespace ConnectionController
 
             if (res == ResponsePacket.ResponseType.Ok)
             {
-                LOG.Info($"Send CC::PeerCoordination_req(id = {id}, src = {gatewayOrEnd}, dst = {dst}, slots = {rtqrSlots})");
+                LOG.Info($"Send CC::PeerCoordination_req(id = {id}, src = {gatewayOrEnd}, dst = {dst}, slots = {rtqrSlots}, teardown = {est})");
                 
                 ResponsePacket peerCoordinationResponse = _ccPeerCoordinationClients[GetCcName(gatewayOrEnd)].Get(new RequestPacket.Builder()
                     .SetEst(est)
@@ -193,7 +194,7 @@ namespace ConnectionController
 
             if (est == RequestPacket.Est.Teardown)
             {
-                LOG.Info($"Received CC::ConnectionRequest_req(id = {id}, Teardown)");
+                LOG.Info($"Received CC::ConnectionRequest_req(id = {id}, teardown = {est})");
 
                 // TODO: We can ask RC for a route with given ID and Teardown the connection exactly like it was routed
                 // The only thing is that RC will have to keep the whole connection
@@ -223,9 +224,9 @@ namespace ConnectionController
                     .Build();
             }
 
-            LOG.Info($"Received CC::PeerCoordination_req(id = {id}, src = {src}, dst = {dst}, slots = {slots})");
+            LOG.Info($"Received CC::PeerCoordination_req(id = {id}, src = {src}, dst = {dst}, slots = {slots}, teardown = {est})");
             
-            LOG.Info($"Send RC::RouteTableQuery_req(id = {id}, src = {src}, dst = {dst}, sl = {sl})");
+            LOG.Info($"Send RC::RouteTableQuery_req(id = {id}, src = {src}, dst = {dst}, sl = {sl}, teardown = {est})");
             ResponsePacket routeTableQueryResponse = _rcRouteTableQueryClient.Get(new RequestPacket.Builder()
                 .SetEst(est)
                 .SetId(id)
@@ -252,7 +253,8 @@ namespace ConnectionController
 
             if (dst != rtqrGateway)
             {
-                LOG.Info($"Send LRM::LinkConnectionRequest_req(slots = {rtqrSlots}, allocate, who = CC)");
+                string allocDealloc = est == RequestPacket.Est.Establish ? "allocate" : "deallocate";
+                LOG.Info($"Send LRM::LinkConnectionRequest_req(slots = {rtqrSlots}, {allocDealloc}, who = CC");
                 ResponsePacket linkConnectionRequestResponse = _lrmLinkConnectionRequestClients[rtqrGateway].Get(
                     new RequestPacket.Builder()
                         .SetEst(est)
@@ -269,7 +271,7 @@ namespace ConnectionController
             if (dst == rtqrGateway)
             {
                 LOG.Debug("Dst == Gateway, LRM will be handled by the layers above");
-                LOG.Info($"Send CC::ConnectionRequest_req(id = {rtqrId}, src = {src}, dst = {rtqrGateway}, sl = {sl})");
+                LOG.Info($"Send CC::ConnectionRequest_req(id = {rtqrId}, src = {src}, dst = {rtqrGateway}, sl = {sl}, teardown = {est})");
                 ResponsePacket connectionRequestResponseDst = _ccConnectionRequestClients[GetCcName(src)].Get(new RequestPacket.Builder()
                     .SetEst(est)
                     .SetId(id)
@@ -286,7 +288,7 @@ namespace ConnectionController
             }
 
             // gateway == dstZone && dstZone != dst -- TODO Not implemented
-            LOG.Info($"Send CC::ConnectionRequest_req(id = {rtqrId}, src = {src}, dst = {rtqrGateway}, sl = {sl})");
+            LOG.Info($"Send CC::ConnectionRequest_req(id = {rtqrId}, src = {src}, dst = {rtqrGateway}, sl = {sl}, teardown = {est})");
             ResponsePacket connectionRequestResponse = _ccConnectionRequestClients[GetCcName(src)].Get(new RequestPacket.Builder()
                 .SetEst(est)
                 .SetId(id)
@@ -300,7 +302,7 @@ namespace ConnectionController
 
             if (res == ResponsePacket.ResponseType.Ok)
             {
-                LOG.Info($"Send CC::PeerCoordination_req(id = {id}, src = {gatewayOrEnd}, dst = {dst}, slots = {rtqrSlots})");
+                LOG.Info($"Send CC::PeerCoordination_req(id = {id}, src = {gatewayOrEnd}, dst = {dst}, slots = {rtqrSlots}, teardown = {est})");
                 
                 ResponsePacket peerCoordinationResponse = _ccPeerCoordinationClients[GetCcName(gatewayOrEnd)].Get(new RequestPacket.Builder()
                     .SetEst(est)
