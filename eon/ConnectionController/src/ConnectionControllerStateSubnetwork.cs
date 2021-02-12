@@ -192,37 +192,7 @@ namespace ConnectionController
             int sl = slots.Item2 - slots.Item1;
             RequestPacket.Est est = requestPacket.Establish;
 
-            if (est == RequestPacket.Est.Teardown)
-            {
-                LOG.Info($"Received CC::PeerCoordination(id = {id}, teardown = {est})");
-
-                // TODO: We can ask RC for a route with given ID and Teardown the connection exactly like it was routed
-                // The only thing is that RC will have to keep the whole connection
-                ResponsePacket routeTableQueryTeardownResponse = _rcRouteTableQueryClient.Get(new RequestPacket.Builder()
-                    .SetEst(est)
-                    .SetId(id)
-                    .SetSrcPort(src)
-                    .SetDstPort(dst)
-                    .SetSlotsNumber(sl)
-                    .SetEst(RequestPacket.Est.Teardown)
-                    .Build());
-
-                string rtqrTeardownGateway = routeTableQueryTeardownResponse.Gateway;
-
-                // TODO: Teardown the connection: LRMs and such
-                ResponsePacket connectionTeardownResponse = _ccConnectionRequestClients[GetCcName(src)].Get(new RequestPacket.Builder()
-                    .SetEst(est)
-                    .SetId(id)
-                    .SetSrcPort(src)
-                    .SetDstPort(rtqrTeardownGateway)
-                    .SetSlotsNumber(sl)
-                    .SetEst(RequestPacket.Est.Teardown)
-                    .Build());
-
-                return new ResponsePacket.Builder()
-                    .SetRes(ResponsePacket.ResponseType.Ok)
-                    .Build();
-            }
+           
 
             LOG.Info($"Received CC::PeerCoordination_req(id = {id}, src = {src}, dst = {dst}, slots = {slots}, teardown = {est})");
             
@@ -253,15 +223,39 @@ namespace ConnectionController
 
             if (dst != rtqrGateway)
             {
-                string allocDealloc = est == RequestPacket.Est.Establish ? "allocate" : "deallocate";
-                LOG.Info($"Send LRM::LinkConnectionRequest_req(slots = {rtqrSlots}, {allocDealloc}, who = CC)");
-                ResponsePacket linkConnectionRequestResponse = _lrmLinkConnectionRequestClients[rtqrGateway].Get(
-                    new RequestPacket.Builder()
-                        .SetEst(est)
-                        .SetSlots(rtqrSlots)
-                        .SetShouldAllocate(true)
-                        .SetWhoRequests(RequestPacket.Who.Cc)
-                        .Build());
+                ResponsePacket linkConnectionRequestResponse;
+                switch (est)
+                {
+                    case RequestPacket.Est.Establish:
+                    {
+                        LOG.Info($"Send LRM::LinkConnectionRequest_req(slots = {rtqrSlots}, allocate, who = CC)");
+                        linkConnectionRequestResponse = _lrmLinkConnectionRequestClients[rtqrGateway].Get(
+                            new RequestPacket.Builder()
+                                .SetEst(est)
+                                .SetSlots(rtqrSlots)
+                                .SetShouldAllocate(true)
+                                .SetWhoRequests(RequestPacket.Who.Cc)
+                                .Build());
+                        break;
+                    }
+                    case RequestPacket.Est.Teardown:
+                    {
+                        LOG.Info($"Send LRM::LinkConnectionRequest_req(slots = {rtqrSlots}, deallocate, who = CC)");
+                        linkConnectionRequestResponse = _lrmLinkConnectionRequestClients[rtqrGateway].Get(
+                            new RequestPacket.Builder()
+                                .SetEst(est)
+                                .SetSlots(rtqrSlots)
+                                .SetShouldAllocate(false)
+                                .SetWhoRequests(RequestPacket.Who.Cc)
+                                .Build());
+                        break;
+                    }
+                    default:
+                    {
+                        linkConnectionRequestResponse = new ResponsePacket();
+                        break;
+                    }
+                }
 
                 gatewayOrEnd = linkConnectionRequestResponse.End;
 
