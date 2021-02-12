@@ -32,10 +32,13 @@ namespace ConnectionController
             string src = requestPacket.SrcPort;
             string dst = requestPacket.DstPort;
             int sl = requestPacket.SlotsNumber;
-            LOG.Info($"Received CC::ConnectionRequest_req(id = {id}, src = {src}, dst = {dst}, sl = {sl})");
+            RequestPacket.Est est = requestPacket.Establish;
 
-            LOG.Info($"Send CC::ConnectionRequest_req(id = {id}, src = {src}, dst = {dst}, sl = {sl})");
+            LOG.Info($"Received CC::ConnectionRequest_req(id = {id}, src = {src}, dst = {dst}, sl = {sl}, teardown = {est})");
+
+            LOG.Info($"Send CC::ConnectionRequest_req(id = {id}, src = {src}, dst = {dst}, sl = {sl}, teardown = {est})");
             var connectionRequestResponse = _ccConnectionRequestClients[GetCcName(src)].Get(new RequestPacket.Builder()
+                .SetEst(est)
                 .SetId(id)
                 .SetSrcPort(src)
                 .SetDstPort(dst)

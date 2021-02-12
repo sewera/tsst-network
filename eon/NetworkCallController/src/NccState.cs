@@ -26,6 +26,8 @@ namespace NetworkCallController
         private readonly List<Connection> _connections;
         private int _connectionCounter;
 
+        private readonly Dictionary<int, RequestPacket> _ccConnectionRequests = new Dictionary<int, RequestPacket>();
+
         public NccState(Dictionary<string, string> clientPortAliases,
                         Dictionary<string, string> portDomains,
                         string domain,
@@ -134,13 +136,14 @@ namespace NetworkCallController
             // Order domain CC to set a Connection
             // Send CC:ConnectionRequest(id, src, dst, sl)
             LOG.Info("Send CC:ConnectionRequest_req" +
-                     $"(id = {connectionId}, src = {newConnection.SrcPortAlias}, dst = {newConnection.DstPortAlias}, sl = {newConnection.SlotsNumber}");
-            ResponsePacket connectionRequestResponse = _ccConnectionRequestClient.Get(new RequestPacket.Builder()
+                     $"(id = {connectionId}, src = {newConnection.SrcPortAlias}, dst = {newConnection.DstPortAlias}, sl = {newConnection.SlotsNumber})");
+            RequestPacket ccConnectionRequestPacket = new RequestPacket.Builder()
                 .SetId(newConnection.Id)
                 .SetSrcPort(newConnection.SrcPortAlias)
                 .SetDstPort(newConnection.DstPortAlias)
                 .SetSlotsNumber(newConnection.SlotsNumber)
-                .Build());
+                .Build();
+            ResponsePacket connectionRequestResponse = _ccConnectionRequestClient.Get(ccConnectionRequestPacket);
             LOG.Info($"Received CC:ConnectionRequest_res(res = {connectionRequestResponse.Res})");
             res = connectionRequestResponse.Res;
             (int, int) slots = connectionRequestResponse.Slots;
@@ -149,6 +152,7 @@ namespace NetworkCallController
             {
                 case ResponseType.Ok:
                 {
+                    _ccConnectionRequests[newConnection.Id] = ccConnectionRequestPacket;
                     LOG.Info($"Send NCC::CallRequest_res(res = OK, id = {newConnection.Id}, slots = {slots})");
                     return new Builder()
                         .SetRes(ResponseType.Ok)
@@ -225,8 +229,37 @@ namespace NetworkCallController
 
         public ResponsePacket OnCallTeardownReceived(RequestPacket requestPacket)
         {
-            //TODO Simply pass the information to domain CC
-            return new Builder().Build();
+            int id = requestPacket.Id;
+            _ccConnectionRequests.Remove(id, out RequestPacket ccConnectionTeardownRequest);
+            LOG.Info($"Received NCC::CallTeardown_req(id = {id})");
+            if (ccConnectionTeardownRequest == null)
+            {
+                LOG.Error($"Could not find a connection with id = {id}");
+                LOG.Info($"Send NCC::CallTeardown_res(res = Refused)");
+                return new Builder()
+                    .SetRes(ResponseType.Refused)
+                    .Build();
+            }
+
+            ccConnectionTeardownRequest.Establish = RequestPacket.Est.Teardown;
+
+            LOG.Info($"Send CC::ConnectionRequest(id = {ccConnectionTeardownRequest.Id}, src = {ccConnectionTeardownRequest.SrcPort}," +
+                     $" dst = {ccConnectionTeardownRequest.DstPort}, sl = {ccConnectionTeardownRequest.SlotsNumber}, teardown = {ccConnectionTeardownRequest.Establish})");
+            
+            ResponsePacket connectionTeardownResponse = _ccConnectionRequestClient.Get(ccConnectionTeardownRequest);
+            
+
+            if (connectionTeardownResponse.Res != ResponseType.Ok)
+            {
+                LOG.Info($"Send NCC::CallTeardown_res(res = NetworkProblem)");
+                return new Builder().SetRes(ResponseType.NetworkProblem).Build();
+            }
+            LOG.Info("Received CC::ConnectionRequest(res = OK)");
+            _connections.RemoveAll(connection => connection.Id == id);
+            LOG.Info($"Send NCC::CallTeardown_res(res = OK, id = {id})");
+            return new Builder()
+                .SetRes(ResponseType.Ok)
+                .Build();
         }
 
         private string GetDomainFromPort(string portAlias)
