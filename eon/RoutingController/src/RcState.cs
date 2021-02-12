@@ -16,6 +16,7 @@ namespace RoutingController
         private readonly List<Connection> _connections;
         private readonly List<Configuration.RouteTableRow> _routeTable;
         private readonly List<Link> _links;
+        private readonly Dictionary<string, Queue<ResponsePacket>> _responsePackets = new Dictionary<string, Queue<ResponsePacket>>();
 
         public RcState(List<Configuration.RouteTableRow> routeTable)
         {
@@ -31,8 +32,36 @@ namespace RoutingController
             string srcPort = requestPacket.SrcPort;
             string dstPort = requestPacket.DstPort;
             int slotsNumber = requestPacket.SlotsNumber;
+            RequestPacket.Est est = requestPacket.Establish;
+
+            if (est == RequestPacket.Est.Teardown)
+            {
+                LOG.Info($"Received RC::RouteTableQuery_req(Teardown, connectionId = {connectionId}, srcPort = {srcPort}," +
+                         $" dstPort = {dstPort}, slotsNumber = {slotsNumber})");
+
+                // The best idea will be to store the actual responses in a table / dict and when the Teardown RouteTableQuery
+                // arrives, we just match connectionId, srcPort, dstPort, slotsNumber and if they are the same, just return
+                // the same ResponsePacket.
+                // e.g. instead of just returning ResponsePacket, do this:
+                // ResponsePacket responsePacket = new ResponsePacket.Builder().<blablabla>.Build();
+                // _responsePackets[requestPacket] = responsePacket;
+                // return responsePacket;
+                //
+                // and then when the Teardown comes, just do:
+                LOG.Info($"Sending RC::RouteTableQuery_res(Teardown, connectionId = {connectionId})");
+                var teardownResponsePacket = _responsePackets[GetUniqueRcId(connectionId, srcPort, dstPort, slotsNumber)].Dequeue();
+                if (teardownResponsePacket == null)
+                {
+                    LOG.Error("Could not find such connection");
+                    return new ResponsePacket.Builder().SetRes(ResponsePacket.ResponseType.Refused).Build();
+                }
+
+                _connections.RemoveAll(connection => connectionId == connection.Id);
+                
+                return teardownResponsePacket;
+            }
             
-            LOG.Info($"Received RC::RouteTableQuery_req" + $"(connectionId = {connectionId}, srcPort = {srcPort}," +
+            LOG.Info($"Received RC::RouteTableQuery_req(connectionId = {connectionId}, srcPort = {srcPort}," +
                      $" dstPort = {dstPort}, slotsNumber = {slotsNumber})");
 
             // Set dstZone depending on destination domain
@@ -75,16 +104,31 @@ namespace RoutingController
                 LOG.Trace($"There is already registered connection with id {connectionId}. Allocated slots: {slots}");
             }
 
-            LOG.Info($"Sending RC::RouteTableQuery_res" + $"(connectionId = {connectionId}, gateway = {gateway}," +
-                     $" slots = {slots.ToString()}, dstZone = {dstZone})");
-            
-            return new ResponsePacket.Builder()
+            ResponsePacket responsePacket = new ResponsePacket.Builder()
                 .SetRes(ResponsePacket.ResponseType.Ok)
                 .SetId(connectionId)
                 .SetGateway(gateway)
                 .SetSlots(slots)
                 .SetDstZone(dstZone)
                 .Build();
+
+            RequestPacket requestPacketWhenTeardown = requestPacket;
+            requestPacketWhenTeardown.Establish = RequestPacket.Est.Teardown;
+            string uniqueRcId = GetUniqueRcId(connectionId, srcPort, dstPort, slotsNumber);
+            if (_responsePackets.ContainsKey(uniqueRcId))
+            {
+                LOG.Trace($"_responsePacketsTable contains key: {uniqueRcId}");
+            }
+            else
+            {
+                _responsePackets[uniqueRcId] = new Queue<ResponsePacket>();
+            }
+            _responsePackets[uniqueRcId].Enqueue(responsePacket);
+
+            LOG.Info($"Sending RC::RouteTableQuery_res" + $"(connectionId = {connectionId}, gateway = {gateway}," +
+                     $" slots = {slots.ToString()}, dstZone = {dstZone})");
+            
+            return responsePacket;
         }
 
         public ResponsePacket OnLocalTopology(RequestPacket requestPacket)
@@ -187,6 +231,11 @@ namespace RoutingController
                 LOG.Trace($"Found matching gateway: {bestGateway} for srcPort = {srcPort} and dstPort = {dstPort}");
 
             return bestGateway;
+        }
+
+        private static string GetUniqueRcId(int connectionId, string srcPort, string dstPort, int slotsNumber)
+        {
+            return $"{connectionId}{srcPort}{dstPort}{slotsNumber}";
         }
     }
 }

@@ -52,10 +52,13 @@ namespace ConnectionController
             string src = requestPacket.SrcPort;
             string dst = requestPacket.DstPort;
             int sl = requestPacket.SlotsNumber;
-            LOG.Info($"Received CC::ConnectionRequest_req(id = {id}, src = {src}, dst = {dst}, sl = {sl})");
+            RequestPacket.Est est = requestPacket.Establish;
 
-            LOG.Info($"Send RC::RouteTableQuery_req(id = {id}, src = {src}, dst = {dst}, sl = {sl})");
+            LOG.Info($"Received CC::ConnectionRequest_req(id = {id}, src = {src}, dst = {dst}, sl = {sl}, teardown = {est})");
+
+            LOG.Info($"Send RC::RouteTableQuery_req(id = {id}, src = {src}, dst = {dst}, sl = {sl}, teardown = {est})");
             ResponsePacket routeTableQueryResponse = _rcRouteTableQueryClient.Get(new RequestPacket.Builder()
+                .SetEst(est)
                 .SetId(id)
                 .SetSrcPort(src)
                 .SetDstPort(dst)
@@ -80,9 +83,11 @@ namespace ConnectionController
 
             if (dst != rtqrGateway)
             {
-                LOG.Info($"Send LRM::LinkConnectionRequest_req(slots = {rtqrSlots}, allocate, who = CC)");
+                string allocDealloc = est == RequestPacket.Est.Establish ? "allocate" : "deallocate";
+                LOG.Info($"Send LRM::LinkConnectionRequest_req(slots = {rtqrSlots}, {allocDealloc}, who = CC)");
                 ResponsePacket linkConnectionRequestResponse = _lrmLinkConnectionRequestClients[rtqrGateway].Get(
                     new RequestPacket.Builder()
+                        .SetEst(est)
                         .SetSlots(rtqrSlots)
                         .SetShouldAllocate(true)
                         .SetWhoRequests(RequestPacket.Who.Cc)
@@ -103,44 +108,72 @@ namespace ConnectionController
             }
             else
             {
-                LOG.Debug("Dst == Gateway, LRM will be handled by the layers above");
-                LOG.Info(
-                    $"Insert FIB row [inPort = {src}, slots = ({rtqrSlots.Item1}, {rtqrSlots.Item2}), outPort = {rtqrGateway}]");
-                ResponsePacket insertFibResponseDst = _nnFibInsertClient.Get(new ManagementPacket.Builder()
-                    .SetCommandType("add")
-                    .SetCommandData($"{src} {rtqrSlots.Item1} {rtqrSlots.Item2} {rtqrGateway}")
-                    .Build());
-                if (insertFibResponseDst.Res == ResponsePacket.ResponseType.Ok)
+                ResponsePacket.ResponseType resp;
+                if (est == RequestPacket.Est.Teardown)
                 {
-                    LOG.Info($"Send CC::ConnectionRequest_res(OK, slots = {rtqrSlots})");
+                    LOG.Debug("Dst == Gateway, LRM will be handled by the layers above");
+                    LOG.Info($"Delete FIB row [inPort = {src}, slots = ({rtqrSlots.Item1}, {rtqrSlots.Item2}), outPort = {rtqrGateway}]");
+                    ResponsePacket deleteFibResponseDst = _nnFibInsertClient.Get(new ManagementPacket.Builder()
+                        .SetCommandType("delete")
+                        .SetCommandData($"{src} {rtqrSlots.Item1} {rtqrSlots.Item2} {rtqrGateway}")
+                        .Build());
+                    resp = deleteFibResponseDst.Res;
+                }
+                else
+                {
+                    LOG.Debug("Dst == Gateway, LRM will be handled by the layers above");
+                    LOG.Info($"Insert FIB row [inPort = {src}, slots = ({rtqrSlots.Item1}, {rtqrSlots.Item2}), outPort = {rtqrGateway}]");
+                    ResponsePacket insertFibResponseDst = _nnFibInsertClient.Get(new ManagementPacket.Builder()
+                        .SetCommandType("add")
+                        .SetCommandData($"{src} {rtqrSlots.Item1} {rtqrSlots.Item2} {rtqrGateway}")
+                        .Build());
+                    resp = insertFibResponseDst.Res;
+                }
+
+                if (resp == ResponsePacket.ResponseType.Ok)
+                {
+                    LOG.Info($"Send CC::PeerCoordination_res(OK, slots = {rtqrSlots})");
                     return new ResponsePacket.Builder().SetRes(ResponsePacket.ResponseType.Ok).SetSlots(rtqrSlots)
                         .Build();
                 }
             }
 
             // gateway == dstZone && dstZone != dst -- TODO Not implemented
-            LOG.Info(
-                $"Insert FIB row [inPort = {src}, slots = ({rtqrSlots.Item1}, {rtqrSlots.Item2}), outPort = {rtqrGateway}]");
-            ResponsePacket insertFibResponse = _nnFibInsertClient.Get(new ManagementPacket.Builder()
-                .SetCommandType("add")
-                .SetCommandData($"{src} {rtqrSlots.Item1} {rtqrSlots.Item2} {rtqrGateway}")
-                .Build());
 
-            ResponsePacket.ResponseType res = insertFibResponse.Res;
+            ResponsePacket.ResponseType res;
+
+            if (est == RequestPacket.Est.Teardown)
+            {
+                LOG.Info($"Delete FIB row [inPort = {src}, slots = ({rtqrSlots.Item1}, {rtqrSlots.Item2}), outPort = {rtqrGateway}]");
+                ResponsePacket deleteFibResponse = _nnFibInsertClient.Get(new ManagementPacket.Builder()
+                    .SetCommandType("delete")
+                    .SetCommandData($"{src} {rtqrSlots.Item1} {rtqrSlots.Item2} {rtqrGateway}")
+                    .Build());
+                res = deleteFibResponse.Res;
+            }
+            else
+            {
+                LOG.Info($"Insert FIB row [inPort = {src}, slots = ({rtqrSlots.Item1}, {rtqrSlots.Item2}), outPort = {rtqrGateway}]");
+                ResponsePacket insertFibResponse = _nnFibInsertClient.Get(new ManagementPacket.Builder()
+                    .SetCommandType("add")
+                    .SetCommandData($"{src} {rtqrSlots.Item1} {rtqrSlots.Item2} {rtqrGateway}")
+                    .Build());
+                res = insertFibResponse.Res;
+            }
 
             if (res == ResponsePacket.ResponseType.Ok)
             {
-                LOG.Info($"Send CC::PeerCoordination_req(id = {id}, src = {gatewayOrEnd}, dst = {dst}, slots = {rtqrSlots})");
+                LOG.Info($"Send CC::PeerCoordination_req(id = {id}, src = {gatewayOrEnd}, dst = {dst}, slots = {rtqrSlots}, teardown = {est})");
 
                 ResponsePacket peerCoordinationResponse = _ccPeerCoordinationClients[GetCcName(gatewayOrEnd)].Get(
                     new RequestPacket.Builder()
+                        .SetEst(est)
                         .SetId(id)
                         .SetSrcPort(gatewayOrEnd)
                         .SetDstPort(dst)
                         .SetSlots(rtqrSlots)
                         .Build());
-                LOG.Info(
-                    $"Received CC::PeerCoordination_res(res = {ResponsePacket.ResponseTypeToString(peerCoordinationResponse.Res)})");
+                LOG.Info($"Received CC::PeerCoordination_res(res = {ResponsePacket.ResponseTypeToString(peerCoordinationResponse.Res)})");
                 
                 if (peerCoordinationResponse.Res == ResponsePacket.ResponseType.Ok)
                 {
@@ -175,10 +208,13 @@ namespace ConnectionController
             string dst = requestPacket.DstPort;
             (int, int) slots = requestPacket.Slots;
             int sl = slots.Item2 - slots.Item1;
-            LOG.Info($"Received CC::PeerCoordination_req(id = {id}, src = {src}, dst = {dst}, slots = {slots})");
+            RequestPacket.Est est = requestPacket.Establish;
 
-            LOG.Info($"Send RC::RouteTableQuery_req(id = {id}, src = {src}, dst = {dst}, sl = {sl})");
+            LOG.Info($"Received CC::PeerCoordination_req(id = {id}, src = {src}, dst = {dst}, slots = {slots}, teardown = {est})");
+
+            LOG.Info($"Send RC::RouteTableQuery_req(id = {id}, src = {src}, dst = {dst}, sl = {sl}, teardown = {est})");
             ResponsePacket routeTableQueryResponse = _rcRouteTableQueryClient.Get(new RequestPacket.Builder()
+                .SetEst(est)
                 .SetId(id)
                 .SetSrcPort(src)
                 .SetDstPort(dst)
@@ -203,9 +239,11 @@ namespace ConnectionController
 
             if (dst != rtqrGateway)
             {
-                LOG.Info($"Send LRM::LinkConnectionRequest_req(slots = {rtqrSlots}, allocate, who = CC)");
+                string allocDealloc = est == RequestPacket.Est.Establish ? "allocate" : "deallocate";
+                LOG.Info($"Send LRM::LinkConnectionRequest_req(slots = {rtqrSlots}, {allocDealloc}, who = CC)");
                 ResponsePacket linkConnectionRequestResponse = _lrmLinkConnectionRequestClients[rtqrGateway].Get(
                     new RequestPacket.Builder()
+                        .SetEst(est)
                         .SetSlots(rtqrSlots)
                         .SetShouldAllocate(true)
                         .SetWhoRequests(RequestPacket.Who.Cc)
@@ -217,13 +255,29 @@ namespace ConnectionController
             }
             else
             {
-                LOG.Debug("Dst == Gateway, LRM will be handled by the layers above");
-                LOG.Info($"Insert FIB row [inPort = {src}, slots = ({rtqrSlots.Item1}, {rtqrSlots.Item2}), outPort = {rtqrGateway}]");
-                ResponsePacket insertFibResponseDst = _nnFibInsertClient.Get(new ManagementPacket.Builder()
-                    .SetCommandType("add")
-                    .SetCommandData($"{src} {rtqrSlots.Item1} {rtqrSlots.Item2} {rtqrGateway}")
-                    .Build());
-                if (insertFibResponseDst.Res == ResponsePacket.ResponseType.Ok)
+                ResponsePacket.ResponseType resp;
+                if (est == RequestPacket.Est.Teardown)
+                {
+                    LOG.Debug("Dst == Gateway, LRM will be handled by the layers above");
+                    LOG.Info($"Delete FIB row [inPort = {src}, slots = ({rtqrSlots.Item1}, {rtqrSlots.Item2}), outPort = {rtqrGateway}]");
+                    ResponsePacket deleteFibResponseDst = _nnFibInsertClient.Get(new ManagementPacket.Builder()
+                        .SetCommandType("delete")
+                        .SetCommandData($"{src} {rtqrSlots.Item1} {rtqrSlots.Item2} {rtqrGateway}")
+                        .Build());
+                    resp = deleteFibResponseDst.Res;
+                }
+                else
+                {
+                    LOG.Debug("Dst == Gateway, LRM will be handled by the layers above");
+                    LOG.Info($"Insert FIB row [inPort = {src}, slots = ({rtqrSlots.Item1}, {rtqrSlots.Item2}), outPort = {rtqrGateway}]");
+                    ResponsePacket insertFibResponseDst = _nnFibInsertClient.Get(new ManagementPacket.Builder()
+                        .SetCommandType("add")
+                        .SetCommandData($"{src} {rtqrSlots.Item1} {rtqrSlots.Item2} {rtqrGateway}")
+                        .Build());
+                    resp = insertFibResponseDst.Res;
+                }
+
+                if (resp == ResponsePacket.ResponseType.Ok)
                 {
                     LOG.Info($"Send CC::PeerCoordination_res(OK, slots = {rtqrSlots})");
                     return new ResponsePacket.Builder().SetRes(ResponsePacket.ResponseType.Ok).SetSlots(rtqrSlots)
@@ -232,21 +286,34 @@ namespace ConnectionController
             }
 
             // gateway == dstZone && dstZone != dst -- TODO Not implemented
-            LOG.Info(
-                $"Insert FIB row [inPort = {src}, slots = ({rtqrSlots.Item1}, {rtqrSlots.Item2}), outPort = {rtqrGateway}]");
-            ResponsePacket insertFibResponse = _nnFibInsertClient.Get(new ManagementPacket.Builder()
-                .SetCommandType("add")
-                .SetCommandData($"{src} {rtqrSlots.Item1} {rtqrSlots.Item2} {rtqrGateway}")
-                .Build());
+            ResponsePacket.ResponseType res;
 
-            ResponsePacket.ResponseType res = insertFibResponse.Res;
+            if (est == RequestPacket.Est.Teardown)
+            {
+                LOG.Info($"Delete FIB row [inPort = {src}, slots = ({rtqrSlots.Item1}, {rtqrSlots.Item2}), outPort = {rtqrGateway}]");
+                ResponsePacket deleteFibResponse = _nnFibInsertClient.Get(new ManagementPacket.Builder()
+                    .SetCommandType("delete")
+                    .SetCommandData($"{src} {rtqrSlots.Item1} {rtqrSlots.Item2} {rtqrGateway}")
+                    .Build());
+                res = deleteFibResponse.Res;
+            }
+            else
+            {
+                LOG.Info($"Insert FIB row [inPort = {src}, slots = ({rtqrSlots.Item1}, {rtqrSlots.Item2}), outPort = {rtqrGateway}]");
+                ResponsePacket insertFibResponse = _nnFibInsertClient.Get(new ManagementPacket.Builder()
+                    .SetCommandType("add")
+                    .SetCommandData($"{src} {rtqrSlots.Item1} {rtqrSlots.Item2} {rtqrGateway}")
+                    .Build());
+                res = insertFibResponse.Res;
+            }
 
             if (res == ResponsePacket.ResponseType.Ok)
             {
-                LOG.Info($"Send CC::PeerCoordination_req(id = {id}, src = {gatewayOrEnd}, dst = {dst}, slots = {rtqrSlots})");
+                LOG.Info($"Send CC::PeerCoordination_req(id = {id}, src = {gatewayOrEnd}, dst = {dst}, slots = {rtqrSlots}, teardown = {est})");
 
                 ResponsePacket peerCoordinationResponse = _ccPeerCoordinationClients[GetCcName(gatewayOrEnd)].Get(
                     new RequestPacket.Builder()
+                        .SetEst(est)
                         .SetId(id)
                         .SetSrcPort(gatewayOrEnd)
                         .SetDstPort(dst)
