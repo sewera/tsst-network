@@ -194,7 +194,7 @@ namespace ConnectionController
 
             if (est == RequestPacket.Est.Teardown)
             {
-                LOG.Info($"Received CC::ConnectionRequest_req(id = {id}, teardown = {est})");
+                LOG.Info($"Received CC::PeerCoordination(id = {id}, teardown = {est})");
 
                 // TODO: We can ask RC for a route with given ID and Teardown the connection exactly like it was routed
                 // The only thing is that RC will have to keep the whole connection

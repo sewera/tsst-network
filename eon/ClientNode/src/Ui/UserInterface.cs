@@ -109,6 +109,7 @@ namespace ClientNode.Ui
                                 ResponsePacket nccTeardownResponse = _cpccState.Teardown(connId);
                                 if (nccTeardownResponse.Res == ResponsePacket.ResponseType.Ok)
                                 {
+                                    LOG.Info($"Received NCC::CallTeardown_res(res = OK, id = {message[1]})");
                                     LOG.Info("Successfully disconnected");
                                     _currentSlots.Remove(message[1], out (int, int) removedValue);
                                     LOG.Info($"Removed Connection with ID: {message[1]} that had slots: {removedValue}");
