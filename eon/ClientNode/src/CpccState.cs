@@ -26,6 +26,7 @@ namespace ClientNode
 
         public ResponsePacket AskForConnection(string srcName, string dstName, int slotsNumber)
         {
+            LOG.Info($"Send NCC:CallRequest_req(srcName = {srcName}, dstName = {dstName}, slotsNumber = {slotsNumber})");
             ResponsePacket nccConnectionRequestResponse = _nccConnectionRequestClient.Get(new RequestPacket.Builder()
                 .SetSrcName(srcName)
                 .SetDstName(dstName)

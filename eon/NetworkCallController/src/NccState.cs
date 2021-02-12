@@ -231,9 +231,11 @@ namespace NetworkCallController
         {
             int id = requestPacket.Id;
             _ccConnectionRequests.Remove(id, out RequestPacket ccConnectionTeardownRequest);
+            LOG.Info($"Received NCC::CallTeardown_req(id = {id})");
             if (ccConnectionTeardownRequest == null)
             {
                 LOG.Error($"Could not find a connection with id = {id}");
+                LOG.Info($"Send NCC::CallTeardown_res(res = Refused)");
                 return new Builder()
                     .SetRes(ResponseType.Refused)
                     .Build();
@@ -241,11 +243,20 @@ namespace NetworkCallController
 
             ccConnectionTeardownRequest.Establish = RequestPacket.Est.Teardown;
 
+            LOG.Info($"Send CC::ConnectionRequest(id = {ccConnectionTeardownRequest.Id}, src = {ccConnectionTeardownRequest.SrcPort}," +
+                     $" dst = {ccConnectionTeardownRequest.DstPort}, sl = {ccConnectionTeardownRequest.SlotsNumber}, teardown = {ccConnectionTeardownRequest.Establish})");
+            
             ResponsePacket connectionTeardownResponse = _ccConnectionRequestClient.Get(ccConnectionTeardownRequest);
+            
 
             if (connectionTeardownResponse.Res != ResponseType.Ok)
+            {
+                LOG.Info($"Send NCC::CallTeardown_res(res = NetworkProblem)");
                 return new Builder().SetRes(ResponseType.NetworkProblem).Build();
-
+            }
+            LOG.Info("Received CC::ConnectionRequest(res = OK)");
+            _connections.RemoveAll(connection => connection.Id == id);
+            LOG.Info($"Send NCC::CallTeardown_res(res = OK, id = {id})");
             return new Builder()
                 .SetRes(ResponseType.Ok)
                 .Build();
