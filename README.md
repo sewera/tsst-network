@@ -78,31 +78,31 @@ possible (in our case in a Main() method, which is the highest). This way you
 can provide some mock implementations for testing, like
 `MockConfigurationParser` that you can find in any component.
 
-#### Configuration
+### Configuration
 For your time's sake, please, PLEASE DO NOT USE XML. It's stupid,
 time-consuming and pointless. Use JSON and some library for deserialization.
 We thought it was a requirement to use XMLs, but nobody gave a damn, so you
 shouldn't too. Whatever you do, don't use xml.
 
-#### Startup boilerplate
+### Startup boilerplate
 Your application has to start somehow, some things like loggers need to be
 initialized, so you need to write some boilerplate code. Offload it to a
 common library, like `Common.Startup`. This piece of code is a bit dirty,
 so don't use exactly that, but you get the idea.
 
-#### Unit tests
+### Unit tests
 Some bugs could be spotted upfront if we wrote some unit tests earlier for our
 util functions. You don't have to test everything, but generally, when you
 have a function that checks for the gateway port, it is a good idea to have it
 tested. At least it was our main bug factory. You can see an example in
 `Common.test.Utils` or `RoutingController.test`.
 
-#### Additional libraries
+### Additional libraries
 We used and recommend [NLog](https://nlog-project.org/) for logging,
 [NUnit](https://nunit.org/) for unit testing and, of course,
 [MessagePack](https://msgpack.org/) for serialization.
 
-#### Project organization
+### Project organization
 You can see our tools here on Github. We used built-in Issues, Projects and
 Pull requests, as well as [Create Issue Branch plugin](https://github.com/marketplace/actions/create-issue-branch)
 which I highly recommend.
