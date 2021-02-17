@@ -47,6 +47,21 @@ principle that is one of the SOLID principles of, well, solid Object Oriented
 Programming. Read more about it on [Wikipedia – dependency injection](https://en.wikipedia.org/wiki/Dependency_injection)
 and [Wikipedia – SOLID](https://en.wikipedia.org/wiki/SOLID).
 
+#### Importing to your project
+Simply download `Common-0.1.0.zip` from releases and put it in your project
+next to other components.
+
+Put the following in the `*.csproj` file:
+
+```xml
+  <ItemGroup>
+    <ProjectReference Include="..\Common\Common.csproj" />
+  </ItemGroup>
+```
+
+Now you can use the Common library like it's local code. You can also see an
+example e.g. in `eon/CableCloud/CableCloud.csproj` file.
+
 #### Data models
 I recommend using [MessagePack](https://msgpack.org/) as a serializing library.
 Mainly because it's binary, which seemed to be a requirement, but it's also
