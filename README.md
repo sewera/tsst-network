@@ -6,20 +6,36 @@ See [Development setup](docs/development_setup.md) and [Contributing](docs/contr
 ## First stage
 See [First stage](docs/stages/1st.md).
 
+## Launch it
+Simply go to one of the directories: `mpls` for MPLS and Transport Plane
+(first stage) or `eon` for EON and Control Plane (second stage).
+
+Then, using python3 launch `start.py` script. You will have to build the
+project first, so `python3 start.py -b` to build. If it fails the first time,
+give it a second try, it usually happens that way.
+
+Then simply launch `python3 start.py` and the project will start.
+
+You can kill all the processes with `python3 start.py -k`.
+
+I recommend using PowerShell (or PS in Windows Terminal) when on Windows or
+Alacritty when everywhere else.
+
 ## Our experience after finishing the project
 
 ### Tools
 Please DO NOT USE VS Code with the tools from Microsoft. They are a piece of
-garbage, as for early 2021. JetBrains' Rider was our IDE of choice. You can't
+garbage, as of early 2021. JetBrains' Rider was our IDE of choice. You can't
 go wrong with any of their products. Being cross-platform is a huge advantage.
 
 ### Scripts
 Especially for cross-platform development, choose some modern scripting
 language like Python or Ruby. I chose Python, because I was already familiar
-with it. There were no problems with it on Windows, Linux and MacOS, that was
-tested. Our starting scripts were a bit quick 'n' dirty, but Python gives you
-a bit more flexibility with variables, uniform path handling and so on over
-shell or batch scripts.
+with it. There were no problems with it on Windows, Linux and MacOS, which was
+tested. Our startup scripts were a bit quick 'n' dirty, so maybe don't rely on
+them as they are, but from my experience Python gives you a bit more
+flexibility with variables, uniform path handling and so on over shell or
+batch scripts.
 
 ### Code reuse
 The code in `eon/Common` dotnet core project can be reused for future TSST
@@ -28,8 +44,8 @@ provide are some model classes (like RequestPacket for instance).
 
 Such code reuse wouldn't be possible without Dependency Injection programming
 principle that is one of the SOLID principles of, well, solid Object Oriented
-Programming. Read more about it on [Wikipedia - dependency injection](https://en.wikipedia.org/wiki/Dependency_injection)
-and [Wikipedia - SOLID](https://en.wikipedia.org/wiki/SOLID).
+Programming. Read more about it on [Wikipedia – dependency injection](https://en.wikipedia.org/wiki/Dependency_injection)
+and [Wikipedia – SOLID](https://en.wikipedia.org/wiki/SOLID).
 
 #### Data models
 I recommend using [MessagePack](https://msgpack.org/) as a serializing library.
@@ -37,7 +53,7 @@ Mainly because it's binary, which seemed to be a requirement, but it's also
 easy to implement and provides useful methods for (de)serialization.
 
 If you use the code from the Common library, you have to write a model that
-implements ISerializablePacket interface. A good example on how to do it would
+implements `ISerializablePacket` interface. A good example on how to do it would
 be `Common.Models.GenericDataPacket`, or, without multiple levels of
 inheritance, `Common.Models.ManagementPacket`.
 
