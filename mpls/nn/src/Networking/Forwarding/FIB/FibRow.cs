@@ -32,8 +32,8 @@ namespace nn.Networking.Forwarding.FIB
             _inLink = int.Parse(words[1]);
             _inLabel = int.Parse(words[2]);
             // Tunnel can terminate
-            _outLink = (words[3]==".") ? 0 : int.Parse(words[2]);
-            _outLabel = (words[4]==".") ? 0 : int.Parse(words[3]);
+            _outLink = (words[3]==".") ? 0 : int.Parse(words[3]);
+            _outLabel = (words[4]==".") ? 0 : int.Parse(words[4]);
 
             _5th = int.Parse(words[5]);
 
@@ -66,14 +66,14 @@ namespace nn.Networking.Forwarding.FIB
         /// Get value of 5th column
         /// <returns> _5th field</returns>
         /// </summary>
-        public int get_5th()
+        public int get_id()
         {
-            return _5th;
+            return _id;
         }
 
         public override string ToString()
         {
-            return $"InLink: {_inLink},InLabel: {_inLabel},OutLink: {_outLink},OutLabel: {_outLabel},isNextLabel: {_isNextLabel.ToString()},NextLabel: {_nextLabel}, 5th: {_5th}";
+            return $"Id: {_id}; InLink: {_inLink}; InLabel: {_inLabel}; OutLink: {_outLink}; OutLabel: {_outLabel}; isNextLabel: {_isNextLabel.ToString()}; NextLabel: {_nextLabel}; 5th: {_5th}";
         }
 
          public static bool operator ==(FibRow a, FibRow b)

@@ -90,7 +90,7 @@ namespace nn.Networking.Forwarding.FIB
                     {
                         // It means that tunel terminates here, need the recursion to be done
                         // If the tunnel terminates here, it means that MplsPacket has at least one label remaining
-                        (resultPort, resultPacket) = Commutate((inPort.ToString(), inPacket), row.get_5th());
+                        (resultPort, resultPacket) = Commutate((inPort.ToString(), inPacket), row.get_id());
                     }
                     else if (isNextLabel == true)
                     {
