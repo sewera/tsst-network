@@ -24,7 +24,6 @@ namespace nn.Networking.Forwarding
 
         public void ForwardPacket((string portAlias, MplsPacket packet) forwardPacketTuple)
         {
-            
             if (_clientPorts == null)
             {
                 LOG.Warn("Dictionary with clientPorts was not initialized yet");
