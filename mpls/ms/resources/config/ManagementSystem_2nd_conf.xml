@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+
+<management_system>
+
+    <listener_port>4001</listener_port>
+
+    <config_messages>
+
+        <message router="R1">add 12 101 13 131</message>
+        <message router="R1">add 12 102 13 132</message>
+        <message router="R1">add 12 103 13 133</message>
+        <message router="R1">add 13 521 12 121</message>
+        <message router="R1">add 13 522 12 122</message>
+        <message router="R1">add 13 523 12 123</message>
+
+        <message router="R2">add 24 201 21 211</message>
+        <message router="R2">add 24 202 21 5</message>
+        <message router="R2">add 24 203 23 231</message>
+        <message router="R2">add 23 1001 21 1002</message>
+        <message router="R2">add 23 323 24 243</message>
+        <message router="R2">add 21 541 24 241</message>
+        <message router="R2">add 21 1003 23 1004</message>
+        <message router="R2">add 21 544 24 242</message>
+
+        <message router="R3">add 34 301 32 321 -1001</message>
+        <message router="R3">add 34 302 32 5 -1001</message>
+        <message router="R3">add 34 303 32 323</message>
+        <message router="R3">add 32 231 34 341</message>
+        <message router="R3">add 32 1004 . .</message>
+        <message router="R3">add 32 542 34 342</message>
+        <message router="R3">add 32 543 34 343</message>
+
+        <message router="R4">add 44 511 41 411</message>
+        <message router="R4">add 44 512 41 412</message>
+        <message router="R4">add 44 513 41 413</message>
+        <message router="R4">add 41 401 44 441</message>
+        <message router="R4">add 41 402 44 442</message>
+        <message router="R4">add 41 403 44 443</message>
+
+        <message router="R5">add 52 131 51 511</message>
+        <message router="R5">add 52 132 54 542 -1003</message>
+        <message router="R5">add 52 133 54 541</message>
+        <message router="R5">add 51 441 52 521</message>
+        <message router="R5">add 51 442 54 543 -1003</message>
+        <message router="R5">add 51 443 54 544</message>
+        <message router="R5">add 54 211 52 523</message>
+        <message router="R5">add 54 1002 . .</message>
+        <message router="R5">add 54 5 52 522</message>      <!--Red-->
+        <message router="R5">add 54 321 51 512</message>
+        <message router="R5">add 54 5 51 513</message>      <!--Violet-->
+    </config_messages>
+
+</management_system>
