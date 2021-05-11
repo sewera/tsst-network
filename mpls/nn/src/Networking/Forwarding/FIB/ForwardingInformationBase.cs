@@ -16,7 +16,7 @@ namespace nn.Networking.Forwarding.FIB
 
 
         /// <summary>
-        /// Class contructor
+        /// Class constructor
         /// </summary>
         public ForwardingInformationBase()
         {
@@ -26,21 +26,21 @@ namespace nn.Networking.Forwarding.FIB
 
         /// <summary>
         /// Add row to the table
-        /// <param name="CommandData"> String being CommandData from ManagementSystem, representing row to add<param>
+        /// <param name="commandData"> String being CommandData from ManagementSystem, representing row to add</param>
         /// </summary>
-        public void AddRow(string CommandData)
+        public void AddRow(string commandData)
         {
-            rows.Add( new FibRow(CommandData));
+            rows.Add( new FibRow(commandData));
         }
 
 
         /// <summary>
         /// Delete row from the table
-        /// <param name="CommandData"> String being CommandData from Management System, indicating which row to delete<param>
+        /// <param name="commandData"> String being CommandData from Management System, indicating which row to delete<param>
         /// </summary>
-        public void DeleteRow(string CommandData)
+        public void DeleteRow(string commandData)
         {
-            FibRow predicate = new FibRow(CommandData);
+            FibRow predicate = new FibRow(commandData);
             rows.RemoveAll(item => item==predicate);
         }
         /// <summary>
@@ -60,11 +60,11 @@ namespace nn.Networking.Forwarding.FIB
 
         /// <summary>
         /// Search Mpls-Table in order to find outLink and new label stack for incoming packet
-        /// <param name="portAlias"> Port where the packet came<param>
-        /// <param name="packet"> incoming MplsPacket<param>
+        /// <param name="portAlias"> Port where the packet came</param>
+        /// <param name="packet"> incoming MplsPacket</param>
         /// <returns>The packet to send and its output port</returns>
         /// </summary>
-        public (string, MplsPacket) Commutate((string portAlias, MplsPacket packet) forwardPacketTuple)
+        public (string, MplsPacket) Commutate((string portAlias, MplsPacket packet) forwardPacketTuple, int lastRowId)
         {
             string resultPort = "";
             MplsPacket resultPacket = new MplsPacket();
@@ -81,7 +81,7 @@ namespace nn.Networking.Forwarding.FIB
             bool isFound=false;
             foreach (FibRow row in rows)
             {
-                if(row.FirstPartMatch(inPort,inLabel))
+                if(row.FirstPartMatch(inPort, inLabel, lastRowId))
                 {
                     (int outLink,int outLabel,bool isNextLabel,int nextLabel) = row.SecondPartGet();
                     isFound=true;
@@ -90,7 +90,7 @@ namespace nn.Networking.Forwarding.FIB
                     {
                         // It means that tunel terminates here, need the recursion to be done
                         // If the tunnel terminates here, it means that MplsPacket has at least one label remaining
-                        (resultPort, resultPacket) = Commutate((inPort.ToString(), inPacket));
+                        (resultPort, resultPacket) = Commutate((inPort.ToString(), inPacket), row.get_5th());
                     }
                     else if (isNextLabel == true)
                     {
@@ -102,7 +102,7 @@ namespace nn.Networking.Forwarding.FIB
                         // Now push next level label
                         resultPacket.PushLabel(nextLabel);
                     }
-                    else if (isNextLabel == false)
+                    else
                     {
                         // The most common case
                         resultPort = outLink.ToString();
@@ -110,11 +110,6 @@ namespace nn.Networking.Forwarding.FIB
                         // Now we push new label, (pop and push is the same as change)
                         resultPacket.PushLabel(outLabel);
                         // There is some redundancy in two last cases, but i want to clearly mark the diff between them in comments.
-                    }
-                    else
-                    {
-                        // If any other case happen, we assume packet is lost
-                        isFound=false;
                     }
                 }
             }
