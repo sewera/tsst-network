@@ -51,6 +51,7 @@ namespace ClientNode
 
         public ResponsePacket OnCallAccept(RequestPacket requestPacket)
         {
+            LOG.Info("Call Accept Arrived");
             return new ResponsePacket.Builder().SetRes(ResponsePacket.ResponseType.Ok).Build();
         }
     }
