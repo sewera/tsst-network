@@ -24,7 +24,6 @@ namespace nn.Networking.Forwarding
 
         public void ForwardPacket((string portAlias, MplsPacket packet) forwardPacketTuple)
         {
-            
             if (_clientPorts == null)
             {
                 LOG.Warn("Dictionary with clientPorts was not initialized yet");
@@ -33,7 +32,7 @@ namespace nn.Networking.Forwarding
             try
             {
                 LOG.Info($"Received packet {forwardPacketTuple.packet} on port {forwardPacketTuple.portAlias}");
-                (string outPort, MplsPacket outPacket) = FIB.Commutate(forwardPacketTuple);
+                (string outPort, MplsPacket outPacket) = FIB.Commutate(forwardPacketTuple, 0);
                 for (int i = 0; i < outPacket.MplsLabels.Count; i++)
                 {
                     outPacket.MplsLabels[i] = Math.Abs(outPacket.MplsLabels[i]);

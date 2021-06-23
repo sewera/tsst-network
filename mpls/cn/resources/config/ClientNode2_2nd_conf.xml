@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<configuration>
+
+    <cable_cloud_address>127.0.0.1</cable_cloud_address>
+    <cable_cloud_port>3001</cable_cloud_port>
+    <client_alias>H2</client_alias>
+    <client_port>2</client_port>
+
+    <labels>
+        <label host="H1">201</label>
+        <label host="H3">203</label>
+        <label host="H4">202</label>
+    </labels>
+
+</configuration>
