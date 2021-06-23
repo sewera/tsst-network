@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using ClientNode.Config;
 using Common.Models;
@@ -5,6 +6,7 @@ using Common.Networking.Client.Persistent;
 using Common.Networking.Server.Delegates;
 using Common.Networking.Server.OneShot;
 using NLog;
+using NLog.Fluent;
 
 namespace ClientNode
 {

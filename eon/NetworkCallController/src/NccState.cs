@@ -19,6 +19,7 @@ namespace NetworkCallController
         private readonly Dictionary<string, string> _clientPortAliases;
         private readonly Dictionary<string, string> _portDomains;
         private readonly string _domain;
+        private readonly IPAddress _serverAddress;
 
         private readonly IApiClient<RequestPacket, ResponsePacket> _ccConnectionRequestClient;
         private readonly IApiClient<RequestPacket, ResponsePacket> _nccCallCoordinationClient;
@@ -38,6 +39,7 @@ namespace NetworkCallController
             _clientPortAliases = clientPortAliases;
             _portDomains = portDomains;
             _domain = domain;
+            _serverAddress = serverAddress;
             _ccConnectionRequestClient =
                 new ApiClient<RequestPacket, ResponsePacket>(serverAddress, ccConnectionRequestRemotePort);
             _nccCallCoordinationClient =
@@ -92,6 +94,7 @@ namespace NetworkCallController
             // </ C A L L   A D M I S S I O N   C O N T R O L >
 
             //TODO [ASON] Ask dstClient if he wants to connect with srcClient
+            
 
             // If CAC is passed, create a connection
             int connectionId = int.Parse($"{_domain[1]}{_connectionCounter++}{srcPort}{dstPort}");
@@ -133,6 +136,16 @@ namespace NetworkCallController
                         .Build();
                 }
             }
+            // C A L L   A C C E P T
+
+            IApiClient<RequestPacket, ResponsePacket> callAcceptClient = new ApiClient<RequestPacket, ResponsePacket>(_serverAddress, int.Parse(dstPort.ToString() + "9"));
+
+            var callAcceptRes = callAcceptClient.Get(new RequestPacket.Builder()
+                .SetSrcName(srcName)
+                .Build()
+            );
+            
+            
             // Order domain CC to set a Connection
             // Send CC:ConnectionRequest(id, src, dst, sl)
             LOG.Info("Send CC:ConnectionRequest_req" +
@@ -184,7 +197,7 @@ namespace NetworkCallController
             string srcName = requestPacket.SrcName;
             string dstName = requestPacket.DstName;
             int slotsNumber = requestPacket.SlotsNumber;
-            
+
             LOG.Info($"Received NCC::CallCoordination_req" + $"(srcName = {srcName}, dstName = {dstName},slotsNumber = {slotsNumber})");
             
             // < C A L L   A D M I S S I O N   C O N T R O L >
