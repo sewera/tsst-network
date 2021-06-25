@@ -71,7 +71,8 @@ namespace Common.Models
             AuthProblem,
             NoClient,
             NetworkProblem,
-            ResourcesProblem
+            ResourcesProblem,
+            RefusedByCalledParty
         }
 
         public static string ResponseTypeToString(ResponseType res)
@@ -84,6 +85,7 @@ namespace Common.Models
                 ResponseType.NoClient => "NoClient",
                 ResponseType.NetworkProblem => "NetworkProblem",
                 ResponseType.ResourcesProblem => "ResourcesProblem",
+                ResponseType.RefusedByCalledParty => "RefusedByCalledParty",
                 _ => "Other"
             };
         }
