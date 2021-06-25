@@ -25,21 +25,21 @@
             <client_port name="Bartek">131</client_port>
             <client_port name="Janek">221</client_port>
             <client_port name="Franek">231</client_port>
-            <client_port name="Abacki">333</client_port>
-            <client_port name="Babacki">335</client_port>
+            <client_port name="Abacki">313</client_port>
+            <client_port name="Babacki">315</client_port>
             <client_port name="Cacacki">321</client_port>
             <client_port name="Dadacki">322</client_port>
             <client_port name="Fafacki">323</client_port>
         
     </client_ports>
 
-    <client_domain_by_port>
+    <port_domains>
 
-        <client_domain port="1xx">S1</client_domain>
-        <client_domain port="2xx">S1</client_domain>
-        <client_domain port="0xx">S1</client_domain>
-        <client_domain port="3xx">S2</client_domain>
+        <port_domain port="1xx">S1</port_domain>
+        <port_domain port="2xx">S1</port_domain>
+        <port_domain port="0xx">S1</port_domain>
+        <port_domain port="3xx">S2</port_domain>
 
-    </client_domain_by_port>
+    </port_domains>
 
 </configuration>

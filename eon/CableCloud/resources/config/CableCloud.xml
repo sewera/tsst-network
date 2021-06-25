@@ -13,8 +13,8 @@
         <connection>221,2219</connection>
         <connection>231,2319</connection>
         <!--Clients to SN3-->
-        <connection>333,3339</connection>
-        <connection>335,3359</connection>
+        <connection>313,3139</connection>
+        <connection>315,3159</connection>
         <connection>321,3219</connection>
         <connection>322,3229</connection>
         <connection>323,3239</connection>
@@ -35,7 +35,7 @@
         <connection>213,223</connection>
         <connection>233,222</connection>
         <!--SN3-->
-        <connection>334,324</connection>
+        <connection>314,324</connection>
 
         <!--SN1 to SN0-->
         <connection>111,011</connection>

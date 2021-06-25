@@ -41,6 +41,11 @@ ClientNode_configs = [
     Path("ClientNode2.xml"),
     Path("ClientNode3.xml"),
     Path("ClientNode4.xml"),
+    Path("ClientNode5.xml"),
+    Path("ClientNode6.xml"),
+    Path("ClientNode7.xml"),
+    Path("ClientNode8.xml"),
+    Path("ClientNode9.xml"),
 ]
 ClientNode_exe = Path("ClientNode.exe")
 

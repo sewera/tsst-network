@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<configuration>
+
+    <cable_cloud_address>127.0.0.1</cable_cloud_address>
+    <cable_cloud_port>3001</cable_cloud_port>
+    <client_alias>Abacki</client_alias>
+    <client_port>3139</client_port>
+    <ncc_connection_request_remote_port>11821</ncc_connection_request_remote_port>
+    <ncc_call_teardown_remote_port>11823</ncc_call_teardown_remote_port>
+
+    <labels>
+        <label host="H1">101</label>
+        <label host="H2">102</label>
+        <label host="H3">103</label>
+    </labels>
+
+</configuration>

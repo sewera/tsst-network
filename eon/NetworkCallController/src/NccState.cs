@@ -120,7 +120,8 @@ namespace NetworkCallController
             }
             
             // C A L L   A C C E P T
-
+            //TODO USUN TO POTEM
+            LOG.Info("Wbita do call accept");
             IApiClient<RequestPacket, ResponsePacket> callAcceptClient = new ApiClient<RequestPacket, ResponsePacket>(_serverAddress, int.Parse(dstPort.ToString() + "9"));
 
             LOG.Info("Send CPCC::CallAccept_req" + $"(srcName = {srcName})");
