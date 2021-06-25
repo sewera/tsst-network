@@ -19,6 +19,7 @@ namespace NetworkCallController
         private readonly Dictionary<string, string> _clientPortAliases;
         private readonly Dictionary<string, string> _portDomains;
         private readonly string _domain;
+        private readonly IPAddress _serverAddress;
 
         private readonly IApiClient<RequestPacket, ResponsePacket> _ccConnectionRequestClient;
         private readonly IApiClient<RequestPacket, ResponsePacket> _nccCallCoordinationClient;
@@ -38,6 +39,7 @@ namespace NetworkCallController
             _clientPortAliases = clientPortAliases;
             _portDomains = portDomains;
             _domain = domain;
+            _serverAddress = serverAddress;
             _ccConnectionRequestClient =
                 new ApiClient<RequestPacket, ResponsePacket>(serverAddress, ccConnectionRequestRemotePort);
             _nccCallCoordinationClient =
@@ -88,38 +90,21 @@ namespace NetworkCallController
                     .Build();
             }
             LOG.Info($"Directory found port: {dstPort} for client: {dstName}");
-            LOG.Info($"Call Admission Control ended succesfully");
-            // </ C A L L   A D M I S S I O N   C O N T R O L >
-
-            //TODO [ASON] Ask dstClient if he wants to connect with srcClient
-
-            // If CAC is passed, create a connection
-            int connectionId = int.Parse($"{_domain[1]}{_connectionCounter++}{srcPort}{dstPort}");
-            LOG.Trace($"connectionId: {connectionId}");
-            Connection newConnection = new Connection(connectionId, srcName, srcPort, dstName, dstPort, slotsNumber);
-            _connections.Add(newConnection);
-            // Output active connections
-            LOG.Info("Active Connections: ");
-            foreach (Connection con in _connections) LOG.Info(con.ToString);
-
             // Check if dstPort is from NCC's domain or outside the domain
             string dstDomain = GetDomainFromPort(dstPort);
             bool outsideDomain = dstDomain != _domain;
 
             ResponseType res; //aux var for storing OneShotClients responses
-
             if (outsideDomain)
             {
-                // Inter domain connections only
-
                 // Ask second domain NCC 
                 // Send NCC::CallCoordination(srcName, dstName, sl)
                 LOG.Info("Send NCC::CallCoordination_req" +
-                         $"(srcName = {newConnection.SrcName}, dstName = {newConnection.DstName}, sl = {newConnection.SlotsNumber})");
+                         $"(srcName = {srcName}, dstName = {dstName}, sl = {slotsNumber})");
                 ResponsePacket nccCallCoordinationResponse = _nccCallCoordinationClient.Get(new RequestPacket.Builder()
-                    .SetSrcName(newConnection.SrcName)
-                    .SetDstName(newConnection.DstName)
-                    .SetSlotsNumber(newConnection.SlotsNumber)
+                    .SetSrcName(srcName)
+                    .SetDstName(dstName)
+                    .SetSlotsNumber(slotsNumber)
                     .Build());
                 res = nccCallCoordinationResponse.Res;
                 LOG.Info($"Received NCC::CallCoordination_res(res = {res})");
@@ -133,6 +118,39 @@ namespace NetworkCallController
                         .Build();
                 }
             }
+            
+            // C A L L   A C C E P T
+
+            IApiClient<RequestPacket, ResponsePacket> callAcceptClient = new ApiClient<RequestPacket, ResponsePacket>(_serverAddress, int.Parse(dstPort.ToString() + "9"));
+
+            LOG.Info("Send CPCC::CallAccept_req" + $"(srcName = {srcName})");
+            ResponsePacket callAcceptRes = callAcceptClient.Get(new RequestPacket.Builder()
+                .SetSrcName(srcName)
+                .Build()
+            );
+            LOG.Info($"Received CPCC:CallAccept_res(res = {callAcceptRes.Res})");
+            if (callAcceptRes.Res == ResponseType.Refused) 
+                return new Builder()
+                    .SetRes(ResponseType.RefusedByCalledParty)
+                    .Build();
+            
+            LOG.Info($"Call Admission Control ended succesfully");
+            // </ C A L L   A D M I S S I O N   C O N T R O L >
+            
+            
+
+            // If CAC is passed, create a connection
+            int connectionId = int.Parse($"{_domain[1]}{_connectionCounter++}{srcPort}{dstPort}");
+            LOG.Trace($"connectionId: {connectionId}");
+            Connection newConnection = new Connection(connectionId, srcName, srcPort, dstName, dstPort, slotsNumber);
+            _connections.Add(newConnection);
+            // Output active connections
+            LOG.Info("Active Connections: ");
+            foreach (Connection con in _connections) LOG.Info(con.ToString);
+
+            
+            
+
             // Order domain CC to set a Connection
             // Send CC:ConnectionRequest(id, src, dst, sl)
             LOG.Info("Send CC:ConnectionRequest_req" +
@@ -184,7 +202,7 @@ namespace NetworkCallController
             string srcName = requestPacket.SrcName;
             string dstName = requestPacket.DstName;
             int slotsNumber = requestPacket.SlotsNumber;
-            
+
             LOG.Info($"Received NCC::CallCoordination_req" + $"(srcName = {srcName}, dstName = {dstName},slotsNumber = {slotsNumber})");
             
             // < C A L L   A D M I S S I O N   C O N T R O L >

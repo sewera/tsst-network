@@ -1,7 +1,9 @@
+using System;
 using System.Net;
 using Common.Api;
 using Common.Models;
 using NLog;
+using NLog.Fluent;
 
 namespace ClientNode
 {
@@ -51,7 +53,20 @@ namespace ClientNode
 
         public ResponsePacket OnCallAccept(RequestPacket requestPacket)
         {
-            return new ResponsePacket.Builder().SetRes(ResponsePacket.ResponseType.Ok).Build();
+            LOG.Info($"Received CPCC::CallAccept(srcName = {requestPacket.SrcName})");
+            Console.WriteLine("Do you want to receive this call? y - yes, n - no");
+            string res = Console.ReadLine();
+            if (res == "y" || res == "Y")
+            {
+                LOG.Info("Send CPCC::CallAccept_res(res = OK)");
+                return new ResponsePacket.Builder().SetRes(ResponsePacket.ResponseType.Ok).Build();
+            }
+            else
+            {
+                LOG.Info("Send CPCC::CallAccept_res(res = Refused)");
+                return new ResponsePacket.Builder().SetRes(ResponsePacket.ResponseType.Refused).Build();
+            }
+                
         }
     }
 }
