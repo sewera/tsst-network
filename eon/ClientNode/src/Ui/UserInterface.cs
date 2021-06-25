@@ -73,7 +73,7 @@ namespace ClientNode.Ui
 
                             }
                             else
-                                LOG.Debug($"Received NCC::CallRequest_res(res = {ResponsePacket.ResponseTypeToString(responsePacket.Res)})");
+                                LOG.Info($"Received NCC::CallRequest_res(res = {ResponsePacket.ResponseTypeToString(responsePacket.Res)})");
                         }
                         catch (ParserException e)
                         {
