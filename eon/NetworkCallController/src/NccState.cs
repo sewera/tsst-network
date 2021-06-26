@@ -114,7 +114,7 @@ namespace NetworkCallController
                     LOG.Info($"Second domain refused the call");
                     LOG.Info($"Send NPCC::CallRequest_res(res = {ResponseTypeToString(ResponseType.AuthProblem)})");
                     return new Builder()
-                        .SetRes(ResponseType.Refused)
+                        .SetRes(ResponseType.AuthProblem)
                         .Build();
                 }
             }
@@ -215,10 +215,13 @@ namespace NetworkCallController
             if (chanceToRejectRequestInPolicy > 5)
                 LOG.Info("Call Request meets conditions of Policy component");
             else
+            {
+                LOG.Info($"Send NPCC::CallCoordination_res(res = AuthProblem)");
                 return new Builder()
                     .SetRes(ResponseType.AuthProblem)
                     .Build();
-            
+            }
+
             // D I R E C T O R Y 
             // Find srcName and dstName ports in clientPortAliases dictionary
             string srcPort = null;
