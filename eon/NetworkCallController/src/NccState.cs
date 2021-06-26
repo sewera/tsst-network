@@ -56,14 +56,14 @@ namespace NetworkCallController
             string dstName = requestPacket.DstName;
             int slotsNumber = requestPacket.SlotsNumber;
 
-            LOG.Info($"Received NCC::CallRequest_req" + $"(srcName = {srcName}, dstName = {dstName}, slotsNumber = {slotsNumber})");
+            LOG.Info($"Received NPCC::CallRequest_req" + $"(srcName = {srcName}, dstName = {dstName}, slotsNumber = {slotsNumber})");
             // < C A L L   A D M I S S I O N   C O N T R O L >
             LOG.Info("Call Admission Control");
             // P O L I C Y
             // Randomize chance of rejecting ConnectionRequest_req by Policy component
             int chanceToRejectRequestInPolicy = _rnd.Next(0, 100);
             if (chanceToRejectRequestInPolicy > 5)
-                LOG.Info("ConnectionRequest meets conditions of Policy component");
+                LOG.Info("Call Request meets conditions of Policy component");
             else
                 return new Builder()
                     .SetRes(ResponseType.AuthProblem)
@@ -84,7 +84,7 @@ namespace NetworkCallController
             if (dstPort == null)
             {
                 LOG.Info($"Directory could not find port for user {dstName}");
-                LOG.Info($"NCC::CallRequest_res(res = {ResponseTypeToString(ResponseType.NoClient)})");
+                LOG.Info($"NPCC::CallRequest_res(res = {ResponseTypeToString(ResponseType.NoClient)})");
                 return new Builder()
                     .SetRes(ResponseType.NoClient)
                     .Build();
@@ -99,7 +99,7 @@ namespace NetworkCallController
             {
                 // Ask second domain NCC 
                 // Send NCC::CallCoordination(srcName, dstName, sl)
-                LOG.Info("Send NCC::CallCoordination_req" +
+                LOG.Info("Send NPCC::CallCoordination_req" +
                          $"(srcName = {srcName}, dstName = {dstName}, sl = {slotsNumber})");
                 ResponsePacket nccCallCoordinationResponse = _nccCallCoordinationClient.Get(new RequestPacket.Builder()
                     .SetSrcName(srcName)
@@ -107,12 +107,12 @@ namespace NetworkCallController
                     .SetSlotsNumber(slotsNumber)
                     .Build());
                 res = nccCallCoordinationResponse.Res;
-                LOG.Info($"Received NCC::CallCoordination_res(res = {res})");
+                LOG.Info($"Received NPCC::CallCoordination_res(res = {res})");
                 // If second domain NCC refused the call we should also refuse it
                 if (res != ResponseType.Ok)
                 {
                     LOG.Info($"Second domain refused the call");
-                    LOG.Info($"Send NCC::CallRequest_res(res = {ResponseTypeToString(ResponseType.AuthProblem)})");
+                    LOG.Info($"Send NPCC::CallRequest_res(res = {ResponseTypeToString(ResponseType.AuthProblem)})");
                     return new Builder()
                         .SetRes(ResponseType.Refused)
                         .Build();
@@ -120,22 +120,23 @@ namespace NetworkCallController
             }
             
             // C A L L   A C C E P T
-            //TODO USUN TO POTEM
-            LOG.Info("Wbita do call accept");
-            IApiClient<RequestPacket, ResponsePacket> callAcceptClient = new ApiClient<RequestPacket, ResponsePacket>(_serverAddress, int.Parse(dstPort.ToString() + "9"));
+            if (!outsideDomain)
+            {
+                IApiClient<RequestPacket, ResponsePacket> callAcceptClient = new ApiClient<RequestPacket, ResponsePacket>(_serverAddress, int.Parse(dstPort.ToString() + "9"));
 
-            LOG.Info("Send CPCC::CallAccept_req" + $"(srcName = {srcName})");
-            ResponsePacket callAcceptRes = callAcceptClient.Get(new RequestPacket.Builder()
-                .SetSrcName(srcName)
-                .Build()
-            );
-            LOG.Info($"Received CPCC:CallAccept_res(res = {callAcceptRes.Res})");
-            if (callAcceptRes.Res == ResponseType.Refused) 
-                return new Builder()
-                    .SetRes(ResponseType.RefusedByCalledParty)
-                    .Build();
-            
+                LOG.Info("Send CPCC::CallAccept_req" + $"(srcName = {srcName})");
+                ResponsePacket callAcceptRes = callAcceptClient.Get(new RequestPacket.Builder()
+                    .SetSrcName(srcName)
+                    .Build()
+                );
+                LOG.Info($"Received CPCC:CallAccept_res(res = {callAcceptRes.Res})");
+                if (callAcceptRes.Res == ResponseType.Refused) 
+                    return new Builder()
+                        .SetRes(ResponseType.RefusedByCalledParty)
+                        .Build();
+            }
             LOG.Info($"Call Admission Control ended succesfully");
+            
             // </ C A L L   A D M I S S I O N   C O N T R O L >
             
             
@@ -172,7 +173,7 @@ namespace NetworkCallController
                 case ResponseType.Ok:
                 {
                     _ccConnectionRequests[newConnection.Id] = ccConnectionRequestPacket;
-                    LOG.Info($"Send NCC::CallRequest_res(res = OK, id = {newConnection.Id}, slots = {slots})");
+                    LOG.Info($"Send NPCC::CallRequest_res(res = OK, id = {newConnection.Id}, slots = {slots})");
                     return new Builder()
                         .SetRes(ResponseType.Ok)
                         .SetId(newConnection.Id)
@@ -181,14 +182,14 @@ namespace NetworkCallController
                 }
                 case ResponseType.ResourcesProblem:
                 {
-                    LOG.Info("Send NCC:CallRequest_res(res = ResourcesProblem)");
+                    LOG.Info("Send NPCC:CallRequest_res(res = ResourcesProblem)");
                     return new Builder()
                         .SetRes(ResponseType.ResourcesProblem)
                         .Build();
                 }
                 default:
                 {
-                    LOG.Info("Send NCC::CallRequest_res(res = Network Problem)");
+                    LOG.Info("Send NPCC::CallRequest_res(res = Network Problem)");
                     return new Builder()
                         .SetRes(ResponseType.NetworkProblem)
                         .Build();
@@ -204,7 +205,7 @@ namespace NetworkCallController
             string dstName = requestPacket.DstName;
             int slotsNumber = requestPacket.SlotsNumber;
 
-            LOG.Info($"Received NCC::CallCoordination_req" + $"(srcName = {srcName}, dstName = {dstName},slotsNumber = {slotsNumber})");
+            LOG.Info($"Received NPCC::CallCoordination_req" + $"(srcName = {srcName}, dstName = {dstName},slotsNumber = {slotsNumber})");
             
             // < C A L L   A D M I S S I O N   C O N T R O L >
             LOG.Info("Call Admission Control");
@@ -212,7 +213,7 @@ namespace NetworkCallController
             // Randomize chance of rejecting ConnectionRequest_req by Policy component
             int chanceToRejectRequestInPolicy = _rnd.Next(0, 100);
             if (chanceToRejectRequestInPolicy > 5)
-                LOG.Info("ConnectionRequest meets conditions of Policy component");
+                LOG.Info("Call Request meets conditions of Policy component");
             else
                 return new Builder()
                     .SetRes(ResponseType.AuthProblem)
@@ -234,12 +235,29 @@ namespace NetworkCallController
             if (dstPort == null)
             {
                 LOG.Info($"Directory could not find port for user {dstName}");
-                LOG.Info($"NCC::CallRequest_res(res = {ResponseTypeToString(ResponseType.NoClient)})");
+                LOG.Info($"NPCC::CallRequest_res(res = {ResponseTypeToString(ResponseType.NoClient)})");
                 return new Builder()
                     .SetRes(ResponseType.NoClient)
                     .Build();
             }
+            
+            IApiClient<RequestPacket, ResponsePacket> callAcceptClient = new ApiClient<RequestPacket, ResponsePacket>(_serverAddress, int.Parse(dstPort.ToString() + "9"));
+
+            LOG.Info("Send CPCC::CallAccept_req" + $"(srcName = {srcName})");
+            ResponsePacket callAcceptRes = callAcceptClient.Get(new RequestPacket.Builder()
+                .SetSrcName(srcName)
+                .Build()
+            );
+            LOG.Info($"Received CPCC:CallAccept_res(res = {callAcceptRes.Res})");
+            if (callAcceptRes.Res == ResponseType.Refused) 
+                return new Builder()
+                    .SetRes(ResponseType.RefusedByCalledParty)
+                    .Build();
+            
+            LOG.Info($"Call Admission Control ended succesfully");
+            
             // </ C A L L   A D M I S S I O N   C O N T R O L >
+            LOG.Info($"Send NPCC::CallCoordination_res(res = Ok)");
             // If Call passed CAC response with OK
             return new Builder()
                 .SetRes(ResponseType.Ok)
@@ -250,11 +268,11 @@ namespace NetworkCallController
         {
             int id = requestPacket.Id;
             _ccConnectionRequests.Remove(id, out RequestPacket ccConnectionTeardownRequest);
-            LOG.Info($"Received NCC::CallTeardown_req(id = {id})");
+            LOG.Info($"Received NPCC::CallTeardown_req(id = {id})");
             if (ccConnectionTeardownRequest == null)
             {
                 LOG.Error($"Could not find a connection with id = {id}");
-                LOG.Info($"Send NCC::CallTeardown_res(res = Refused)");
+                LOG.Info($"Send NPCC::CallTeardown_res(res = Refused)");
                 return new Builder()
                     .SetRes(ResponseType.Refused)
                     .Build();
@@ -270,12 +288,12 @@ namespace NetworkCallController
 
             if (connectionTeardownResponse.Res != ResponseType.Ok)
             {
-                LOG.Info($"Send NCC::CallTeardown_res(res = NetworkProblem)");
+                LOG.Info($"Send NPCC::CallTeardown_res(res = NetworkProblem)");
                 return new Builder().SetRes(ResponseType.NetworkProblem).Build();
             }
             LOG.Info("Received CC::ConnectionRequest(res = OK)");
             _connections.RemoveAll(connection => connection.Id == id);
-            LOG.Info($"Send NCC::CallTeardown_res(res = OK, id = {id})");
+            LOG.Info($"Send NPCC::CallTeardown_res(res = OK, id = {id})");
             return new Builder()
                 .SetRes(ResponseType.Ok)
                 .Build();
