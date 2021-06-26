@@ -30,6 +30,16 @@
             <dst>022</dst>
             <gateway>013</gateway>
         </row>
+        <row>
+            <src>01x</src>
+            <dst>012</dst>
+            <gateway>012</gateway>
+        </row>
+        <row>
+            <src>01x</src>
+            <dst>021</dst>
+            <gateway>013</gateway>
+        </row>
         
         <row>
             <src>02x</src>
@@ -50,6 +60,11 @@
             <src>02x</src>
             <dst>022</dst>
             <gateway>022</gateway>
+        </row>
+        <row>
+            <src>02x</src>
+            <dst>021</dst>
+            <gateway>021</gateway>
         </row>
         
         <row>
@@ -72,7 +87,16 @@
             <dst>022</dst>
             <gateway>034</gateway>
         </row>
-        
+        <row>
+            <src>03x</src>
+            <dst>021</dst>
+            <gateway>034</gateway>
+        </row>
+        <row>
+            <src>03x</src>
+            <dst>012</dst>
+            <gateway>033</gateway>
+        </row>
     </route_table>
 
 </configuration>

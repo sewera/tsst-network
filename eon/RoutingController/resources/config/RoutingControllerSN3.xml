@@ -16,6 +16,16 @@
         </row>
 
         <row>
+            <src>31x</src>
+            <dst>312</dst>
+            <gateway>312</gateway>
+        </row>
+        <row>
+            <src>31x</src>
+            <dst>311</dst>
+            <gateway>311</gateway>
+        </row>
+        <row>
             <src>32x</src>
             <dst>321</dst>
             <gateway>321</gateway>

@@ -63,17 +63,27 @@ namespace RoutingController
             
             LOG.Info($"Received RC::RouteTableQuery_req(connectionId = {connectionId}, srcPort = {srcPort}," +
                      $" dstPort = {dstPort}, slotsNumber = {slotsNumber})");
+            
+           
 
             // Set dstZone depending on destination domain
             string secondDomainPortPattern = "3xx";
             string dstZone;
-            if (Checkers.PortMatches(secondDomainPortPattern, dstPort) > -1) // TODO: Check for matches value
+            
+            if (Checkers.PortMatches(secondDomainPortPattern, srcPort) > -1 && Checkers.PortMatches(secondDomainPortPattern, dstPort) == -1)
             {
+                // We are in second domain and the dst is in first domain
+                dstZone = "312,311";
+            }
+            else if (Checkers.PortMatches(secondDomainPortPattern, dstPort) > -1) // TODO: Check for matches value
+            {
+                // We are in first domain and the dst in second domain
                 dstZone = "012,021";
                 LOG.Trace($"Destination port belongs to other zone. Possible leaving ports: {dstZone}");
             }
             else
             {
+                // The src and dst are in the same domain
                 dstZone = dstPort;
                 LOG.Trace($"Destination port belongs to the same zone. Leaving port: {dstZone}");
             }

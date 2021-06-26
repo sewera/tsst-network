@@ -160,10 +160,10 @@ namespace ConnectionController
 
                 if (peerCoordinationResponse.Res == ResponsePacket.ResponseType.Ok)
                 {
-                    LOG.Info($"Send CC::ConnectionRequest_res(res = OK, nextZonePort = NULL, slots = {rtqrSlots})");
+                    LOG.Info($"Send CC::ConnectionRequest_res(res = OK, nextZonePort = {peerCoordinationResponse.NextZonePort}, slots = {rtqrSlots})");
                     return new ResponsePacket.Builder()
                         .SetRes(ResponsePacket.ResponseType.Ok)
-                        .SetNextZonePort("")
+                        .SetNextZonePort(peerCoordinationResponse.NextZonePort)
                         .SetSlots(rtqrSlots)
                         .Build();
                 }
@@ -185,6 +185,7 @@ namespace ConnectionController
 
         public ResponsePacket OnPeerCoordination(RequestPacket requestPacket)
         {
+            // Take PeerCoordination Params
             int id = requestPacket.Id;
             string src = requestPacket.SrcPort;
             string dst = requestPacket.DstPort;
@@ -196,6 +197,7 @@ namespace ConnectionController
 
             LOG.Info($"Received CC::PeerCoordination_req(id = {id}, src = {src}, dst = {dst}, slots = {slots}, teardown = {est})");
             
+            // Ask for the route
             LOG.Info($"Send RC::RouteTableQuery_req(id = {id}, src = {src}, dst = {dst}, sl = {sl}, teardown = {est})");
             ResponsePacket routeTableQueryResponse = _rcRouteTableQueryClient.Get(new RequestPacket.Builder()
                 .SetEst(est)
@@ -205,6 +207,7 @@ namespace ConnectionController
                 .SetSlotsNumber(sl)
                 .Build());
 
+            // Handle Not OK response from RC
             if (routeTableQueryResponse.Res == ResponsePacket.ResponseType.ResourcesProblem)
             {
                 LOG.Info("Received RC::RouteTableQuery_res(res = ResourcesProblem)");
@@ -214,15 +217,70 @@ namespace ConnectionController
                     .Build();
             }
 
+            // Take RouteTableQuery Response params
             int rtqrId = routeTableQueryResponse.Id;
             string rtqrGateway = routeTableQueryResponse.Gateway;
             (int, int) rtqrSlots = routeTableQueryResponse.Slots;
-            string dstZone = routeTableQueryResponse.DstZone;
+            string rtqrDstZone = routeTableQueryResponse.DstZone;
             string gatewayOrEnd = rtqrGateway;
-            LOG.Info($"Received RC::RouteTableQuery_res(id = {rtqrId}, gateway = {rtqrGateway}, slots = {rtqrSlots}, dstZone = {dstZone})");
+            LOG.Info($"Received RC::RouteTableQuery_res(id = {rtqrId}, gateway = {rtqrGateway}, slots = {rtqrSlots}, dstZone = {rtqrDstZone})");
 
-            if (dst != rtqrGateway)
+            ResponsePacket connectionRequestResponse; //response from our subnetwork used later in few places, defined here
+
+            // gateway == dstZone && dstZone != dst -- TODO I N  T E R   D  O M A I N   C O N N E C T I O N
+            if (isEqual(rtqrGateway, rtqrDstZone)  && rtqrDstZone != dst) //=> We are the last subnetwork in our domain
             {
+                // 1)
+                // Get nextZonePort
+                
+                // First ask LRM about the port at the of InterDomain Link
+                ResponsePacket linkConnectionRequestResponse;
+                linkConnectionRequestResponse = _lrmLinkConnectionRequestClients[rtqrGateway].Get(
+                    new RequestPacket.Builder()
+                        .SetEst(est)
+                        .SetSlots(rtqrSlots)
+                        .SetShouldAllocate(false)
+                        .SetWhoRequests(RequestPacket.Who.Cc)
+                        .Build());
+                // Get nextZonePort
+                string nextZonePort = linkConnectionRequestResponse.End;
+                
+                // 2)
+                // Set up connection in our subnetwork
+                LOG.Info($"Send CC::ConnectionRequest_req(id = {rtqrId}, src = {src}, dst = {rtqrGateway}, sl = {sl}, teardown = {est})");
+                connectionRequestResponse = _ccConnectionRequestClients[GetCcName(src)].Get(new RequestPacket.Builder()
+                    .SetEst(est)
+                    .SetId(id)
+                    .SetSrcPort(src)
+                    .SetDstPort(rtqrGateway)
+                    .SetSlotsNumber(sl)
+                    .Build());
+                LOG.Info($"Received CC::ConnectionRequest_res({ResponsePacket.ResponseTypeToString(connectionRequestResponse.Res)})");
+            
+                // Response from our subnetwork
+                ResponsePacket.ResponseType snRes = connectionRequestResponse.Res;
+                // 3)
+                // Return nextZonePort in PeerCoordination
+                if (snRes == ResponsePacket.ResponseType.Ok)
+                {
+                    LOG.Info($"Send CC::PeerCoordination_res(res = OK, nextZonePort = {nextZonePort})");
+                    return new ResponsePacket.Builder()
+                        .SetRes(ResponsePacket.ResponseType.Ok)
+                        .SetNextZonePort(nextZonePort)
+                        .SetSlots(rtqrSlots)
+                        .Build();
+                }
+                else
+                {
+                    return new ResponsePacket.Builder()
+                        .SetRes(ResponsePacket.ResponseType.Refused)
+                        .Build();
+                }
+            }
+            // if RC response != connection destination
+            if (dst != rtqrGateway) // We will have to extend the connection
+            {
+                // First allocate LRM between us and the second subnetwork
                 ResponsePacket linkConnectionRequestResponse;
                 switch (est)
                 {
@@ -261,8 +319,8 @@ namespace ConnectionController
 
                 LOG.Info($"Received LRM::LinkConnectionRequest_res(end = {gatewayOrEnd})");
             }
-
-            if (dst == rtqrGateway)
+            // If RC response is the connection destination 
+            if (dst == rtqrGateway) //=> we are the last subnetwork, so just set the connection inside
             {
                 LOG.Debug("Dst == Gateway, LRM will be handled by the layers above");
                 LOG.Info($"Send CC::ConnectionRequest_req(id = {rtqrId}, src = {src}, dst = {rtqrGateway}, sl = {sl}, teardown = {est})");
@@ -281,9 +339,12 @@ namespace ConnectionController
                 }
             }
 
-            // gateway == dstZone && dstZone != dst -- TODO Not implemented
+           
+           
+            // It's the scenario when we are not the last subnetwork
+            // Set up connection in our subnetwork
             LOG.Info($"Send CC::ConnectionRequest_req(id = {rtqrId}, src = {src}, dst = {rtqrGateway}, sl = {sl}, teardown = {est})");
-            ResponsePacket connectionRequestResponse = _ccConnectionRequestClients[GetCcName(src)].Get(new RequestPacket.Builder()
+            connectionRequestResponse = _ccConnectionRequestClients[GetCcName(src)].Get(new RequestPacket.Builder()
                 .SetEst(est)
                 .SetId(id)
                 .SetSrcPort(src)
@@ -292,12 +353,15 @@ namespace ConnectionController
                 .Build());
             LOG.Info($"Received CC::ConnectionRequest_res({ResponsePacket.ResponseTypeToString(connectionRequestResponse.Res)})");
             
+            // Response from our subnetwork
             ResponsePacket.ResponseType res = connectionRequestResponse.Res;
 
             if (res == ResponsePacket.ResponseType.Ok)
             {
+                // If Ok just extend the connection 
                 LOG.Info($"Send CC::PeerCoordination_req(id = {id}, src = {gatewayOrEnd}, dst = {dst}, slots = {rtqrSlots}, teardown = {est})");
                 
+                // Response from subnetwork we extended connection to
                 ResponsePacket peerCoordinationResponse = _ccPeerCoordinationClients[GetCcName(gatewayOrEnd)].Get(new RequestPacket.Builder()
                     .SetEst(est)
                     .SetId(id)
@@ -306,8 +370,7 @@ namespace ConnectionController
                     .SetSlots(rtqrSlots)
                     .Build());
                 LOG.Info($"Received CC::PeerCoordination_res(res = {ResponsePacket.ResponseTypeToString(peerCoordinationResponse.Res)})");
-
-
+                
                 if (peerCoordinationResponse.Res == ResponsePacket.ResponseType.Ok)
                 {
                     LOG.Info($"Send CC::PeerCoordination_res(res = OK, nextZonePort = NULL)");
@@ -317,7 +380,6 @@ namespace ConnectionController
                         .SetSlots(rtqrSlots)
                         .Build();
                 }
-                
                 // else
                 LOG.Info($"Send CC::PeerCoordination_res(res = Refused, nextZonePort = NULL)");
                 return new ResponsePacket.Builder()
@@ -325,8 +387,8 @@ namespace ConnectionController
                     .SetNextZonePort("")
                     .Build();
             }
-            LOG.Info($"Send CC::PeerCoordination_res(res = Refused)");
             // else
+            LOG.Info($"Send CC::PeerCoordination_res(res = Refused)");
             return new ResponsePacket.Builder()
                 .SetRes(ResponsePacket.ResponseType.Refused)
                 .Build();
@@ -338,6 +400,13 @@ namespace ConnectionController
                 Checkers.PortMatches(ccName.Key, portAlias) > -1)) return ccName.Value; // TODO: Check for matches value
             LOG.Error($"Empty ccName from GetCcName() for portAlias: {portAlias}");
             return "";
+        }
+
+        private bool isEqual(string gateway, string dstZone)
+        {
+            LOG.Trace(gateway);
+            LOG.Trace(dstZone);
+            return true;
         }
     }
 }
